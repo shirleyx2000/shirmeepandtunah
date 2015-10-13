@@ -53,6 +53,7 @@ To earn full credit you must:
 
 ### Grading guidelines
 We will grade your work _approximately_ as follows:
+
 | Correct graph implementations | 35% |
 |—————|————————|
 | Correct algorithm implementations | 35% |
