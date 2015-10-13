@@ -41,12 +41,13 @@ Your algorithms must use only the methods provided in the interface, and can not
 An anonymized dataset from Twitter is provided in the file `datasets/twitter.txt`. The file contains many rows, with each row containing an entry of the form `a -> b` to indicate that `a` follows `b`.
 
 We would like to answer the following questions from this dataset:
-+ Given users `a` and `b`, who are the common users that both `a` and `b` follow?
-+ Suppose user `a` tweets a message, what is the minimum number of retweets needed before `a`'s tweet appears in `b`'s feed?
++ **Common influencers**: Given users `a` and `b`, who are the common users that both `a` and `b` follow?
++ **Retweets**: Suppose user `a` tweets a message, what is the minimum number of retweets needed before `a`'s tweet appears in `b`'s feed? (The assumption here is that a tweet will appear in `b`'s feed if the tweet originated from one of the users that `b` follows.)
 
-You should implement suitable methods for such analysis, including a `public static void main(String[ ] args)` method in a package called `twitterAnalysis`. 
+You should implement suitable methods for such analysis, including a `public static void main(String[ ] args)` method in a class named `TwitterAnalysis` within the package called `twitterAnalysis`. 
 
 The `main( )` method referred to here should take two arguments: 
+
 1. the name of a file that contains a list of queries, and 
 2. the name of a file that should be used to write the output of the queries to.
 
@@ -74,7 +75,7 @@ query: numRetweets 14838508 98032178
 If the input query file has multiple queries then the output file should have the results to each of those queries, in the same order as in the input file. 
 
 + Duplicate queries should be ignored. 
-+ Note also that all queries end with `?`; lines in the query input file that do not end with a `?` can also be ignored.
++ All queries end with `?`; lines in the query input file that do not end with a `?` can also be ignored.
 
 ### Testing Your Code
 Use JUnit to test the correctness of your implementation. Write tests that check the correctness of normal cases as well as edge cases of the Graph ADT and the algorithms. Tests should be in the package `ca.ubc.ece.cpen221.mp3.tests`.
