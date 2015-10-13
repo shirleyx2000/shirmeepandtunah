@@ -26,7 +26,7 @@ First, write two classes that implement the `ca.ubc.ece.cpen221.mp3.staff.Graph`
 + **Adjacency Matrix**: Next, implement the `AdjacencyMatrixGraph` class in the `ca.ubc.ece.cpen221.mp3.graph` package. Your implementation must internally represent the graph as an adjacency matrix. If you are not familiar with the adjacency matrix representation of graphs, see the Wikipedia page on the adjacency matrix representation as a reference.
 
 #### Algorithm Implementations
-For this part of the assignment, you will write three algorithms that might be used for social network analysis using your graph implementations. 
+For this part of the assignment, you will implement algorithms that might be used for social network analysis using your graph implementations. 
 
 Your algorithms must use only the methods provided in the interface, and can not use any features specific to the implementation of `Graph` being used. Your algorithms must work correctly on any correct implementation of a `Graph`, including your `AdjacencyMatrixGraph` and `AdjacencyListGraph`.
 
@@ -36,8 +36,45 @@ Your algorithms must use only the methods provided in the interface, and can not
 + **Common upstream vertices**: Given a graph _G_ and two vertices _a_ and _b_ in _G_, your implementation should return a list of all vertices _u_ such that there is an edge from _u_ to _a_ and an edge from _u_ to _b_. If there are no such vertices then your implementation should return an empty list.
 + **Common downstream vertices**: Given a graph _G_ and two vertices _a_ and _b_ in _G_, your implementation should return a list of all vertices _v_ such that there is an edge from _a_ to _v_ and an edge from _b_ to _v_.  
 
+### Social Network Analysis
+
+An anonymized dataset from Twitter is provided in the file `datasets/twitter.txt`. The file contains many rows, with each row containing an entry of the form `a -> b` to indicate that `a` follows `b`.
+
+We would like to answer the following questions from this dataset:
++ Given users `a` and `b`, who are the common users that both `a` and `b` follow?
++ Suppose user `a` tweets a message, what is the minimum number of retweets needed before `a`'s tweet appears in `b`'s feed?
+
+You should implement suitable methods for such analysis, including a `public static void main(String[ ] args)` method in a package called `twitterAnalysis`. 
+
+The `main( )` method referred to here should take two arguments: 
+1. the name of a file that contains a list of queries, and 
+2. the name of a file that should be used to write the output of the queries to.
+
+The format for submitting queries to your implementation shall be:
+`<query type> <user a> <user b>`.
+
+A file may have more than one query, with one line per query. There are two query types: `commonInfluencers` and `numRetweets`.
+
+The line `commonInfluencers 14838508 98032178` indicates that we want to find the users that both userid:14838508 and userid:98032178 follow. The corresponding output in the output file should have the following format:
+```
+query: commonInfluencers 14838508 98032178
+<result>
+	... // (list of common influencers, one per row)
+</result>
+```
+
+We can similarly have a query `numRetweets 14838508 98032178` and the corresponding output should be as follows:
+```
+query: numRetweets 14838508 98032178
+<result>
+0 // (or appropriate number)
+</result>
+```
+
+If the input query file has multiple queries then the output file should have the results to each of those queries, in the same order as in the input file. Duplicate queries should be ignored.
+
 ### Testing Your Code
-Use JUnit to test the correctness of your implementation. Write tests that check the correctness of normal cases as well as edge cases of the Graph ADT and the algorithms.
+Use JUnit to test the correctness of your implementation. Write tests that check the correctness of normal cases as well as edge cases of the Graph ADT and the algorithms. Tests should be in the package `ca.ubc.ece.cpen221.mp3.tests`.
 
 ### Evaluation
 To earn full credit you must:
@@ -56,8 +93,9 @@ To earn full credit you must:
 We will grade your work _approximately_ as follows:
 
 <table>
-	<tr><td>Correct graph implementations</td><td>35%</td></tr>
-	<tr><td>Correct algorithm implementations</td><td>35%</td></tr>
+	<tr><td>Correct graph implementations</td><td>30%</td></tr>
+	<tr><td>Correct algorithm implementations</td><td>30%</td></tr>
+	<tr><td>Correct Twitter data analysis</td><td>10%</td></tr>
 	<tr><td>Tests</td><td>15%</td></tr>
 	<tr><td>Good style and program design</td><td>15%</td></tr>
 </table>
