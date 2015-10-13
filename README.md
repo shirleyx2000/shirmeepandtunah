@@ -63,7 +63,7 @@ query: commonInfluencers 14838508 98032178
 </result>
 ```
 
-We can similarly have a query `numRetweets 14838508 98032178` and the corresponding output should be as follows:
+We can similarly have a query `numRetweets 14838508 98032178`, which asks for the number of retweets before a tweet by userid:14838508 reaches user:98032178. The corresponding output should be as follows:
 ```
 query: numRetweets 14838508 98032178
 <result>
