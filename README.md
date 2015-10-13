@@ -55,7 +55,7 @@ The format for submitting queries to your implementation shall be:
 
 A file may have more than one query, with one line per query. There are two query types: `commonInfluencers` and `numRetweets`.
 
-The line `commonInfluencers 14838508 98032178` indicates that we want to find the users that both userid:14838508 and userid:98032178 follow. The corresponding output in the output file should have the following format:
+The line `commonInfluencers 14838508 98032178 ?` indicates that we want to find the users that both userid:14838508 and userid:98032178 follow. The corresponding output in the output file should have the following format:
 ```
 query: commonInfluencers 14838508 98032178
 <result>
@@ -63,7 +63,7 @@ query: commonInfluencers 14838508 98032178
 </result>
 ```
 
-We can similarly have a query `numRetweets 14838508 98032178`, which asks for the number of retweets before a tweet by userid:14838508 reaches user:98032178. The corresponding output should be as follows:
+We can similarly have a query `numRetweets 14838508 98032178 ?`, which asks for the number of retweets before a tweet by userid:14838508 reaches user:98032178. The corresponding output should be as follows:
 ```
 query: numRetweets 14838508 98032178
 <result>
@@ -71,7 +71,10 @@ query: numRetweets 14838508 98032178
 </result>
 ```
 
-If the input query file has multiple queries then the output file should have the results to each of those queries, in the same order as in the input file. Duplicate queries should be ignored.
+If the input query file has multiple queries then the output file should have the results to each of those queries, in the same order as in the input file. 
+
++ Duplicate queries should be ignored. 
++ Note also that all queries end with `?`; lines in the query input file that do not end with a `?` can also be ignored.
 
 ### Testing Your Code
 Use JUnit to test the correctness of your implementation. Write tests that check the correctness of normal cases as well as edge cases of the Graph ADT and the algorithms. Tests should be in the package `ca.ubc.ece.cpen221.mp3.tests`.
