@@ -5,8 +5,8 @@ The Graph ADT and Social Networks
 ### Logistics
 
 + This is a group assignment and you will be assigned to groups.
-+ This is a 2-week machine problem, and will be due Oct/26.
-+ The weight for this machine problem is 7%.
++ This is a 2-week machine problem, and will be due **Oct/26 6pm**.
++ The weight for this machine problem is 7% of your raw score in the course.
 
 ### Background
 
@@ -102,3 +102,13 @@ We will grade your work _approximately_ as follows:
 	<tr><td>Tests</td><td>15%</td></tr>
 	<tr><td>Good style and program design</td><td>15%</td></tr>
 </table>
+
+### Submission instructions
+
++ You should commit all source code to your assigned Github repository under a branch named `mp3`.
++ Since you will be working in groups, only one submission per group is expected.
++ You should submit a PDF file to Gradescope with the the following information:
+	+ Names of students in the group;
+	+ Github repository to which work was committed;
+	+ An estimate of the number of hours of work to complete this MP;
+	+ A short discussion (<= 100 words) on whether any other methods should be added to the `Graph` interface. Justify why a new method should be added or justify why it is complete as-is.
