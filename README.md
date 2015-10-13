@@ -44,12 +44,13 @@ To earn full credit you must:
 + Properly encapsulate your implementation. Use the most restrictive access level that makes sense for each of your fields and methods (i.e., use `private` unless you have a good reason not to). Instead of manipulating class fields directly, make them `private` and implement getter and setter methods to manipulate them from outside of the class. 
 + Not edit any files in the `ca.ubc.ece.cpen221.mp3.staff` package or any of the method declarations we’ve initially provided for you.
 + Make sure your code is readable. Use proper indentation and whitespace, abide by standard Java naming conventions, and add additional comments as necessary to document your code.
-+ Follow the Java code conventions, especially for naming and commenting. Hint: Also use <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>F</kbd> in Eclipse to auto-format your code.
++ Follow the Java code conventions, especially for naming and commenting. 
 
 ### Additional hints
 + You may create helper classes and helper methods to help you with the assignment, as long as your code is compatible with the provided interfaces.
 + The tasks may be underspecified. Use your judgment. Write specifications. You can ask reasonable questions on Piazza.
 + As long as your code runs in a reasonable amount of time, and returns the correct values, you do not need to worry about the complexity of your algorithms.
++ Consider using <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>F</kbd> in Eclipse to auto-format your code.
 
 ### Grading guidelines
 We will grade your work _approximately_ as follows:
