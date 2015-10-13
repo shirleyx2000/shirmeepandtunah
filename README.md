@@ -53,7 +53,10 @@ To earn full credit you must:
 
 ### Grading guidelines
 We will grade your work _approximately_ as follows:
-+ Correct graph implementations: 35%
-+ Correct algorithm implementations: 35%
-+ Tests: 10%
-+ Good style and program design: 20%
+| Correct graph implementations | 35% |
+|—————|————————|
+| Correct algorithm implementations | 35% |
+| a | b |
+
++ Tests: 15%
++ Good style and program design: 15%
