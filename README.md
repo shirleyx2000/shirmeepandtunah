@@ -56,7 +56,7 @@ We will grade your work _approximately_ as follows:
 
 <table>
 	<tr><td>Correct graph implementations</td><td>35%</td></tr>
-	<tr><td>Correct algorithm implementations</td>35%</td></tr>
+	<tr><td>Correct algorithm implementations</td><td>35%</td></tr>
 	<tr><td>Tests</td><td>15%</td></tr>
 	<tr><td>Good style and program design<td><td>15%</td></tr>
 </table>
