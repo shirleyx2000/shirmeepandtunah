@@ -24,8 +24,8 @@ public interface Graph {
 	/**
 	 * Check if there is an edge from v1 to v2.
 	 *
-	 * Precondition: v1 and v2 are vertices in the graph Postcondition: return
-	 * true iff an edge from v1 connects to v2
+	 * Precondition: v1 and v2 are vertices in the graph 
+	 * Postcondition: return true iff an edge from v1 connects to v2
 	 */
 	public boolean edgeExists(Vertex v1, Vertex v2);
 
