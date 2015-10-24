@@ -10,16 +10,8 @@ import ca.ubc.ece.cpen221.mp3.staff.Vertex;
 
 public class AdjacencyListGraph implements Graph {
 // TODO: Implement this class
-    
-    //array of linked lists 
-    private List<LinkedList<Vertex>> adjList = new ArrayList<LinkedList<Vertex>>(); //vertices adj to ith
-    
-    /**
-     * Constructs AdjacencyListGraph <-- needed? 
-     */
-    public void AdjacencyListGraph() {
-        
-    }
+
+    private List<LinkedList<Vertex>> adjList = new ArrayList<LinkedList<Vertex>>();
 
     /**
      * Adds a vertex to the graph.
@@ -30,11 +22,13 @@ public class AdjacencyListGraph implements Graph {
      * @param v : new vertex to add to graph
      */
     public void addVertex(Vertex v) {
-        // add to second dimension array
-        LinkedList<Vertex> newLinkedLs = new LinkedList<Vertex>(); 
-        newLinkedLs.add(v);
-        // add to the first dimension array
-        adjList.add(newLinkedLs);
+
+        LinkedList<Vertex> vertex = new LinkedList<Vertex>(); 
+        //Head of linked list is the vertex itself. 
+        if (!vertex.contains(v)){
+            vertex.add( v );
+            adjList.add( vertex );
+        }
     }
 
     /**
@@ -45,10 +39,10 @@ public class AdjacencyListGraph implements Graph {
      * @param v1, v2 : vertices to form edge
      */
     public void addEdge(Vertex v1, Vertex v2) {
-        //Vertices are stored in arbitrary order
-        for (LinkedList<Vertex> vertLs : adjList) {
-            if (vertLs.getFirst() == v1) {
-                vertLs.addLast(v2);
+        //Order of adjacent vertices does not matter
+        for ( LinkedList<Vertex> vertex : adjList ) {
+            if ( vertex.getFirst() == v1 ) {
+                vertex.addLast( v2 );
             }
         }
     }
@@ -57,7 +51,7 @@ public class AdjacencyListGraph implements Graph {
      * Check if there is an edge from v1 to v2.
      *
      * require: v1 and v2 are vertices in the graph 
-     * effect: return true iff an edge from v1 connects to v2
+     * effect: return true iff an edge from v1 to v2 exists
      * 
      * @param v1, v2 : vertices forming an edge
      * @return boolean
@@ -65,17 +59,20 @@ public class AdjacencyListGraph implements Graph {
     public boolean edgeExists(Vertex v1, Vertex v2) {
         
         //must be directional, so head of list = v1
-        for (LinkedList<Vertex> vertLs : adjList) {
-            if (vertLs.getFirst() == v1) {
-                ListIterator <Vertex> vertIt = vertLs.listIterator();  
-                while (vertIt.hasNext()) {
-                    if(vertIt.next() == v2) { return true; } 
-                    else { return false; }
+        for (LinkedList<Vertex> vertex : adjList) {
+            if ( vertex.getFirst().equals(v1) ) {
+                ListIterator <Vertex> vertIt = vertex.listIterator();  
+                while ( vertIt.hasNext() ) {
+                    if( vertIt.next().equals(v2) ) { 
+                        return true;
+                    } 
+                    else { 
+                        return false; 
+                    }
                 }
             }
         }
-        
-        //iterated through the whole graph and not found
+
         return false; 
     }
 
@@ -88,16 +85,14 @@ public class AdjacencyListGraph implements Graph {
      * (No trailing null elements). This method should return a list of size 0
      * iff v has no downstream neighbors.
      * 
-     * @param v      : vertex to find all its children
-     * @returns list : containing all children
+     * @param v      : vertex to find all its downstream neighbours
+     * @returns list : containing all downstream neighbours
      */
     public List<Vertex> getDownstreamNeighbors(Vertex v) {
-        //return an unmodifiable list of vertices to prevent invariant exposure
 
-        for (LinkedList<Vertex> thisLs : adjList) {
-            //find v in first dimension 
-            if (thisLs.getFirst() == v) {
-                return Collections.unmodifiableList(thisLs); 
+        for (LinkedList<Vertex> vertex : adjList) { 
+            if (vertex.getFirst() == v) {
+                return Collections.unmodifiableList(vertex); 
             }
         }
         
@@ -117,21 +112,19 @@ public class AdjacencyListGraph implements Graph {
      * @returns list : containing all parents
      */
     public List<Vertex> getUpstreamNeighbors(Vertex v) {
-        //return an unmodifiable list of vertices to prevent invariant exposure
+
         List<Vertex> upStreamVertices = new ArrayList<Vertex>(); 
         
-        for (LinkedList<Vertex> vertLs : adjList) {
-            ListIterator <Vertex> vertIt = vertLs.listIterator(); 
-            // find v in second dimension 
-            while (vertIt.hasNext()) {
-                if (vertIt.next() == v) {
-                    // append first dimension element
-                    upStreamVertices.add(vertLs.getFirst());
+        for (LinkedList<Vertex> vertex : adjList) {
+            ListIterator <Vertex> vertIt = vertex.listIterator();  
+            while ( vertIt.hasNext() ) {
+                if ( vertIt.next() == v ) {
+                    upStreamVertices.add( vertex.getFirst() );
                 }
             }
         }
                 
-        return Collections.unmodifiableList(upStreamVertices);
+        return Collections.unmodifiableList( upStreamVertices );
     }
 
     /**
@@ -143,17 +136,13 @@ public class AdjacencyListGraph implements Graph {
      * @returns list : containing a set of all vertices in the graph
      */
     public List<Vertex> getVertices() {
-        //return an unmodifiable list of vertices to prevent invariant exposure
+
         List<Vertex> allVertices = new ArrayList<Vertex>(); 
         
-        for (LinkedList<Vertex> vertLs : adjList) {
-            for (Vertex vtx : vertLs) {
-                if (!allVertices.contains(vtx)) {
-                    allVertices.add(vtx);
-                }
-            }
+        for ( LinkedList<Vertex> vertex : adjList ) {
+            allVertices.add(vertex.getFirst());
         }
         
-        return Collections.unmodifiableList(allVertices);
+        return Collections.unmodifiableList( allVertices );
     }
 }

@@ -3,7 +3,10 @@ package ca.ubc.ece.cpen221.mp3.graph;
 import static org.junit.Assert.*;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -14,7 +17,6 @@ import ca.ubc.ece.cpen221.mp3.staff.Vertex;
 
 public class GraphTest {
 
-//    static private Graph g; 
     static private AdjacencyMatrixGraph m; 
     static private AdjacencyListGraph ls; 
     static private Vertex v0; 
@@ -26,8 +28,8 @@ public class GraphTest {
     static private Vertex v6; //no down or upstream
     
     @BeforeClass
-    public void setUpBeforeClass() throws Exception {
-//        g = new Graph(); 
+    public static void setUpBeforeClass() throws Exception {
+
         v0 = new Vertex("zero"); 
         v1 = new Vertex("one"); 
         v2 = new Vertex("two"); 
@@ -35,64 +37,100 @@ public class GraphTest {
         v4 = new Vertex("four"); 
         v5 = new Vertex("five"); 
         v6 = new Vertex("six");
+        
     }
     
     @Before 
-    //start off with a new graph before each test 
     public void setUp() throws Exception {
         m = new AdjacencyMatrixGraph(); 
         ls = new AdjacencyListGraph(); 
     }
     
     @Test 
-    // testing an empty graph 
-    //cannot test other observer function because they 
-    //require existing vertices/vertex or edge(s)
+    //Cannot test other observer function because they require existing vertices/vertex or edge(s)
     public void testEmptyGraph() {
-        //assert that we have indeed empty graphs 
+        //Assert that we indeed have empty graphs 
         assertEquals(m.getVertices(), Arrays.asList()); 
         assertEquals(ls.getVertices(), Arrays.asList());         
     }
     
     @Test 
-    //testing bidirectional vertices and floating vertices
+    //Testing bidirectional vertices and floating vertices
     public void testUpDownStream() {
+        //Add vertices to Matrix graph
         m.addVertex(v0);
         m.addVertex(v1);
         m.addVertex(v2);
         m.addVertex(v3);
         
+        //Add vertices to List graph
         ls.addVertex(v0);
         ls.addVertex(v1);
         ls.addVertex(v2);
         ls.addVertex(v3);
         
-        //creating bidirectional v1 both up and downstream
+        //Creating edges both up and downstream for v1; leave v3 floating
         m.addEdge(v0, v1);
         m.addEdge(v1, v0);
         m.addEdge(v1, v2);
         m.addEdge(v2, v1);
-        //creating floating vertex by not adding edges to v3
         
-        //creating bidirectional v1 both up and downstream
+        //Creating edges both up and downstream for v1; leave v3 floating
         ls.addEdge(v0, v1);
         ls.addEdge(v1, v0);
         ls.addEdge(v1, v2);
         ls.addEdge(v2, v1);
-        //creating floating vertex by not adding edges to v3
         
+        
+        //Create set of neighbours to check against duplicates in original lists
+        Set<Vertex> setListUpstreamNeighbours = new HashSet<Vertex>();
+        Set<Vertex> setListDownstreamNeighbours = new HashSet<Vertex>();
+        Set<Vertex> setMatrixUpstreamNeighbours = new HashSet<Vertex>();
+        Set<Vertex> setMatrixDownstreamNeighbours = new HashSet<Vertex>();
+        
+        //Does not matter which vertex we use to get neighbours
+        
+        for (Vertex v : ls.getUpstreamNeighbors(v3)) {
+            setListUpstreamNeighbours.add(v);
+        }
+        
+        for (Vertex v : ls.getDownstreamNeighbors(v3)) {
+            setListDownstreamNeighbours.add(v);
+        }
+        
+        for (Vertex v : m.getDownstreamNeighbors(v1)) {
+            setMatrixDownstreamNeighbours.add(v);
+        }
+        
+        for (Vertex v : m.getUpstreamNeighbors(v1)) {
+            setMatrixDownstreamNeighbours.add(v);
+        }
+
+        //Assert no duplicates
+        Arrays.asList("three");
+        System.out.println(ls.getUpstreamNeighbors(v3) + "     vs     " + setListUpstreamNeighbours);
+        assertTrue(ls.getUpstreamNeighbors(v3).equals(Arrays.asList("three")));
+        assertTrue(ls.getDownstreamNeighbors(v3).equals(setListDownstreamNeighbours));
+        assertTrue(m.getUpstreamNeighbors(v1).equals(setMatrixUpstreamNeighbours));
+        assertTrue(m.getDownstreamNeighbors(v1).equals(setMatrixDownstreamNeighbours));
+        
+        //Check edge properties of List graph; no duplicate edges should exist
         assertFalse(ls.edgeExists(v1, v3));
-        assertEquals(ls.getUpstreamNeighbors(v1), ls.getDownstreamNeighbors(v1));
-        assertEquals(ls.getUpstreamNeighbors(v3),ls.getDownstreamNeighbors(v3));
+        System.out.println(ls.getUpstreamNeighbors(v1) + "     vs     " + ls.getDownstreamNeighbors(v1));
+        
+        assertTrue((ls.getUpstreamNeighbors(v1)).equals((ls.getDownstreamNeighbors(v1))));
+        assertTrue(ls.getUpstreamNeighbors(v3).equals(ls.getDownstreamNeighbors(v3)));
+        
+      //Check edge properties of Matrix graph
         assertFalse(m.edgeExists(v1, v3));
-        assertEquals(m.getUpstreamNeighbors(v1), m.getDownstreamNeighbors(v1));
-        assertEquals(m.getUpstreamNeighbors(v3), m.getDownstreamNeighbors(v3));
+        assertTrue(m.getUpstreamNeighbors(v1).equals(m.getDownstreamNeighbors(v1)));
+        assertTrue(m.getUpstreamNeighbors(v3).equals(m.getDownstreamNeighbors(v3)));
     }
     
     @Test 
-    // testing whether all vertices exists in rep regardless of connections
+    // Testing whether all vertices exists in graph regardless of edges
     public void testGetVertices() {
-        //when list is empty, set vertex to be 
+        //When list is empty, set vertex to be 
         assertEquals(m.getVertices(), Arrays.asList());
         assertEquals(ls.getVertices(), Arrays.asList());
 
@@ -115,6 +153,7 @@ public class GraphTest {
         //input random edges for ls
         ls.addEdge(v0, v2);
         ls.addEdge(v4, v3);
+        
         assertEquals(m.getVertices(), ls.getVertices());
     }
 
@@ -239,7 +278,7 @@ public class GraphTest {
     @Test 
     //Testing the directionality of a simple 3 vtx graph
     public void testEdgeExist() {
-        // do not add vertex that already exist 
+
         m.addVertex(v0);
         m.addVertex(v1);
         m.addVertex(v2);
@@ -256,18 +295,19 @@ public class GraphTest {
         assertFalse(ls.edgeExists(v0, v2));
         assertFalse(ls.edgeExists(v0, v1));
         
-        // ensure to only add edges on existing vertex
         boolean mEdge, lsEdge;  
         m.addEdge(v2, v0);
         ls.addEdge(v2, v0);
-        //if graph is directed, assertTrue for right order
-        mEdge = m.edgeExists(v2, v0);
-        lsEdge = m.edgeExists(v2, v0);
-        assertTrue(mEdge); assertTrue(lsEdge);
-        //if graph is directed, then edges go from one vertex to another 
-        mEdge = m.edgeExists(v0, v2);
-        lsEdge = m.edgeExists(v0, v2);
-        assertFalse(mEdge); assertFalse(lsEdge);
+
+        mEdge = ls.edgeExists(v2, v0);
+        lsEdge = ls.edgeExists(v2, v0);
+        assertTrue(mEdge); 
+        assertTrue(lsEdge);
+
+        mEdge = ls.edgeExists(v0, v2);
+        lsEdge = ls.edgeExists(v0, v2);
+        assertFalse(mEdge); 
+        assertFalse(lsEdge);
     }
 
 }
