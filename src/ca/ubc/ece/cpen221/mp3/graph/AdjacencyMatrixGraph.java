@@ -12,8 +12,7 @@ public class AdjacencyMatrixGraph implements Graph {
 // TODO: Implement this class
     
     //RI : Square matrix. M=N 
-    private ArrayList<Vertex> vertices= new ArrayList<Vertex>(); 
-    private Map<Vertex,Vertex> edges  = new HashMap<Vertex,Vertex>(); 
+    private Map<Vertex, Map<Vertex, Integer>> verticesPtr = new HashMap<Vertex, Map<Vertex, Integer>>();
     
     /**
      * Adds a vertex to the graph.
@@ -21,7 +20,12 @@ public class AdjacencyMatrixGraph implements Graph {
      * require: v is not already a vertex in the graph
      */
     public void addVertex(Vertex v) {
-        vertices.add(v);
+        
+        //Assign empty edge map to new vertex 
+        Map<Vertex, Integer> edgeExistence = new HashMap<Vertex, Integer>();
+        //Add vertex with empty edge map to vertices
+        verticesPtr.put(v, edgeExistence);
+        
     }
 
     /**
@@ -30,26 +34,46 @@ public class AdjacencyMatrixGraph implements Graph {
      * require: v1 and v2 are vertices in the graph
      */
     public void addEdge(Vertex v1, Vertex v2) {
-        //Assumption: v1 = v2 ok (i.e. edge between same vertex)
-        edges.putIfAbsent(v1, v2);
+        //Assumption: v1 = v2 okay (i.e. edge between same vertex)
+        
+        //Iterate through verticesPtr keys
+        for( Vertex v_origin : verticesPtr.keySet() ){
+          //Find key that equals v1
+            if( v_origin.equals(v1) ){
+                //Get value i.e. edge map for v1
+                //If the edge already exists
+                if( verticesPtr.get(v_origin).containsKey(v2) ){
+                  //Then increment value by 1
+                    Integer edgeExistence = verticesPtr.get(v_origin).get(v2);
+                    verticesPtr.get(v_origin).put(v2, edgeExistence + 1);
+                }
+                //Else, create the edge
+                else {
+                  //Add v2 as new key to v1's edge map, set value to 1 
+                  verticesPtr.get(v_origin).put(v2, 1);
+                } 
+            }
+        }
     }
 
     /**
      * Check if there is an edge from v1 to v2.
      * 
-     * 
-     * Precondition: v1 and v2 are vertices in the graph Postcondition: return
-     * true iff an edge from v1 connects to v2
+     * Precondition: v1 and v2 are vertices in the graph 
+     * Postcondition: return true iff an edge from v1 connects to v2
      */
     public boolean edgeExists(Vertex v1, Vertex v2) {
         
-        for( Vertex origin : edges.keySet() ){
-            if( origin.equals(v1) && edges.get(v1).equals(v2) ){
-                return true; 
+        //An edge exists if a key == v1 from verticesPtr i.e. edge map has a key == v2 and the value is > 0
+        if( verticesPtr.containsKey(v1) ){
+            if( verticesPtr.get(v1).containsKey(v2) ){
+                if( verticesPtr.get(v1).get(v2) > 0 ){
+                    return true;
+                }
             }
         }
-
-        return false; 
+        
+        return false;
     }
 
     /**
@@ -66,12 +90,7 @@ public class AdjacencyMatrixGraph implements Graph {
         
         List<Vertex> downstreamNeighbours = new ArrayList<Vertex>();
         
-        //Iterate through keys and check if key->value == v
-        for( Vertex origin : edges.keySet() ){
-            if( origin.equals(v) ){
-                downstreamNeighbours.add( edges.get( origin ) ); 
-            }
-        }
+        downstreamNeighbours.addAll(verticesPtr.get(v).keySet());
         
         return Collections.unmodifiableList( downstreamNeighbours );
     }
@@ -90,15 +109,19 @@ public class AdjacencyMatrixGraph implements Graph {
         
         List<Vertex> upstreamNeighbours = new ArrayList<Vertex>();
         
-        //Iterate through keys
-        for( Vertex origin : edges.keySet() ){
-          //Check value of key
-          //If value equals v, append the key to list of upstreamNeighbours
-            if( edges.get(origin).equals(v) ){
-                upstreamNeighbours.add(origin);
+        //Iterate through verticesPtr's keys i.e. vertices in matrix
+            //Iterate through the edge map keys
+                //If the vertex' edge map's key (i.e. element of verticesPtr.get(v_origin).keySet()) equals v
+                    //Then add the key to upStreamNeighbours
+        
+        for( Vertex v_origin : verticesPtr.keySet() ){
+            for( Vertex v_end : verticesPtr.get(v_origin).keySet() ){
+                if( v_end.equals(v) ){
+                    upstreamNeighbours.add(v_origin);
+                }
             }
         }
-        
+
         return Collections.unmodifiableList( upstreamNeighbours );
         
     }
@@ -111,6 +134,10 @@ public class AdjacencyMatrixGraph implements Graph {
      */
     public List<Vertex> getVertices(){
         
-        return Collections.unmodifiableList( vertices );
+        List<Vertex> allVertices = new ArrayList<Vertex>();
+        
+        allVertices.addAll(verticesPtr.keySet());
+        
+        return Collections.unmodifiableList( allVertices );
     }
 }

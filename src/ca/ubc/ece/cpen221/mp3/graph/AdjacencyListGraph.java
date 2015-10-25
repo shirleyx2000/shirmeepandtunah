@@ -24,9 +24,9 @@ public class AdjacencyListGraph implements Graph {
     public void addVertex(Vertex v) {
 
         LinkedList<Vertex> vertex = new LinkedList<Vertex>(); 
-        //Head of linked list is the vertex itself. 
-        if (!vertex.contains(v)){
-            vertex.add( v );
+        
+        if ( !adjList.contains(v) ){
+            vertex.add( v ); //Head of linked list is the vertex itself.
             adjList.add( vertex );
         }
     }
@@ -41,8 +41,8 @@ public class AdjacencyListGraph implements Graph {
     public void addEdge(Vertex v1, Vertex v2) {
         //Order of adjacent vertices does not matter
         for ( LinkedList<Vertex> vertex : adjList ) {
-            if ( vertex.getFirst() == v1 ) {
-                vertex.addLast( v2 );
+            if ( vertex.getFirst().equals(v1) ) {
+                vertex.add( v2 );
             }
         }
     }
@@ -58,7 +58,7 @@ public class AdjacencyListGraph implements Graph {
      */
     public boolean edgeExists(Vertex v1, Vertex v2) {
         
-        //must be directional, so head of list = v1
+        //Must be directional, so head of list = v1
         for (LinkedList<Vertex> vertex : adjList) {
             if ( vertex.getFirst().equals(v1) ) {
                 ListIterator <Vertex> vertIt = vertex.listIterator();  
@@ -66,13 +66,9 @@ public class AdjacencyListGraph implements Graph {
                     if( vertIt.next().equals(v2) ) { 
                         return true;
                     } 
-                    else { 
-                        return false; 
-                    }
                 }
             }
         }
-
         return false; 
     }
 
@@ -90,9 +86,13 @@ public class AdjacencyListGraph implements Graph {
      */
     public List<Vertex> getDownstreamNeighbors(Vertex v) {
 
+        List<Vertex> downstreamNeighbours = new ArrayList<Vertex>();
+        
         for (LinkedList<Vertex> vertex : adjList) { 
-            if (vertex.getFirst() == v) {
-                return Collections.unmodifiableList(vertex); 
+            if (vertex.getFirst().equals(v)) {
+                downstreamNeighbours.addAll(vertex);
+                downstreamNeighbours.remove(0); //Removes head of list i.e. vertex itself
+                return Collections.unmodifiableList(downstreamNeighbours); 
             }
         }
         
@@ -117,8 +117,9 @@ public class AdjacencyListGraph implements Graph {
         
         for (LinkedList<Vertex> vertex : adjList) {
             ListIterator <Vertex> vertIt = vertex.listIterator();  
+            vertIt.next(); //Start pointing to element after head.
             while ( vertIt.hasNext() ) {
-                if ( vertIt.next() == v ) {
+                if ( vertIt.next().equals(v) ) {
                     upStreamVertices.add( vertex.getFirst() );
                 }
             }
