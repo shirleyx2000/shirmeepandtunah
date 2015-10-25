@@ -10,7 +10,7 @@ package ca.ubc.ece.cpen221.mp3.twitterAnalysis;
 class UserId{
     /*
      * Implement a simple object UserId, which is a really long integer. 
-     * I harsh'ed copied Vertex.java's implementation. How should we (if we do) give credit?
+     * Change this to "UserId extends Vertex" later.
      * 
      * Current representation: String 
      * 
