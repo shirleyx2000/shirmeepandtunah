@@ -47,7 +47,7 @@ public class Algorithms {
 	 * 
 	 * @return bfs     An immutable set of traversal routines
 	 *                 Each traversal routine is a list of vertices in the order by which they were visited,
-	 *                 One traversal starts from a vertex in the graph
+	 *                 Each traversal starts from a vertex in the graph
 	 */
 	public static Set<List<Vertex>> breadthFirstSearch( Graph graph ){
 	    //TODO: Implement this method
@@ -55,18 +55,24 @@ public class Algorithms {
 	    Set<List<Vertex>> bfs = new HashSet<List<Vertex>>();
 	    
 	    //Create queue (LinkedList) to hold vertices (a linked list of size-1 maps)
-	    //Create size-1 map to represent each vertex (key) and tuple of predecessor and distance (value) (see below)
-	        //i.e. Map<Vertex, Map<Vertex, Integer>>
-	        //Create size-1 map to represent tuple of predecessor (key) and distance from starting vertex (value)
-	            //i.e. Map<Vertex, Integer>
-	            //Initial predecessor & distance = null
+	    //Create size-1 map to represent each vertex (key) and its distance from the starting vertex (value) 
+	        //i.e. Map<Vertex, Integer>
+	        //Initial value of distance = null
 	    
-	    //Iterate through all the vertices in the graph
-	        //Push the starting vertex into the queue
-	            //Set distance = 0
-	            //Pop the starting vertex
-	            //Get downstream neighbours of vertex
-	            //If distances
+	    //For each vertex in the graph
+	        //Create a list of vertices to be traversed    
+	        //Enqueue the starting vertex into the queue
+	        //Add the starting vertex to the list
+	            //While queue is not empty
+	                //Dequeue next vertex
+    	            //Get downstream neighbours of vertex
+        	            //For each downstream neighbour
+        	                 //If distance = null
+        	                        //Enqueue the neighbour
+	                                //Add the neighbour to the list
+        	                        //Increment its distance by 1
+
+	            
 	    
 	    
 	    return Collections.unmodifiableSet( bfs );
@@ -87,6 +93,16 @@ public class Algorithms {
 	  //TODO: Implement this method
 	    
 	    Set<List<Vertex>> dfs = new HashSet<List<Vertex>>();
+	    
+	    //Create a stack
+	    //For each vertex in the graph
+	         //Push the vertex into the stack
+	         //While the stack is not empty
+	                //Pop the stack
+	                //If the vertex not been visited  
+	                    //Label the vertex as visited
+	                    //For each downstream neighbour of vertex
+	                           //Push neighbour onto stack
 	    
 	    return Collections.unmodifiableSet( dfs );
 	}
