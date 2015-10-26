@@ -2,8 +2,12 @@ package ca.ubc.ece.cpen221.mp3.graph;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 
 import ca.ubc.ece.cpen221.mp3.staff.Graph;
@@ -58,7 +62,43 @@ public class Algorithms {
 	    //TODO: Implement this method
 	    
 	    Set<List<Vertex>> bfs = new HashSet<List<Vertex>>();
+	    Map<Vertex, Integer> distance = new HashMap<Vertex, Integer>(); 
+	    Queue<Vertex> nextVertex = new LinkedList<Vertex>(); 
+	    Graph g = graph; 
+	    Vertex v; 
 	    
+	    //make visitation possible
+        for (Vertex ev : g.getVertices()) {
+           distance.putIfAbsent(ev, null);
+        }
+	    
+        for (Vertex vertex : g.getVertices()) {
+            List<Vertex> traversal = new ArrayList<Vertex>(); 
+
+            //set first vertex as arbitrary starting point
+            nextVertex.add(vertex);
+            distance.put(vertex, 0);
+            int path = 0; 
+            
+            //now pop queue and add to queue for ONE vertex
+            while (!nextVertex.isEmpty()) {
+                v = nextVertex.poll(); 
+                path = distance.get(v) + 1; 
+                //for each vertex adjacent to v, depth "path"
+                for (Vertex child : g.getDownstreamNeighbors(v)) {
+                    if (distance.get(child) == null) {
+                        // not visited yet 
+                        distance.put(child, path);
+                        nextVertex.add(child);
+                        traversal.add(child);
+                    }
+                }
+            }
+            
+            //done traversing for this one node
+            bfs.add(traversal);
+        }
+
 	    //Create queue (LinkedList) to hold vertices (a linked list of size-1 maps)
 	    //Create size-1 map to represent each vertex (key) and its distance from the starting vertex (value) 
 	        //i.e. Map<Vertex, Integer>
@@ -77,8 +117,6 @@ public class Algorithms {
 	                                //Add the neighbour to the list
         	                        //Increment its distance by 1
 
-	            
-	    
 	    
 	    return Collections.unmodifiableSet( bfs );
 	}
