@@ -8,6 +8,7 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import ca.ubc.ece.cpen221.mp3.graph.AdjacencyListGraph;
@@ -83,9 +84,9 @@ class TwitterAnalysis{
             // TODO Auto-generated catch block
             e1.printStackTrace();
         }
-
+        
         //other declarations 
-        Graph g = new AdjacencyMatrixGraph(); 
+        Graph g = new AdjacencyListGraph(); 
         List<String> pastQueries = new ArrayList<String>();
         List<Vertex> ciResults = new ArrayList<Vertex>();
         int numRtwResults; 
@@ -93,7 +94,7 @@ class TwitterAnalysis{
         //form the graph to pass into two methods 
         FileInputStream tweetStream;
         try {
-            tweetStream = new FileInputStream("C:\\Users\\Shirley\\Documents\\Shirley2015\\CPEN221\\mp3-fall2015\\datasets\\twitter.txt");
+            tweetStream = new FileInputStream("C:\\Users\\guess_000\\workspace\\shirmeepandtunah\\datasets\\twitter.txt");
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -185,4 +186,5 @@ class TwitterAnalysis{
             throw new RuntimeException(e);
 
     }
+}
 }

@@ -2,8 +2,10 @@ package ca.ubc.ece.cpen221.mp3.tests;
 
 import static org.junit.Assert.*;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -254,12 +256,12 @@ public class GraphTest {
         m.addVertex(v2);
         m.addVertex(v3);
         m.addVertex(v4);
-        
-        ls.addVertex(v0);
-        ls.addVertex(v1);
-        ls.addVertex(v2);
-        ls.addVertex(v3);
-        ls.addVertex(v4);
+            
+//        ls.addVertex(v0);
+//        ls.addVertex(v1);
+//        ls.addVertex(v2);
+//        ls.addVertex(v3);
+//        ls.addVertex(v4);
         
         m.addEdge(v0, v1);
         m.addEdge(v0, v2);
@@ -268,12 +270,37 @@ public class GraphTest {
         m.addEdge(v3, v0);
         m.addEdge(v3, v4);
         
+//        ls.addEdge(v0, v1);
+//        ls.addEdge(v0, v2);
+//        ls.addEdge(v1, v3);
+//        ls.addEdge(v2, v4);
+//        ls.addEdge(v3, v0);
+//        ls.addEdge(v3, v4);
+        
+        long before;
+        long after;
+
+        before = System.nanoTime();
+        ls.addVertex(v0);
+        after = System.nanoTime();
+        ls.addVertex(v1);
+        ls.addVertex(v2);
+        ls.addVertex(v3);
+        ls.addVertex(v4);
+        
+        
+        System.out.println("difference " + (after-before) );
+        
+        before = System.nanoTime();
         ls.addEdge(v0, v1);
+        after = System.nanoTime();
         ls.addEdge(v0, v2);
         ls.addEdge(v1, v3);
         ls.addEdge(v2, v4);
         ls.addEdge(v3, v0);
         ls.addEdge(v3, v4);
+        
+        System.out.println("difference " + (after-before) );
         
         List<Vertex> v0Ls = Arrays.asList(v1, v2);
         List<Vertex> v1Ls = Arrays.asList(v3);
@@ -332,6 +359,7 @@ public class GraphTest {
         ls.addEdge(v3, v0);
         ls.addEdge(v3, v4);
         ls.addEdge(v5, v4);
+
         
         List<Vertex> v0Ls = Arrays.asList(v3);
         List<Vertex> v1Ls = Arrays.asList(v0);
@@ -384,6 +412,7 @@ public class GraphTest {
         assertFalse(ls.edgeExists(v0, v2));
         assertFalse(ls.edgeExists(v0, v1));
         
+
         m.addEdge(v2, v0);
         ls.addEdge(v2, v0);
 
