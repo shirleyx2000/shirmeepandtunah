@@ -257,6 +257,8 @@ public class AlgorithmsTest{
     @Test
     public void testCommonDownstreamVertices(){
         
+        
+        
     }
     
     @Test 
@@ -276,17 +278,25 @@ public class AlgorithmsTest{
         List<Vertex> traversal4 = Arrays.asList(v4);
         List<Vertex> traversal5 = Arrays.asList(v5, v4);
         
+        expectedOutput.add(traversal0);
+        expectedOutput.add(traversal1);
+        expectedOutput.add(traversal2);
+        expectedOutput.add(traversal3);
+        expectedOutput.add(traversal4);
+        expectedOutput.add(traversal5);
+        
         //Input: Empty graph
         //Output: Empty set
         System.out.println("Empty graph: " + lsEmpty);
         System.out.println(Algorithms.breadthFirstSearch(lsEmpty) + "   vs    " + expectedOutput);
-        assertEquals( Algorithms.breadthFirstSearch(lsEmpty), expectedOutput);
-        assertEquals( Algorithms.breadthFirstSearch(mEmpty), expectedOutput);
+
+        assertEquals( Algorithms.breadthFirstSearch(lsEmpty).isEmpty(), true );
+        assertEquals( Algorithms.breadthFirstSearch(mEmpty).isEmpty(), true );
         
         //Input: No edges graph
         //Output: Empty set
-        assertEquals( Algorithms.breadthFirstSearch(lsNoEdge), expectedOutput);
-        assertEquals( Algorithms.breadthFirstSearch(mNoEdge), expectedOutput);
+        assertEquals( Algorithms.breadthFirstSearch(lsNoEdge).isEmpty(), true );
+        assertEquals( Algorithms.breadthFirstSearch(mNoEdge).isEmpty(), true );
         
         
         //Input: Regular graph
@@ -297,15 +307,10 @@ public class AlgorithmsTest{
 //            3, 0, 4, 1
 //            4
 //            5, 4
-        expectedOutput.add(traversal0);
-        expectedOutput.add(traversal1);
-        expectedOutput.add(traversal2);
-        expectedOutput.add(traversal3);
-        expectedOutput.add(traversal4);
-        expectedOutput.add(traversal5);
+
         
-        assertEquals( Algorithms.breadthFirstSearch(ls), expectedOutput );
-        assertEquals( Algorithms.breadthFirstSearch(m), expectedOutput );
+        assertTrue( Algorithms.breadthFirstSearch(ls).equals(expectedOutput) );
+        assertTrue( Algorithms.breadthFirstSearch(m).equals(expectedOutput) );
                
         
     }
@@ -322,15 +327,22 @@ public class AlgorithmsTest{
         List<Vertex> traversal4 = Arrays.asList(v4);
         List<Vertex> traversal5 = Arrays.asList(v5, v4);
         
+        expectedOutput.add(traversal0);
+        expectedOutput.add(traversal1);
+        expectedOutput.add(traversal2);
+        expectedOutput.add(traversal3);
+        expectedOutput.add(traversal4);
+        expectedOutput.add(traversal5);
+        
         //Input: Empty graph
         //Output: Empty set
-        assertEquals( Algorithms.depthFirstSearch(lsEmpty), expectedOutput);
-        assertEquals( Algorithms.depthFirstSearch(mEmpty), expectedOutput);
+        assertTrue( Algorithms.depthFirstSearch(lsEmpty).isEmpty());
+        assertTrue( Algorithms.depthFirstSearch(mEmpty).isEmpty());
         
         //Input: No edges graph
         //Output: Empty set
-        assertEquals( Algorithms.depthFirstSearch(lsNoEdge), expectedOutput);
-        assertEquals( Algorithms.depthFirstSearch(mNoEdge), expectedOutput);
+        assertTrue( Algorithms.depthFirstSearch(lsNoEdge).isEmpty());
+        assertTrue( Algorithms.depthFirstSearch(mNoEdge).isEmpty());
         
         
         //Input: Regular graph
@@ -341,15 +353,8 @@ public class AlgorithmsTest{
 //            3, 0, 1, 2, 4
 //            4
 //            5, 4
-        expectedOutput.add(traversal0);
-        expectedOutput.add(traversal1);
-        expectedOutput.add(traversal2);
-        expectedOutput.add(traversal3);
-        expectedOutput.add(traversal4);
-        expectedOutput.add(traversal5);
-        
-        assertEquals( Algorithms.depthFirstSearch(ls), expectedOutput );
-        assertEquals( Algorithms.depthFirstSearch(m), expectedOutput );
+        assertTrue( Algorithms.depthFirstSearch(ls).equals(expectedOutput) );
+        assertTrue( Algorithms.depthFirstSearch(m).equals(expectedOutput) );
         
     }
     
