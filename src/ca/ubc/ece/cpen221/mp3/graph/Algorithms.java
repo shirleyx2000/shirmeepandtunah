@@ -63,12 +63,18 @@ public class Algorithms {
 	    //TODO: Implement this method
 	    
 	    Set<List<Vertex>> bfs = new HashSet<List<Vertex>>();
+	    System.out.println("BFS: " + bfs);
 	    Map<Vertex, Integer> distance = new HashMap<Vertex, Integer>(); 
 	    Queue<Vertex> nextVertex = new LinkedList<Vertex>(); 
 	    Vertex v; 
-	    
         //now traverse through the graph with each vertex as the starting node
+	    
+	    if (graph == null) {
+	        return Collections.unmodifiableSet( bfs ); 
+	    }
+	    
         for (Vertex vertex : graph.getVertices()) {
+            System.out.println("Loop: " + vertex);
             List<Vertex> traversal = new ArrayList<Vertex>(); 
 
             //refresh visitation flag as UNVISITED 
@@ -78,6 +84,7 @@ public class Algorithms {
             
             //set first vertex as arbitrary starting point
             nextVertex.add(vertex);
+            traversal.add(vertex);
             distance.put(vertex, 0);
             int path = 0; 
             
@@ -96,10 +103,14 @@ public class Algorithms {
                 }
             }
             
+            System.out.println("END OF TRAVERSAL: " + traversal);
+            
             //done traversing for this one node
-            bfs.add(traversal);
+            if (!traversal.isEmpty()) {
+                bfs.add(traversal);
+            }
         }
-	    
+
 	    return Collections.unmodifiableSet( bfs );
 	}
 	

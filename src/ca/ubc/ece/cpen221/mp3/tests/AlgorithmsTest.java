@@ -72,7 +72,7 @@ public class AlgorithmsTest{
     static private AdjacencyMatrixGraph mNoEdge;
    
     @BeforeClass
-    public void makeVertices(){
+    public static void makeVertices(){
         
         testVertices = new ArrayList<Vertex>();
         
@@ -398,11 +398,15 @@ public class AlgorithmsTest{
         
         //Input: Empty graph
         //Output: Empty set
+        System.out.println(expectedOutput);
+
         assertTrue( Algorithms.breadthFirstSearch(lsEmpty).isEmpty() );
         assertTrue( Algorithms.breadthFirstSearch(mEmpty).isEmpty() );
         
         //Input: No edges graph
         //Output: Empty set
+        System.out.println(Algorithms.breadthFirstSearch(lsNoEdge).isEmpty());
+
         assertTrue( Algorithms.breadthFirstSearch(lsNoEdge).isEmpty() );
         assertTrue( Algorithms.breadthFirstSearch(mNoEdge).isEmpty() );
         
@@ -415,6 +419,9 @@ public class AlgorithmsTest{
 //            3, 0, 4, 1
 //            4
 //            5, 4
+
+        System.out.println(Algorithms.breadthFirstSearch(ls) + "   vs    " + expectedOutput);
+
         assertTrue( Algorithms.breadthFirstSearch(ls).equals(expectedOutput) );
         assertTrue( Algorithms.breadthFirstSearch(m).equals(expectedOutput) );
                
@@ -502,7 +509,7 @@ public class AlgorithmsTest{
         ls.addEdge(v2,  v4);
         ls.addEdge(v3,  v0);
         ls.addEdge(v3,  v4);
-        ls.addEdge(v4,  v4);
+        ls.addEdge(v5,  v4);
         
         m.addEdge(v0,  v1);
         m.addEdge(v0,  v2);
@@ -510,7 +517,7 @@ public class AlgorithmsTest{
         m.addEdge(v2,  v4);
         m.addEdge(v3,  v0);
         m.addEdge(v3,  v4);
-        m.addEdge(v4,  v4);
+        m.addEdge(v5,  v4);
         
         
     }
