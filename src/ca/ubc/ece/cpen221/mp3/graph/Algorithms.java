@@ -171,8 +171,8 @@ public class Algorithms {
 	 * Returns list of common upstream vertices between two given vertices in a graph
 	 * 
 	 * @param graph
-	 * @param a
-	 * @param b
+	 * @param a        a must be a vertex in graph
+	 * @param b        b must be a vertex in graph
 	 * @return cuv     Immutable list of all vertices u such that there is an edge from u to a and an edge from u to b
 	 *                 If no such vertices exist, an empty list is returned 
 	 */
@@ -189,9 +189,9 @@ public class Algorithms {
 	/**
 	 * Returns a list of common downstream vertices between two given vertices in a graph
 	 * 
-	 * @param graph
-	 * @param a
-	 * @param b
+	 * @param graph    
+	 * @param a        a must be a vertex in graph
+	 * @param b        b must be a vertex in graph
 	 * @return cdv     Immutable list of all vertices v such that there is an edge from a to v and an edge from b to v
 	 *                 if no such vertices exist, an empty list is returned
 	 */
