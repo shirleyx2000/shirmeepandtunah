@@ -44,7 +44,43 @@ public class Algorithms {
     */
     public static int shortestDistance(Graph graph, Vertex a, Vertex b) throws PathNotFoundException {
        // TODO: Implement this method and others
-       return 0;
+        
+        Map<Vertex, Integer> visited = new HashMap<Vertex, Integer>(); 
+        Queue<Vertex> path = new LinkedList<Vertex>();
+        Vertex nextVertex; 
+        int minDistance = Integer.MAX_VALUE;
+        
+        //IFFY because did you create a path to itself? 
+        if (a == b) {
+            return 0; 
+        }
+        
+        for (Vertex eachV : graph.getVertices()) {
+            visited.put(eachV, null);
+        }
+        
+        path.add(a); 
+        visited.put(a, 0);
+        
+        while (!path.isEmpty()) {
+            nextVertex = path.poll();
+            for (Vertex v : graph.getDownstreamNeighbors(nextVertex)) {
+                if (visited.get(v) == null){
+                    visited.put(v,visited.get(nextVertex)+1);
+                    path.add(v);
+                    if (v == b) {
+                        //note down the depth.
+                        minDistance = Integer.min(minDistance, visited.get(v));
+                    }
+                }
+            }
+        }
+        
+        if (minDistance == Integer.MAX_VALUE){
+            throw new PathNotFoundException(); 
+        } else {
+            return minDistance; 
+        }
     }
     
     
