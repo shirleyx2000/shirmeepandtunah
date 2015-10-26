@@ -421,6 +421,7 @@ public class AlgorithmsTest{
         List<Vertex> traversal3 = Arrays.asList(v3, v0, v4, v1, v2);
         List<Vertex> traversal4 = Arrays.asList(v4);
         List<Vertex> traversal5 = Arrays.asList(v5, v4);
+        List<Vertex> traversal6 = Arrays.asList(v6);
         
         expectedOutput.add(traversal0);
         expectedOutput.add(traversal1);
@@ -428,8 +429,10 @@ public class AlgorithmsTest{
         expectedOutput.add(traversal3);
         expectedOutput.add(traversal4);
         expectedOutput.add(traversal5);
-
-        System.out.println(Algorithms.breadthFirstSearch(ls) + "   vs    " + expectedOutput);
+        expectedOutput.add(traversal6);
+        
+        System.out.println("$$$$$$$ BLAHL BLAH BLAH");
+        System.out.println(Algorithms.breadthFirstSearch(ls) + "   vs    \n" + expectedOutput);
 
         assertTrue( Algorithms.breadthFirstSearch(ls).equals(expectedOutput) );
         assertTrue( Algorithms.breadthFirstSearch(m).equals(expectedOutput) );
@@ -477,6 +480,7 @@ public class AlgorithmsTest{
         List<Vertex> traversal3 = Arrays.asList(v3, v0, v1, v2, v4);
         List<Vertex> traversal4 = Arrays.asList(v4);
         List<Vertex> traversal5 = Arrays.asList(v5, v4);
+        List<Vertex> traversal6 = Arrays.asList(v6);
         
         expectedOutput.add(traversal0);
         expectedOutput.add(traversal1);
@@ -484,6 +488,7 @@ public class AlgorithmsTest{
         expectedOutput.add(traversal3);
         expectedOutput.add(traversal4);
         expectedOutput.add(traversal5);
+        expectedOutput.add(traversal6);
         
         System.out.println("\nI CARE HERE\n" + Algorithms.depthFirstSearch(ls) + "   vs    \n" + expectedOutput);
         

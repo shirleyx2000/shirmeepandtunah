@@ -164,16 +164,6 @@ public class Algorithms {
 	        dfs.add(traversal);
 	    }
 	    
-	    //Create a stack
-	    //For each vertex in the graph
-	         //Push the vertex into the stack
-	         //While the stack is not empty
-	                //Pop the stack
-	                //If the vertex not been visited  
-	                    //Label the vertex as visited
-	                    //For each downstream neighbour of vertex
-	                           //Push neighbour onto stack
-	    
 	    return Collections.unmodifiableSet( dfs );
 	}
 	
