@@ -288,7 +288,6 @@ public class AlgorithmsTest{
         //Input: Empty graph
         //Output: Empty set
         System.out.println("Empty graph: " + lsEmpty);
-        System.out.println(Algorithms.breadthFirstSearch(lsEmpty) + "   vs    " + expectedOutput);
 
         assertEquals( Algorithms.breadthFirstSearch(lsEmpty).isEmpty(), true );
         assertEquals( Algorithms.breadthFirstSearch(mEmpty).isEmpty(), true );
@@ -308,7 +307,8 @@ public class AlgorithmsTest{
 //            4
 //            5, 4
 
-        
+        System.out.println(Algorithms.breadthFirstSearch(lsEmpty) + "   vs    " + expectedOutput);
+
         assertTrue( Algorithms.breadthFirstSearch(ls).equals(expectedOutput) );
         assertTrue( Algorithms.breadthFirstSearch(m).equals(expectedOutput) );
                

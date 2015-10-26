@@ -66,9 +66,16 @@ public class Algorithms {
 	    Map<Vertex, Integer> distance = new HashMap<Vertex, Integer>(); 
 	    Queue<Vertex> nextVertex = new LinkedList<Vertex>(); 
 	    Vertex v; 
-	    
+	    System.out.println("GRAPH BEFORE: " + graph);
+	    System.out.println("BEFORE: " + bfs);
         //now traverse through the graph with each vertex as the starting node
+	    
+	    if (graph == null) {
+	        return Collections.unmodifiableSet( bfs ); 
+	    }
+	    
         for (Vertex vertex : graph.getVertices()) {
+            System.out.println("AM I IN? : " + vertex);
             List<Vertex> traversal = new ArrayList<Vertex>(); 
 
             //refresh visitation flag as UNVISITED 
@@ -100,6 +107,8 @@ public class Algorithms {
             bfs.add(traversal);
         }
 	    
+        System.out.println("AFTER: " + bfs);
+
 	    return Collections.unmodifiableSet( bfs );
 	}
 	
