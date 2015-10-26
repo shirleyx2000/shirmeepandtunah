@@ -434,10 +434,41 @@ public class AlgorithmsTest{
         System.out.println("$$$$$$$ BLAHL BLAH BLAH");
         System.out.println(Algorithms.breadthFirstSearch(ls) + "   vs    \n" + expectedOutput);
 
-        assertTrue( Algorithms.breadthFirstSearch(ls).equals(expectedOutput) );
-        assertTrue( Algorithms.breadthFirstSearch(m).equals(expectedOutput) );
-               
+//        assertTrue( Algorithms.breadthFirstSearch(ls).equals(expectedOutput) );
+//        assertTrue( Algorithms.breadthFirstSearch(m).equals(expectedOutput) );
         
+        assertEquals( Algorithms.breadthFirstSearch(ls).size(), expectedOutput.size() );
+        for( List<Vertex> listE : expectedOutput ){
+            if( !Algorithms.breadthFirstSearch(ls).contains(listE) ){
+                for( List<Vertex> list : Algorithms.breadthFirstSearch(ls) ){
+                    if( list.get(0).equals(listE.get(0) )){
+                        assertEquals(list.size(), listE.size());
+                        for( Vertex v : listE ){
+                            if( !list.contains(v) ){
+                                fail("BFS traversal error for starting vertex " + listE.get(0) );
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        assertEquals( Algorithms.breadthFirstSearch(m).size(), expectedOutput.size() );
+        for( List<Vertex> listE : expectedOutput ){
+            if( !Algorithms.breadthFirstSearch(m).contains(listE) ){
+                for( List<Vertex> list : Algorithms.breadthFirstSearch(m) ){
+                    if( list.get(0).equals(listE.get(0) )){
+                        assertEquals(list.size(), listE.size());
+                        for( Vertex v : listE ){
+                            if( !list.contains(v) ){
+                                fail("BFS traversal error for starting vertex " + listE.get(0) );
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
     }
     
     @Test
@@ -492,8 +523,40 @@ public class AlgorithmsTest{
         
         System.out.println("\nI CARE HERE\n" + Algorithms.depthFirstSearch(ls) + "   vs    \n" + expectedOutput);
         
-        assertTrue( Algorithms.depthFirstSearch(ls).equals(expectedOutput) );
-        assertTrue( Algorithms.depthFirstSearch(m).equals(expectedOutput) );
+//        assertTrue( Algorithms.depthFirstSearch(ls).equals(expectedOutput) );
+//        assertTrue( Algorithms.depthFirstSearch(m).equals(expectedOutput) );
+        
+        assertEquals( Algorithms.depthFirstSearch(ls).size(), expectedOutput.size() );
+        for( List<Vertex> listE : expectedOutput ){
+            if( !Algorithms.depthFirstSearch(ls).contains(listE) ){
+                for( List<Vertex> list : Algorithms.depthFirstSearch(ls) ){
+                    if( list.get(0).equals(listE.get(0) )){
+                        assertEquals(list.size(), listE.size());
+                        for( Vertex v : listE ){
+                            if( !list.contains(v) ){
+                                fail("DFS traversal error for starting vertex " + listE.get(0) );
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        assertEquals( Algorithms.depthFirstSearch(m).size(), expectedOutput.size() );
+        for( List<Vertex> listE : expectedOutput ){
+            if( !Algorithms.depthFirstSearch(m).contains(listE) ){
+                for( List<Vertex> list : Algorithms.depthFirstSearch(m) ){
+                    if( list.get(0).equals(listE.get(0) )){
+                        assertEquals(list.size(), listE.size());
+                        for( Vertex v : listE ){
+                            if( !list.contains(v) ){
+                                fail("DFS traversal error for starting vertex " + listE.get(0) );
+                            }
+                        }
+                    }
+                }
+            }
+        }
         
     }
     
