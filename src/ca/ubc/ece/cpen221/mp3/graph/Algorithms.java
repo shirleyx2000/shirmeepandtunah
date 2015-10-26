@@ -67,19 +67,15 @@ public class Algorithms {
 	    Map<Vertex, Integer> distance = new HashMap<Vertex, Integer>(); 
 	    Queue<Vertex> nextVertex = new LinkedList<Vertex>(); 
 	    Vertex v; 
+	    
         //now traverse through the graph with each vertex as the starting node
-	    
-	    if (graph == null) {
-	        return Collections.unmodifiableSet( bfs ); 
-	    }
-	    
         for (Vertex vertex : graph.getVertices()) {
             System.out.println("Loop: " + vertex);
             List<Vertex> traversal = new ArrayList<Vertex>(); 
 
             //refresh visitation flag as UNVISITED 
             for (Vertex ev : graph.getVertices()) {
-               distance.putIfAbsent(ev, null);
+               distance.put(ev, null);
             }
             
             //set first vertex as arbitrary starting point
@@ -91,9 +87,11 @@ public class Algorithms {
             //now pop queue and add to queue for ONE vertex
             while (!nextVertex.isEmpty()) {
                 v = nextVertex.poll(); 
+                System.out.println(v.toString());
                 path = distance.get(v) + 1; 
                 //for each vertex adjacent to v, depth "path"
                 for (Vertex child : graph.getDownstreamNeighbors(v)) {
+                    System.out.println(child.toString());
                     if (distance.get(child) == null) {
                         // not visited yet 
                         distance.put(child, path);
@@ -136,7 +134,7 @@ public class Algorithms {
 	    //for each vertex in the graph, have your time in the spotlight
 	    for (Vertex vertex : graph.getVertices()) {
 	        for (Vertex v : graph.getVertices()) {
-	            visited.putIfAbsent(v, false);
+	            visited.put(v, false);
 	        }
             List<Vertex> traversal = new ArrayList<Vertex>(); 
 
@@ -144,6 +142,7 @@ public class Algorithms {
 	        //push in the first parent vertex
 	        parents.push(vertex); 
 	        traversal.add(vertex);
+	        System.out.println("Head " + vertex.toString());
 	        //traversal list starts here
 	        while (!parents.isEmpty()) {
 	            // this parent 
@@ -155,7 +154,9 @@ public class Algorithms {
 	                for (Vertex child : graph.getDownstreamNeighbors(currentVertex)){
 	                    // children growing up to become parents
 	                    parents.push(child);
-	                    traversal.add(child);
+	                    if (!visited.get(child)) {
+	                        traversal.add(child);
+	                    }
 	                }
 	            }
 	        }
