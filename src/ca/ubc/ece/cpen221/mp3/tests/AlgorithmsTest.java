@@ -198,9 +198,9 @@ public class AlgorithmsTest{
         List<Vertex> traversal0 = Arrays.asList(v0, v1, v2, v3, v4);
         List<Vertex> traversal1 = Arrays.asList(v1, v3, v0, v4, v2);
         List<Vertex> traversal2 = Arrays.asList(v2, v4);
-        List<Vertex> traversal3 = Arrays.asList(v3, v0, v4, v1);
+        List<Vertex> traversal3 = Arrays.asList(v3, v0, v4, v1, v2);
         List<Vertex> traversal4 = Arrays.asList(v4);
-        List<Vertex> traversal5 = Arrays.asList(v4, v5);
+        List<Vertex> traversal5 = Arrays.asList(v5, v4);
         
         //Input: Empty graph
         //Output: Empty set
@@ -239,30 +239,30 @@ public class AlgorithmsTest{
         
         Set<List<Vertex>> expectedOutput = new HashSet<List<Vertex>>();
         
-        List<Vertex> traversal0 = Arrays.asList(v0, v1, v2, v3, v4);
-        List<Vertex> traversal1 = Arrays.asList(v1, v3, v0, v4, v2);
+        List<Vertex> traversal0 = Arrays.asList(v0, v1, v3, v4, v2);
+        List<Vertex> traversal1 = Arrays.asList(v1, v3, v0, v2, v4);
         List<Vertex> traversal2 = Arrays.asList(v2, v4);
-        List<Vertex> traversal3 = Arrays.asList(v3, v0, v4, v1);
+        List<Vertex> traversal3 = Arrays.asList(v3, v0, v1, v2, v4);
         List<Vertex> traversal4 = Arrays.asList(v4);
-        List<Vertex> traversal5 = Arrays.asList(v4, v5);
+        List<Vertex> traversal5 = Arrays.asList(v5, v4);
         
         //Input: Empty graph
         //Output: Empty set
-        assertEquals( Algorithms.breadthFirstSearch(lsEmpty), expectedOutput);
-        assertEquals( Algorithms.breadthFirstSearch(mEmpty), expectedOutput);
+        assertEquals( Algorithms.depthFirstSearch(lsEmpty), expectedOutput);
+        assertEquals( Algorithms.depthFirstSearch(mEmpty), expectedOutput);
         
         //Input: No edges graph
         //Output: Empty set
-        assertEquals( Algorithms.breadthFirstSearch(lsNoEdge), expectedOutput);
-        assertEquals( Algorithms.breadthFirstSearch(mNoEdge), expectedOutput);
+        assertEquals( Algorithms.depthFirstSearch(lsNoEdge), expectedOutput);
+        assertEquals( Algorithms.depthFirstSearch(mNoEdge), expectedOutput);
         
         
         //Input: Regular graph
         //Output: 
-//            0, 1, 2, 3, 4
-//            1, 3, 0, 4, 2
+//            0, 1, 3, 4, 2
+//            1, 3, 0, 2, 4
 //            2, 4
-//            3, 0, 4, 1
+//            3, 0, 1, 2, 4
 //            4
 //            5, 4
         expectedOutput.add(traversal0);
@@ -272,8 +272,8 @@ public class AlgorithmsTest{
         expectedOutput.add(traversal4);
         expectedOutput.add(traversal5);
         
-        assertEquals( Algorithms.breadthFirstSearch(ls), expectedOutput );
-        assertEquals( Algorithms.breadthFirstSearch(m), expectedOutput );
+        assertEquals( Algorithms.depthFirstSearch(ls), expectedOutput );
+        assertEquals( Algorithms.depthFirstSearch(m), expectedOutput );
         
     }
     
