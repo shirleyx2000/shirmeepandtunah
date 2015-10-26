@@ -24,7 +24,7 @@ public class AlgorithmsTest{
      * Test the following methods:
      * 
      * shortestDistance
-     * commonDownsteamVertices
+     * commonDownstreamVertices
      * commonUpstreamVertices
      * breadthFirstSearch
      * depthFirstSearch
@@ -119,63 +119,137 @@ public class AlgorithmsTest{
      *          Both upstream and downstream neighbours (v0, v1)
      *          
      * Test inputs:
-     *     No edge graph, v0, v1
-     *     No edge graph, v0, v0
-     *     Regular graph, v0, v0
-     *     Regular graph, v0, v6
-     *     Regular graph, v0, v5
-     *     Regular graph, v5, v0
-     *     Regular graph, v0, v4
-     *     Regular graph, v4, v0
-     *     Regular graph, v4, v5
-     *     Regular graph, v5, v4
+     *     1. No edge graph, v0, v1
+     *     2. No edge graph, v0, v0
+     *     3. Regular graph, v0, v0
+     *     4. Regular graph, v0, v6
+     *     5. Regular graph, v0, v5
+     *     6. Regular graph, v5, v0
+     *     7. Regular graph, v0, v4
+     *     8. Regular graph, v4, v0
+     *     9. Regular graph, v4, v5
+     *     10. Regular graph, v5, v4
      *     
      *          
      * Expected outputs:
-     *     PathNotFoundException
-     *     0
-     *     0
-     *     PathNotFoundException
-     *     PathNotFoundException
-     *     PathNotFoundException
-     *     2
-     *     PathNotFoundException
-     *     PathNotFoundException
-     *     1
+     *     1. PathNotFoundException
+     *     2. 0
+     *     3. 0
+     *     4. PathNotFoundException
+     *     5. PathNotFoundException
+     *     6. PathNotFoundException
+     *     7. 2
+     *     8. PathNotFoundException
+     *     9. PathNotFoundException
+     *     10. 1
+     *     
+     * @throws PathNotFoundException 
      *     
      */
     
-    @Test( expected = PathNotFoundException.class )
+    @Test
     public void testShortestDistance() throws PathNotFoundException{
         
+        //1 
+        try{
+            Algorithms.shortestDistance(lsNoEdge, v0, v1);
+            fail("Expected exception not thrown.");
+        } catch ( PathNotFoundException pnfe ){
+            //Do nothing; exception expected.
+        }
+        try{
+            Algorithms.shortestDistance(mNoEdge, v0, v1);
+            fail("Expected exception not thrown.");
+        } catch ( PathNotFoundException pnfe ){
+            //Do nothing; exception expected.
+        }
+        
+        //2
         assertEquals(Algorithms.shortestDistance(lsNoEdge, v0, v0), 0);
         assertEquals(Algorithms.shortestDistance(mNoEdge, v0, v0), 0);
         
+        //3
+        assertEquals(Algorithms.shortestDistance(ls, v0, v0), 0);
+        assertEquals(Algorithms.shortestDistance(m, v0, v0), 0);
+        
+        //4
+        try{
+            Algorithms.shortestDistance(ls, v0, v6);
+            fail("Expected exception not thrown.");
+        } catch ( PathNotFoundException pnfe ){
+            //Do nothing; exception expected.
+        }
+        
+        try{
+            Algorithms.shortestDistance(m, v0, v6);
+            fail("Expected exception not thrown.");
+        } catch ( PathNotFoundException pnfe ){
+            //Do nothing; exception expected.
+        }
+        
+        // 5       
+        try{
+            Algorithms.shortestDistance(ls, v0, v5);
+            fail("Expected exception not thrown.");
+        } catch ( PathNotFoundException pnfe ){
+            //Do nothing; exception expected.
+        }
+        try{
+            Algorithms.shortestDistance(m, v0, v5);
+            fail("Expected exception not thrown.");
+        } catch ( PathNotFoundException pnfe ){
+            //Do nothing; exception expected.
+        }
+        
+        // 6       
+        try{
+            Algorithms.shortestDistance(ls, v5, v0);
+            fail("Expected exception not thrown.");
+        } catch ( PathNotFoundException pnfe ){
+            //Do nothing; exception expected.
+        }
+        try{
+            Algorithms.shortestDistance(m, v5, v0);
+            fail("Expected exception not thrown.");
+        } catch ( PathNotFoundException pnfe ){
+            //Do nothing; exception expected.
+        }
+        
+        //7
         assertEquals(Algorithms.shortestDistance(ls, v0, v4), 2);
         assertEquals(Algorithms.shortestDistance(m, v0, v4), 2);
         
+        //8
+        try{
+            Algorithms.shortestDistance(ls, v4, v0);
+            fail("Expected exception not thrown.");
+        } catch ( PathNotFoundException pnfe ){
+            //Do nothing; exception expected.
+        }
+        try{
+            Algorithms.shortestDistance(m, v4, v0);
+            fail("Expected exception not thrown.");
+        } catch ( PathNotFoundException pnfe ){
+            //Do nothing; exception expected.
+        }
+        
+        //9
+        try{
+            Algorithms.shortestDistance(ls, v4, v5);
+            fail("Expected exception not thrown.");
+        } catch ( PathNotFoundException pnfe ){
+            //Do nothing; exception expected.
+        }
+        try{
+            Algorithms.shortestDistance(m, v4, v5);
+            fail("Expected exception not thrown.");
+        } catch ( PathNotFoundException pnfe ){
+            //Do nothing; exception expected.
+        }
+        
+        //10
         assertEquals(Algorithms.shortestDistance(ls, v5, v4), 1);
         assertEquals(Algorithms.shortestDistance(m, v5, v4), 1);
-        
-        /* The following will invoke an exception */
-        
-        Algorithms.shortestDistance(lsNoEdge, v0, v0);
-        Algorithms.shortestDistance(mNoEdge, v0, v0);
-        
-        Algorithms.shortestDistance(ls, v0, v0);
-        Algorithms.shortestDistance(m, v0, v0);
-        
-        Algorithms.shortestDistance(ls, v0, v0);
-        Algorithms.shortestDistance(m, v0, v0);
-        
-        Algorithms.shortestDistance(ls, v0, v0);
-        Algorithms.shortestDistance(m, v0, v0);
-        
-        Algorithms.shortestDistance(ls, v0, v0);
-        Algorithms.shortestDistance(m, v0, v0);
-        
-        Algorithms.shortestDistance(ls, v0, v0);
-        Algorithms.shortestDistance(m, v0, v0);
         
     }
 
