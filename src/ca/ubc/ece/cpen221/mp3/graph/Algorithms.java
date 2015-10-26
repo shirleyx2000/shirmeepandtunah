@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
+import java.util.Stack;
 
 import ca.ubc.ece.cpen221.mp3.staff.Graph;
 import ca.ubc.ece.cpen221.mp3.staff.Vertex;
@@ -59,17 +60,17 @@ public class Algorithms {
 	    Set<List<Vertex>> bfs = new HashSet<List<Vertex>>();
 	    Map<Vertex, Integer> distance = new HashMap<Vertex, Integer>(); 
 	    Queue<Vertex> nextVertex = new LinkedList<Vertex>(); 
-	    Graph g = graph; 
 	    Vertex v; 
 	    
-	    //make visitation possible
-        for (Vertex ev : g.getVertices()) {
-           distance.putIfAbsent(ev, null);
-        }
-	    
-        for (Vertex vertex : g.getVertices()) {
+        //now traverse through the graph with each vertex as the starting node
+        for (Vertex vertex : graph.getVertices()) {
             List<Vertex> traversal = new ArrayList<Vertex>(); 
 
+            //refresh visitation flag as UNVISITED 
+            for (Vertex ev : graph.getVertices()) {
+               distance.putIfAbsent(ev, null);
+            }
+            
             //set first vertex as arbitrary starting point
             nextVertex.add(vertex);
             distance.put(vertex, 0);
@@ -80,7 +81,7 @@ public class Algorithms {
                 v = nextVertex.poll(); 
                 path = distance.get(v) + 1; 
                 //for each vertex adjacent to v, depth "path"
-                for (Vertex child : g.getDownstreamNeighbors(v)) {
+                for (Vertex child : graph.getDownstreamNeighbors(v)) {
                     if (distance.get(child) == null) {
                         // not visited yet 
                         distance.put(child, path);
@@ -93,25 +94,6 @@ public class Algorithms {
             //done traversing for this one node
             bfs.add(traversal);
         }
-
-	    //Create queue (LinkedList) to hold vertices (a linked list of size-1 maps)
-	    //Create size-1 map to represent each vertex (key) and its distance from the starting vertex (value) 
-	        //i.e. Map<Vertex, Integer>
-	        //Initial value of distance = null
-	    
-	    //For each vertex in the graph
-	        //Create a list of vertices to be traversed    
-	        //Enqueue the starting vertex into the queue
-	        //Add the starting vertex to the list
-	            //While queue is not empty
-	                //Dequeue next vertex
-    	            //Get downstream neighbours of vertex
-        	            //For each downstream neighbour
-        	                 //If distance = null
-        	                        //Enqueue the neighbour
-	                                //Add the neighbour to the list
-        	                        //Increment its distance by 1
-
 	    
 	    return Collections.unmodifiableSet( bfs );
 	}
@@ -131,6 +113,38 @@ public class Algorithms {
 	  //TODO: Implement this method
 	    
 	    Set<List<Vertex>> dfs = new HashSet<List<Vertex>>();
+	    Vertex currentVertex; 
+	    Map<Vertex, Boolean> visited = new HashMap<Vertex, Boolean>(); 
+	    
+	    //for each vertex in the graph, have your time in the spotlight
+	    for (Vertex vertex : graph.getVertices()) {
+	        for (Vertex v : graph.getVertices()) {
+	            visited.putIfAbsent(v, false);
+	        }
+            List<Vertex> traversal = new ArrayList<Vertex>(); 
+
+	        Stack<Vertex> parents = new Stack<Vertex>(); 
+	        //push in the first parent vertex
+	        parents.push(vertex); 
+	        traversal.add(vertex);
+	        //traversal list starts here
+	        while (!parents.isEmpty()) {
+	            // this parent 
+	            currentVertex = parents.pop(); 
+	            if (!visited.get(currentVertex)) {
+	                //this vertex has not been visited
+	                visited.put(currentVertex, true);
+	                // find all parent's children
+	                for (Vertex child : graph.getDownstreamNeighbors(currentVertex)){
+	                    // children growing up to become parents
+	                    parents.push(child);
+	                    traversal.add(child);
+	                }
+	            }
+	        }
+	        //done traversal for this vertex
+	        dfs.add(traversal);
+	    }
 	    
 	    //Create a stack
 	    //For each vertex in the graph
