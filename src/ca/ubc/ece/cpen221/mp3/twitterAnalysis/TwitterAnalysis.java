@@ -59,13 +59,14 @@ class TwitterAnalysis{
         return numRTW;
     }
     
+
     /**
      * main() should take in two arguments:
      * 
      * 1. name of file that contains list of queries
      * 2. name of file that should be used to write output of queries to
      * 
-     * commonInfluencers and numRetweets should be called here during query file processing.
+     * "java TwitterAnalysis queryInput.txt queryOutput.txt"
      * 
      */
     public static void main(String[ ] args){
@@ -182,7 +183,6 @@ class TwitterAnalysis{
             
         } catch (Exception e) {
             throw new RuntimeException(e);
-        }
-        
+
     }
 }
