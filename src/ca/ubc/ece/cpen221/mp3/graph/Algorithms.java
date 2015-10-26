@@ -215,9 +215,14 @@ public class Algorithms {
 	 *                 If no such vertices exist, an empty list is returned 
 	 */
 	public static List<Vertex> commonUpstreamVertices( Graph graph, Vertex a, Vertex b ){
-	  //TODO: Implement this method
 	    
 	    List<Vertex> cuv = new ArrayList<Vertex>();
+	    
+	    for (Vertex v : graph.getUpstreamNeighbors(a)) {
+	        if (graph.getUpstreamNeighbors(b).contains(v)) {
+	            cuv.add(v);
+	        }
+	    }
 	    
 	    return Collections.unmodifiableList( cuv );
 	}
@@ -237,6 +242,12 @@ public class Algorithms {
 	  //TODO: Implement this method
 	    
 	    List<Vertex> cdv = new ArrayList<Vertex>();
+	    
+        for (Vertex v : graph.getDownstreamNeighbors(a)) {
+            if (graph.getDownstreamNeighbors(b).contains(v)) {
+                cdv.add(v);
+            }
+        }
 	    
         return Collections.unmodifiableList( cdv );
     }
