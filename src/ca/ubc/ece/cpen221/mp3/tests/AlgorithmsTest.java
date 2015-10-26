@@ -72,7 +72,7 @@ public class AlgorithmsTest{
     static private AdjacencyMatrixGraph mNoEdge;
    
     @BeforeClass
-    public void makeVertices(){
+    public static void makeVertices(){
         
         testVertices = new ArrayList<Vertex>();
         
@@ -278,6 +278,8 @@ public class AlgorithmsTest{
         
         //Input: Empty graph
         //Output: Empty set
+        System.out.println("Empty graph: " + lsEmpty);
+        System.out.println(Algorithms.breadthFirstSearch(lsEmpty) + "   vs    " + expectedOutput);
         assertEquals( Algorithms.breadthFirstSearch(lsEmpty), expectedOutput);
         assertEquals( Algorithms.breadthFirstSearch(mEmpty), expectedOutput);
         
