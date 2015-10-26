@@ -44,16 +44,15 @@ class TwitterAnalysis{
         return 0;
     }
     
-    public static void main(String[ ] args){
+    public static void main(String[ ] args){ //via cmd line "java TwitterAnalysis queryInput.txt queryOutput.txt"
         /*
-         * main() should take in two arguments:
+         * main() should take in two arguments (from cmd line):
          * 
          * 1. name of file that contains list of queries
          * 2. name of file that should be used to write output of queries to
          * 
-         * commonInfluencers and numRetweets should be called here during query file processing.
-         * 
          */
+
     }
     
 }
