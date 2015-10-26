@@ -63,11 +63,10 @@ public class Algorithms {
 	    //TODO: Implement this method
 	    
 	    Set<List<Vertex>> bfs = new HashSet<List<Vertex>>();
+	    System.out.println("BFS: " + bfs);
 	    Map<Vertex, Integer> distance = new HashMap<Vertex, Integer>(); 
 	    Queue<Vertex> nextVertex = new LinkedList<Vertex>(); 
 	    Vertex v; 
-	    System.out.println("GRAPH BEFORE: " + graph);
-	    System.out.println("BEFORE: " + bfs);
         //now traverse through the graph with each vertex as the starting node
 	    
 	    if (graph == null) {
@@ -75,7 +74,7 @@ public class Algorithms {
 	    }
 	    
         for (Vertex vertex : graph.getVertices()) {
-            System.out.println("AM I IN? : " + vertex);
+            System.out.println("Loop: " + vertex);
             List<Vertex> traversal = new ArrayList<Vertex>(); 
 
             //refresh visitation flag as UNVISITED 
@@ -85,6 +84,7 @@ public class Algorithms {
             
             //set first vertex as arbitrary starting point
             nextVertex.add(vertex);
+            traversal.add(vertex);
             distance.put(vertex, 0);
             int path = 0; 
             
@@ -103,11 +103,13 @@ public class Algorithms {
                 }
             }
             
+            System.out.println("END OF TRAVERSAL: " + traversal);
+            
             //done traversing for this one node
-            bfs.add(traversal);
+            if (!traversal.isEmpty()) {
+                bfs.add(traversal);
+            }
         }
-	    
-        System.out.println("AFTER: " + bfs);
 
 	    return Collections.unmodifiableSet( bfs );
 	}
@@ -180,8 +182,8 @@ public class Algorithms {
 	 * Returns list of common upstream vertices between two given vertices in a graph
 	 * 
 	 * @param graph
-	 * @param a
-	 * @param b
+	 * @param a        a must be a vertex in graph
+	 * @param b        b must be a vertex in graph
 	 * @return cuv     Immutable list of all vertices u such that there is an edge from u to a and an edge from u to b
 	 *                 If no such vertices exist, an empty list is returned 
 	 */
@@ -198,9 +200,9 @@ public class Algorithms {
 	/**
 	 * Returns a list of common downstream vertices between two given vertices in a graph
 	 * 
-	 * @param graph
-	 * @param a
-	 * @param b
+	 * @param graph    
+	 * @param a        a must be a vertex in graph
+	 * @param b        b must be a vertex in graph
 	 * @return cdv     Immutable list of all vertices v such that there is an edge from a to v and an edge from b to v
 	 *                 if no such vertices exist, an empty list is returned
 	 */

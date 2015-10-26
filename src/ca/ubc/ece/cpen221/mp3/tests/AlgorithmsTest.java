@@ -257,12 +257,44 @@ public class AlgorithmsTest{
     @Test
     public void testCommonDownstreamVertices(){
         
+        /*
+         * Possible inputs:
+         *      Graphs (List & Matrix)
+         *          No edges
+         *          Regular
+         *          
+         *      Vertices
+         *          Floating (v6)
+         *          No upstream neighbours (v5)
+         *          No downstream neighbours (v4)
+         *          Both upstream and downstream neighbours (v0, v1)
+         * 
+         * Test inputs:
+         *      1. No edge graph, v0, v0
+         *      2. No edge graph, v0, v1
+         *      3. Regular graph, v0, v1
+         *      
+         *      
+         * 
+         * Expected output:
+         * 
+         */
         
         
     }
     
     @Test 
     public void testCommonUpstreamVertices(){
+        
+        /*
+         * Possible inputs:
+         *      
+         * 
+         * Test inputs:
+         * 
+         * Expected output:
+         * 
+         */
         
     }
     
@@ -287,15 +319,17 @@ public class AlgorithmsTest{
         
         //Input: Empty graph
         //Output: Empty set
-        System.out.println("Empty graph: " + lsEmpty);
+        System.out.println(expectedOutput);
 
-        assertEquals( Algorithms.breadthFirstSearch(lsEmpty).isEmpty(), true );
-        assertEquals( Algorithms.breadthFirstSearch(mEmpty).isEmpty(), true );
+        assertTrue( Algorithms.breadthFirstSearch(lsEmpty).isEmpty() );
+        assertTrue( Algorithms.breadthFirstSearch(mEmpty).isEmpty() );
         
         //Input: No edges graph
         //Output: Empty set
-        assertEquals( Algorithms.breadthFirstSearch(lsNoEdge).isEmpty(), true );
-        assertEquals( Algorithms.breadthFirstSearch(mNoEdge).isEmpty(), true );
+        System.out.println(Algorithms.breadthFirstSearch(lsNoEdge).isEmpty());
+
+        assertTrue( Algorithms.breadthFirstSearch(lsNoEdge).isEmpty() );
+        assertTrue( Algorithms.breadthFirstSearch(mNoEdge).isEmpty() );
         
         
         //Input: Regular graph
@@ -307,7 +341,7 @@ public class AlgorithmsTest{
 //            4
 //            5, 4
 
-        System.out.println(Algorithms.breadthFirstSearch(lsEmpty) + "   vs    " + expectedOutput);
+        System.out.println(Algorithms.breadthFirstSearch(ls) + "   vs    " + expectedOutput);
 
         assertTrue( Algorithms.breadthFirstSearch(ls).equals(expectedOutput) );
         assertTrue( Algorithms.breadthFirstSearch(m).equals(expectedOutput) );
@@ -363,15 +397,15 @@ public class AlgorithmsTest{
     
     public void makeEmptyGraph(){
         
-        AdjacencyListGraph lsEmpty = new AdjacencyListGraph();
-        AdjacencyMatrixGraph mEmpty = new AdjacencyMatrixGraph();
+        lsEmpty = new AdjacencyListGraph();
+        mEmpty = new AdjacencyMatrixGraph();
         
     }
     
     public void makeNoEdgeGraph(){
         
-        AdjacencyListGraph lsNoEdge = new AdjacencyListGraph();
-        AdjacencyMatrixGraph mNoEdge = new AdjacencyMatrixGraph();
+        lsNoEdge = new AdjacencyListGraph();
+        mNoEdge = new AdjacencyMatrixGraph();
         
         for( Vertex v : testVertices ){
             lsNoEdge.addVertex(v);
@@ -382,8 +416,8 @@ public class AlgorithmsTest{
     
     public void makeGraph(){
         
-        AdjacencyListGraph ls = new AdjacencyListGraph();
-        AdjacencyMatrixGraph m = new AdjacencyMatrixGraph();
+        ls = new AdjacencyListGraph();
+        m = new AdjacencyMatrixGraph();
         
         for( Vertex v : testVertices ){
             ls.addVertex(v);
@@ -396,7 +430,7 @@ public class AlgorithmsTest{
         ls.addEdge(v2,  v4);
         ls.addEdge(v3,  v0);
         ls.addEdge(v3,  v4);
-        ls.addEdge(v4,  v4);
+        ls.addEdge(v5,  v4);
         
         m.addEdge(v0,  v1);
         m.addEdge(v0,  v2);
@@ -404,7 +438,7 @@ public class AlgorithmsTest{
         m.addEdge(v2,  v4);
         m.addEdge(v3,  v0);
         m.addEdge(v3,  v4);
-        m.addEdge(v4,  v4);
+        m.addEdge(v5,  v4);
         
         
     }
