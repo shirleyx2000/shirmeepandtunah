@@ -380,7 +380,40 @@ public class AlgorithmsTest{
     @Test
     public void testBreadthFirstSearch(){
         
+        //Input: Empty graph
+        //Output: Empty set
+        assertTrue( Algorithms.breadthFirstSearch(lsEmpty).isEmpty() );
+        assertTrue( Algorithms.breadthFirstSearch(mEmpty).isEmpty() );
+        
+        //Input: No edges graph
+        //Output: Set of size-1 lists; each list contains one vertex of the graph
+//                e.g    Graph has no edges, vertices v0, v1, v2
+//                       The set returned will be {[v0], [v1], [v2]}
+        Set<List<Vertex>> expectedOutputNoEdge = new HashSet<List<Vertex>>();
+        
+        for( Vertex v : testVertices ){
+            List<Vertex> singleVertexList = new ArrayList<Vertex>();
+            singleVertexList.add(v);
+            expectedOutputNoEdge.add(singleVertexList);
+        }
+        
+        System.out.println(Algorithms.breadthFirstSearch(lsNoEdge).isEmpty());
+        assertTrue( Algorithms.breadthFirstSearch(lsNoEdge).equals(expectedOutputNoEdge) );
+        assertTrue( Algorithms.breadthFirstSearch(mNoEdge).equals(expectedOutputNoEdge) );
+        
+        
+        //Input: Regular graph
+        //Output: 
+//            0, 1, 2, 3, 4
+//            1, 3, 0, 4, 2
+//            2, 4
+//            3, 0, 4, 1
+//            4
+//            5, 4
+        
         Set<List<Vertex>> expectedOutput = new HashSet<List<Vertex>>();
+
+        System.out.println(expectedOutput);
         
         List<Vertex> traversal0 = Arrays.asList(v0, v1, v2, v3, v4);
         List<Vertex> traversal1 = Arrays.asList(v1, v3, v0, v4, v2);
@@ -395,30 +428,6 @@ public class AlgorithmsTest{
         expectedOutput.add(traversal3);
         expectedOutput.add(traversal4);
         expectedOutput.add(traversal5);
-        
-        //Input: Empty graph
-        //Output: Empty set
-        System.out.println(expectedOutput);
-
-        assertTrue( Algorithms.breadthFirstSearch(lsEmpty).isEmpty() );
-        assertTrue( Algorithms.breadthFirstSearch(mEmpty).isEmpty() );
-        
-        //Input: No edges graph
-        //Output: Empty set
-        System.out.println(Algorithms.breadthFirstSearch(lsNoEdge).isEmpty());
-
-        assertTrue( Algorithms.breadthFirstSearch(lsNoEdge).isEmpty() );
-        assertTrue( Algorithms.breadthFirstSearch(mNoEdge).isEmpty() );
-        
-        
-        //Input: Regular graph
-        //Output: 
-//            0, 1, 2, 3, 4
-//            1, 3, 0, 4, 2
-//            2, 4
-//            3, 0, 4, 1
-//            4
-//            5, 4
 
         System.out.println(Algorithms.breadthFirstSearch(ls) + "   vs    " + expectedOutput);
 
@@ -430,7 +439,36 @@ public class AlgorithmsTest{
     
     @Test
     public void testDepthFirstSearch(){
+
+        //Input: Empty graph
+        //Output: Empty set
+        assertTrue( Algorithms.depthFirstSearch(lsEmpty).isEmpty());
+        assertTrue( Algorithms.depthFirstSearch(mEmpty).isEmpty());
         
+        //Input: No edges graph
+        //Output: Set of single element lists; each list contains one vertex of the graph
+//                  e.g    Graph has no edges, vertices v0, v1, v2
+//                  The set returned will be {[v0], [v1], [v2]}
+        Set<List<Vertex>> expectedOutputNoEdge = new HashSet<List<Vertex>>();
+        
+        for( Vertex v : testVertices ){
+            List<Vertex> singleVertexList = new ArrayList<Vertex>();
+            singleVertexList.add(v);
+            expectedOutputNoEdge.add(singleVertexList);
+        }
+        
+        assertTrue( Algorithms.depthFirstSearch(lsNoEdge).equals(expectedOutputNoEdge));
+        assertTrue( Algorithms.depthFirstSearch(mNoEdge).equals(expectedOutputNoEdge));
+        
+        
+        //Input: Regular graph
+        //Output: 
+//            0, 1, 3, 4, 2
+//            1, 3, 0, 2, 4
+//            2, 4
+//            3, 0, 1, 2, 4
+//            4
+//            5, 4
         Set<List<Vertex>> expectedOutput = new HashSet<List<Vertex>>();
         
         List<Vertex> traversal0 = Arrays.asList(v0, v1, v3, v4, v2);
@@ -447,25 +485,6 @@ public class AlgorithmsTest{
         expectedOutput.add(traversal4);
         expectedOutput.add(traversal5);
         
-        //Input: Empty graph
-        //Output: Empty set
-        assertTrue( Algorithms.depthFirstSearch(lsEmpty).isEmpty());
-        assertTrue( Algorithms.depthFirstSearch(mEmpty).isEmpty());
-        
-        //Input: No edges graph
-        //Output: Empty set
-        assertTrue( Algorithms.depthFirstSearch(lsNoEdge).isEmpty());
-        assertTrue( Algorithms.depthFirstSearch(mNoEdge).isEmpty());
-        
-        
-        //Input: Regular graph
-        //Output: 
-//            0, 1, 3, 4, 2
-//            1, 3, 0, 2, 4
-//            2, 4
-//            3, 0, 1, 2, 4
-//            4
-//            5, 4
         assertTrue( Algorithms.depthFirstSearch(ls).equals(expectedOutput) );
         assertTrue( Algorithms.depthFirstSearch(m).equals(expectedOutput) );
         
