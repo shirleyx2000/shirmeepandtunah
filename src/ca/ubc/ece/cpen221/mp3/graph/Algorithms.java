@@ -43,7 +43,6 @@ public class Algorithms {
     * @throws PathNotFoundException
     */
     public static int shortestDistance(Graph graph, Vertex a, Vertex b) throws PathNotFoundException {
-       // TODO: Implement this method and others
         
         Map<Vertex, Integer> visited = new HashMap<Vertex, Integer>(); 
         Queue<Vertex> path = new LinkedList<Vertex>();
@@ -68,7 +67,7 @@ public class Algorithms {
                 if (visited.get(v) == null){
                     visited.put(v,visited.get(nextVertex)+1);
                     path.add(v);
-                    if (v == b) {
+                    if (v.equals(b)) {
                         //note down the depth.
                         minDistance = Integer.min(minDistance, visited.get(v));
                     }
@@ -96,17 +95,14 @@ public class Algorithms {
 	 *                 If no traversal routines are found, an empty set is returned
 	 */
 	public static Set<List<Vertex>> breadthFirstSearch( Graph graph ){
-	    //TODO: Implement this method
 	    
 	    Set<List<Vertex>> bfs = new HashSet<List<Vertex>>();
-	    System.out.println("BFS: " + bfs);
 	    Map<Vertex, Integer> distance = new HashMap<Vertex, Integer>(); 
 	    Queue<Vertex> nextVertex = new LinkedList<Vertex>(); 
 	    Vertex v; 
 	    
         //now traverse through the graph with each vertex as the starting node
         for (Vertex vertex : graph.getVertices()) {
-            System.out.println("Loop: " + vertex);
             List<Vertex> traversal = new ArrayList<Vertex>(); 
 
             //refresh visitation flag as UNVISITED 
@@ -123,11 +119,9 @@ public class Algorithms {
             //now pop queue and add to queue for ONE vertex
             while (!nextVertex.isEmpty()) {
                 v = nextVertex.poll(); 
-                System.out.println(v.toString());
                 path = distance.get(v) + 1; 
                 //for each vertex adjacent to v, depth "path"
                 for (Vertex child : graph.getDownstreamNeighbors(v)) {
-                    System.out.println(child.toString());
                     if (distance.get(child) == null) {
                         // not visited yet 
                         distance.put(child, path);
@@ -136,8 +130,6 @@ public class Algorithms {
                     }
                 }
             }
-            
-            System.out.println("END OF TRAVERSAL: " + traversal);
             
             //done traversing for this one node
             if (!traversal.isEmpty()) {
@@ -161,7 +153,6 @@ public class Algorithms {
      *                  If no traversal routines are found, an empty set is returned
 	 */
 	public static Set<List<Vertex>> depthFirstSearch( Graph graph ){
-	  //TODO: Implement this method
 	    
 	    Set<List<Vertex>> dfs = new HashSet<List<Vertex>>();
 	    Vertex currentVertex; 
@@ -178,7 +169,6 @@ public class Algorithms {
 	        //push in the first parent vertex
 	        parents.push(vertex); 
 	        traversal.add(vertex);
-	        System.out.println("Head " + vertex.toString());
 	        //traversal list starts here
 	        while (!parents.isEmpty()) {
 	            // this parent 
@@ -239,7 +229,6 @@ public class Algorithms {
 	 *                 if no such vertices exist, an empty list is returned
 	 */
 	public static List<Vertex> commonDownstreamVertices( Graph graph, Vertex a, Vertex b ){
-	  //TODO: Implement this method
 	    
 	    List<Vertex> cdv = new ArrayList<Vertex>();
 	    

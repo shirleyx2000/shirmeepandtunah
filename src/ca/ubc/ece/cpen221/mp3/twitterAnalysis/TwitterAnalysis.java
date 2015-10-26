@@ -18,10 +18,6 @@ import ca.ubc.ece.cpen221.mp3.graph.PathNotFoundException;
 import ca.ubc.ece.cpen221.mp3.staff.Graph;
 import ca.ubc.ece.cpen221.mp3.staff.Vertex;
 
-/*
- * This class' scope is limited to the package. <-- remove this line before mp3 submission
- * 
- */
 
 class TwitterAnalysis{
     
@@ -50,14 +46,16 @@ class TwitterAnalysis{
      * @return Number of retweets before a tweet by user a reaches user b
      * 
      */
-    private static int numRetweets( Vertex a, Vertex b, Graph g ){
-        int numRTW = 0; 
+    private static String numRetweets( Vertex follower, Vertex influencer, Graph g ){
+        Integer numRTW = 0; 
         
         try {
-            numRTW = Algorithms.shortestDistance(g, b, a);
-        } catch (PathNotFoundException pnfe) { }
+            numRTW = Algorithms.shortestDistance(g, follower, influencer);
+        } catch (PathNotFoundException pnfe) { 
+            return "No retweets";
+        }
         
-        return numRTW;
+        return numRTW.toString();
     }
     
 
@@ -74,14 +72,10 @@ class TwitterAnalysis{
         
         //output file, ready to write
         PrintWriter writer = null;
-        try {
-//            writer = new PrintWriter(args[1], "UTF-8");
-            writer = new PrintWriter("tweetResults.txt", "UTF-8");
+        try {            writer = new PrintWriter(args[1], "UTF-8");
         } catch (FileNotFoundException e1) {
-            // TODO Auto-generated catch block
             e1.printStackTrace();
         } catch (UnsupportedEncodingException e1) {
-            // TODO Auto-generated catch block
             e1.printStackTrace();
         }
         
@@ -89,12 +83,13 @@ class TwitterAnalysis{
         Graph g = new AdjacencyListGraph(); 
         List<String> pastQueries = new ArrayList<String>();
         List<Vertex> ciResults = new ArrayList<Vertex>();
-        int numRtwResults; 
+        String numRtwResults; 
         
         //form the graph to pass into two methods 
         FileInputStream tweetStream;
-        try {
-            tweetStream = new FileInputStream("C:\\Users\\guess_000\\workspace\\shirmeepandtunah\\datasets\\twitter.txt");
+        try {            String datasetsDir = System.getProperty("user.dir").concat("\\datasets");
+            tweetStream = new FileInputStream(datasetsDir + "\\twitter.txt");
+
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -104,9 +99,7 @@ class TwitterAnalysis{
                     new InputStreamReader(tweetStream));
             
             String line;
-            int lineNum = 0; 
             while ((line = tweetReader.readLine()) != null) {
-                System.out.println(lineNum);
                 //for each line, form the edges and add vertices
                 String[] vertices = line.split(" -> ");
                 Vertex v1 = new Vertex(vertices[0]);
@@ -114,8 +107,6 @@ class TwitterAnalysis{
                 g.addVertex(v1);
                 g.addVertex(v2);
                 g.addEdge(v1, v2);
-                
-                lineNum++; 
             }
             
             tweetReader.close();
@@ -126,9 +117,8 @@ class TwitterAnalysis{
         }
 
         FileInputStream queryStream; 
-        try {
-//            queryStream = new FileInputStream(args[0]);
-            queryStream = new FileInputStream("queryTweets.txt");
+        try{
+            //Place entire directory path in argument 0{            queryStream = new FileInputStream(args[0]);
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -165,14 +155,12 @@ class TwitterAnalysis{
                                 writer.println(v.toString());
                             }
                             writer.println("</result>");
-                            writer.close();
                         } else if (singleLine.contains("numRetweets")) {
                             numRtwResults = numRetweets(new Vertex(queryWords[1]), new Vertex(queryWords[2]), g);
                             writer.println("query: " + singleLine);
                             writer.println("<result>");
                             writer.println(numRtwResults);
                             writer.println("</result>");
-                            writer.close();
                         } else {
                             continue; 
                         }
@@ -186,5 +174,7 @@ class TwitterAnalysis{
             throw new RuntimeException(e);
 
     }
+        writer.close();
+
 }
 }

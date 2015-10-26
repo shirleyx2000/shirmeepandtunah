@@ -214,7 +214,7 @@ public class AlgorithmsTest{
         } catch ( PathNotFoundException pnfe ){
             //Do nothing; exception expected.
         }
-        
+
         //7
         assertEquals(Algorithms.shortestDistance(ls, v0, v4), 2);
         assertEquals(Algorithms.shortestDistance(m, v0, v4), 2);
@@ -397,7 +397,6 @@ public class AlgorithmsTest{
             expectedOutputNoEdge.add(singleVertexList);
         }
         
-        System.out.println(Algorithms.breadthFirstSearch(lsNoEdge).isEmpty());
         assertTrue( Algorithms.breadthFirstSearch(lsNoEdge).equals(expectedOutputNoEdge) );
         assertTrue( Algorithms.breadthFirstSearch(mNoEdge).equals(expectedOutputNoEdge) );
         
@@ -413,8 +412,6 @@ public class AlgorithmsTest{
         
         Set<List<Vertex>> expectedOutput = new HashSet<List<Vertex>>();
 
-        System.out.println(expectedOutput);
-        
         List<Vertex> traversal0 = Arrays.asList(v0, v1, v2, v3, v4);
         List<Vertex> traversal1 = Arrays.asList(v1, v3, v0, v4, v2);
         List<Vertex> traversal2 = Arrays.asList(v2, v4);
@@ -430,12 +427,6 @@ public class AlgorithmsTest{
         expectedOutput.add(traversal4);
         expectedOutput.add(traversal5);
         expectedOutput.add(traversal6);
-        
-        System.out.println("$$$$$$$ BLAHL BLAH BLAH");
-        System.out.println(Algorithms.breadthFirstSearch(ls) + "   vs    \n" + expectedOutput);
-
-//        assertTrue( Algorithms.breadthFirstSearch(ls).equals(expectedOutput) );
-//        assertTrue( Algorithms.breadthFirstSearch(m).equals(expectedOutput) );
         
         assertEquals( Algorithms.breadthFirstSearch(ls).size(), expectedOutput.size() );
         for( List<Vertex> listE : expectedOutput ){
@@ -520,11 +511,6 @@ public class AlgorithmsTest{
         expectedOutput.add(traversal4);
         expectedOutput.add(traversal5);
         expectedOutput.add(traversal6);
-        
-        System.out.println("\nI CARE HERE\n" + Algorithms.depthFirstSearch(ls) + "   vs    \n" + expectedOutput);
-        
-//        assertTrue( Algorithms.depthFirstSearch(ls).equals(expectedOutput) );
-//        assertTrue( Algorithms.depthFirstSearch(m).equals(expectedOutput) );
         
         assertEquals( Algorithms.depthFirstSearch(ls).size(), expectedOutput.size() );
         for( List<Vertex> listE : expectedOutput ){
