@@ -1,0 +1,7 @@
+TODO:
+
+SPEC -> TEST -> IMPLEMENT
+
+1. Create 3 new Animal classes
+2. Create 3 new Vehicle classes
+3. Create 3 new <own type> classes
