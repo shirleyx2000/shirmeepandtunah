@@ -3,5 +3,21 @@ TODO:
 SPEC -> TEST -> IMPLEMENT
 
 1. Create 3 new Animal classes
+	a. Bear
+	b. Fish
+	c. Flying squirrel
+	
 2. Create 3 new Vehicle classes
+	a. Hamster ball
+	b. Log raft
+	c. Hot air balloon
+	
 3. Create 3 new <own type> classes
+	a. Carnivorous tree
+	b. Island
+	c. Ocean
+
+
+4. Add more commands to FoxAI.java 
+
+5. Add more commands to RabbitAI.java
