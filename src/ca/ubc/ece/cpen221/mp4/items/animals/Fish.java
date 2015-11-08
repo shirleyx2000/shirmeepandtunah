@@ -2,12 +2,15 @@ package ca.ubc.ece.cpen221.mp4.items.animals;
 
 import javax.swing.ImageIcon;
 
+import ca.ubc.ece.cpen221.mp4.Direction;
 import ca.ubc.ece.cpen221.mp4.Food;
 import ca.ubc.ece.cpen221.mp4.Location;
 import ca.ubc.ece.cpen221.mp4.Util;
 import ca.ubc.ece.cpen221.mp4.World;
-import ca.ubc.ece.cpen221.mp4.ai.AI;
+//import ca.ubc.ece.cpen221.mp4.ai.AI;
 import ca.ubc.ece.cpen221.mp4.commands.Command;
+import ca.ubc.ece.cpen221.mp4.commands.MoveCommand;
+import ca.ubc.ece.cpen221.mp4.commands.WaitCommand;
 import ca.ubc.ece.cpen221.mp4.items.LivingItem;
 
 public class Fish implements ArenaAnimal {
@@ -20,23 +23,17 @@ public class Fish implements ArenaAnimal {
     private static final int COOLDOWN = 2;
     private static final ImageIcon fishImage = Util.loadImage("fish.gif");
 
-    private final AI ai;
-
     private Location location;
     private int energy;
     
     /**
-     * Create a new {@link Fish} with an {@link AI} at
-     * <code>initialLocation</code>. The <code> initialLocation </code> must be
-     * valid and empty
+     * Create a new Fish at <code>initialLocation</code>. The
+     * <code>initialLocation</code> must be valid and empty.
      *
-     * @param fishAI
-     *            the AI designed for fish
      * @param initialLocation
-     *            the location where this Fish will be created
+     *            the location where the Fish will be created
      */
-    public Fish(AI fishAI, Location initialLocation) {
-        this.ai = fishAI;
+    public Fish(Location initialLocation) {
         this.location = initialLocation;
 
         this.energy = INITIAL_ENERGY;
@@ -44,7 +41,7 @@ public class Fish implements ArenaAnimal {
 
     @Override
     public LivingItem breed() {
-        Fish child = new Fish(ai, location);
+        Fish child = new Fish(location);
         child.energy = energy / 2;
         this.energy = energy / 2;
         return child;
@@ -105,9 +102,17 @@ public class Fish implements ArenaAnimal {
 
     @Override
     public Command getNextAction(World world) {
-        Command nextAction = ai.getNextAction(world, this);
-        this.energy--; // Loses 1 energy regardless of action.
-        return nextAction;
+        // The FlyingSquirrel selects a random direction and check if the next location at
+        // the direction is valid and empty. If yes, then it moves to the
+        // location, otherwise it waits.
+        Direction dir = Util.getRandomDirection();
+        Location targetLocation = new Location(this.getLocation(), dir);
+        if (Util.isValidLocation(world, targetLocation) && Util.isLocationEmpty(world, targetLocation)) {
+            this.energy--; // Loses 1 energy regardless of action.
+            return new MoveCommand(this, targetLocation);
+        }
+
+        return new WaitCommand();
     }
 
     @Override

@@ -59,9 +59,9 @@ public class Main {
 		addGnats(world);
 		addRabbits(world);
 		addFoxes(world);
-//		addBears(world); 
-//		addFish(world);
-//		addSquirrel(world); 
+		addBears(world); 
+		addFish(world);
+		addSquirrel(world); 
 		// TODO: You may add your own creatures here!
 	}
 
@@ -80,7 +80,34 @@ public class Main {
 			world.addActor(gnat);
 		}
 	}
+	
+    private void addFish(World world) {
+        for (int i = 0; i < INITIAL_FISH; i++) {
+            Location loc = Util.getRandomEmptyLocation(world);
+            Fish fish = new Fish(loc);
+            world.addItem(fish);
+            world.addActor(fish);
+        }
+    }
+	
+    private void addBears(World world) {
+        for (int i = 0; i < INITIAL_BEARS; i++) {
+            Location loc = Util.getRandomEmptyLocation(world);
+            Bear bear = new Bear(loc);
+            world.addItem(bear);
+            world.addActor(bear);
+        }
+    }
 
+    private void addSquirrel(World world) {
+         for (int i = 0; i < INITIAL_SQUIRREL; i++) {
+             Location loc = Util.getRandomEmptyLocation(world);
+             FlyingSquirrel squirrel = new FlyingSquirrel(loc);
+             world.addItem(squirrel);
+             world.addActor(squirrel);
+         }
+     }
+    
 	private void addFoxes(World world) {
 		FoxAI foxAI = new FoxAI();
 		for (int i = 0; i < INITIAL_FOXES; i++) {
@@ -101,33 +128,4 @@ public class Main {
 		}
 	}
 	
-//   private void addBears(World world) {
-//        BearAI bearAI = new BearAI();
-//        for (int i = 0; i < INITIAL_BEARS; i++) {
-//            Location loc = Util.getRandomEmptyLocation(world);
-//            Bear bear = new Bear(bearAI, loc);
-//            world.addItem(bear);
-//            world.addActor(bear);
-//        }
-//    }
-	
-//       private void addFish(World world) {
-//            FishAI fishAI = new FishAI();
-//            for (int i = 0; i < INITIAL_FISH; i++) {
-//                Location loc = Util.getRandomEmptyLocation(world);
-//                Fish fish = new Fish(fishAI, loc);
-//                world.addItem(fish);
-//                world.addActor(fish);
-//            }
-//        }
-	
-       private void addSquirrel(World world) {
-           RabbitAI squirrelAI = new RabbitAI();
-            for (int i = 0; i < INITIAL_SQUIRREL; i++) {
-                Location loc = Util.getRandomEmptyLocation(world);
-                Rabbit squirrel = new Rabbit(squirrelAI, loc);
-                world.addItem(squirrel);
-                world.addActor(squirrel);
-            }
-        }
 }

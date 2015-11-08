@@ -2,12 +2,15 @@ package ca.ubc.ece.cpen221.mp4.items.animals;
 
 import javax.swing.ImageIcon;
 
+import ca.ubc.ece.cpen221.mp4.Direction;
 import ca.ubc.ece.cpen221.mp4.Food;
 import ca.ubc.ece.cpen221.mp4.Location;
 import ca.ubc.ece.cpen221.mp4.Util;
 import ca.ubc.ece.cpen221.mp4.World;
-import ca.ubc.ece.cpen221.mp4.ai.AI;
+//import ca.ubc.ece.cpen221.mp4.ai.AI;
 import ca.ubc.ece.cpen221.mp4.commands.Command;
+import ca.ubc.ece.cpen221.mp4.commands.MoveCommand;
+import ca.ubc.ece.cpen221.mp4.commands.WaitCommand;
 import ca.ubc.ece.cpen221.mp4.items.LivingItem;
 
 public class FlyingSquirrel implements ArenaAnimal {
@@ -20,30 +23,25 @@ public class FlyingSquirrel implements ArenaAnimal {
     private static final int COOLDOWN = 2;
     private static final ImageIcon squirrelImage = Util.loadImage("squirrel.gif");
 
-    private final AI ai;
 
     private Location location;
     private int energy;
 
     /**
-     * Create a new {@link FlyingSquirrel} with an {@link AI} at
-     * <code> initialLocation </code>. The <code> initialLoation
-     * </code> must be valid and empty.
+     * Create a new FlyingSquirrel at <code>initialLocation</code>. The
+     * <code>initialLocation</code> must be valid and empty.
      *
-     * @param squirrelAI
-     *            : The AI designed for FlyingSquirrel
      * @param initialLocation
-     *            : the location where this squirrel will be created
+     *            the location where the FlyingSquirrel will be created
      */
-    public FlyingSquirrel(AI squirrelAI, Location initialLocation) {
-        ai = squirrelAI;
+    public FlyingSquirrel(Location initialLocation) {
         location = initialLocation;
         energy = INITIAL_ENERGY;
     }
 
     @Override
     public LivingItem breed() {
-        FlyingSquirrel child = new FlyingSquirrel(ai, location);
+        FlyingSquirrel child = new FlyingSquirrel(location);
         child.energy = energy / 2;
         this.energy = energy / 2;
         return child;
@@ -104,9 +102,17 @@ public class FlyingSquirrel implements ArenaAnimal {
 
     @Override
     public Command getNextAction(World world) {
-        Command nextAction = ai.getNextAction(world, this);
-        this.energy--; // Loses 1 energy regardless of action.
-        return nextAction;
+        // The FlyingSquirrel selects a random direction and check if the next location at
+        // the direction is valid and empty. If yes, then it moves to the
+        // location, otherwise it waits.
+        Direction dir = Util.getRandomDirection();
+        Location targetLocation = new Location(this.getLocation(), dir);
+        if (Util.isValidLocation(world, targetLocation) && Util.isLocationEmpty(world, targetLocation)) {
+            this.energy--; // Loses 1 energy regardless of action.
+            return new MoveCommand(this, targetLocation);
+        }
+
+        return new WaitCommand();
     }
 
     @Override
