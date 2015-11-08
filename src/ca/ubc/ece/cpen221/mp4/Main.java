@@ -24,6 +24,8 @@ public class Main {
 	static final int INITIAL_GRASS = X_DIM * Y_DIM / SPACES_PER_GRASS;
 	static final int INITIAL_GNATS = INITIAL_GRASS / 4;
 	static final int INITIAL_RABBITS = INITIAL_GRASS / 4;
+	static final int INITIAL_FISH = INITIAL_GRASS / 7; 
+    static final int INITIAL_SQUIRREL = INITIAL_GRASS / 20; 
 	static final int INITIAL_FOXES = INITIAL_GRASS / 32;
 	static final int INITIAL_TIGERS = INITIAL_GRASS / 32;
 	static final int INITIAL_BEARS = INITIAL_GRASS / 40;
@@ -57,6 +59,9 @@ public class Main {
 		addGnats(world);
 		addRabbits(world);
 		addFoxes(world);
+//		addBears(world); 
+//		addFish(world);
+//		addSquirrel(world); 
 		// TODO: You may add your own creatures here!
 	}
 
@@ -95,4 +100,34 @@ public class Main {
 			world.addActor(rabbit);
 		}
 	}
+	
+//   private void addBears(World world) {
+//        BearAI bearAI = new BearAI();
+//        for (int i = 0; i < INITIAL_BEARS; i++) {
+//            Location loc = Util.getRandomEmptyLocation(world);
+//            Bear bear = new Bear(bearAI, loc);
+//            world.addItem(bear);
+//            world.addActor(bear);
+//        }
+//    }
+	
+//       private void addFish(World world) {
+//            FishAI fishAI = new FishAI();
+//            for (int i = 0; i < INITIAL_FISH; i++) {
+//                Location loc = Util.getRandomEmptyLocation(world);
+//                Fish fish = new Fish(fishAI, loc);
+//                world.addItem(fish);
+//                world.addActor(fish);
+//            }
+//        }
+	
+       private void addSquirrel(World world) {
+           RabbitAI squirrelAI = new RabbitAI();
+            for (int i = 0; i < INITIAL_SQUIRREL; i++) {
+                Location loc = Util.getRandomEmptyLocation(world);
+                Rabbit squirrel = new Rabbit(squirrelAI, loc);
+                world.addItem(squirrel);
+                world.addActor(squirrel);
+            }
+        }
 }

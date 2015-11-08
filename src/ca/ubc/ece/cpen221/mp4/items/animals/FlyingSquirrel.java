@@ -10,41 +10,40 @@ import ca.ubc.ece.cpen221.mp4.ai.AI;
 import ca.ubc.ece.cpen221.mp4.commands.Command;
 import ca.ubc.ece.cpen221.mp4.items.LivingItem;
 
-public class Bear implements ArenaAnimal {
+public class FlyingSquirrel implements ArenaAnimal {
 
-    private static final int INITIAL_ENERGY = 200;
-    private static final int MAX_ENERGY = 1600;
-    private static final int STRENGTH = 900;
+    private static final int INITIAL_ENERGY = 40;
+    private static final int MAX_ENERGY = 70;
+    private static final int STRENGTH = 75;
+    private static final int MIN_BREEDING_ENERGY = 20;
     private static final int VIEW_RANGE = 4;
-    private static final int MIN_BREEDING_ENERGY = 300;
-    private static final int COOLDOWN = 5;
-    private static final ImageIcon bearImage = Util.loadImage("bear.gif");
+    private static final int COOLDOWN = 2;
+    private static final ImageIcon squirrelImage = Util.loadImage("squirrel.gif");
 
     private final AI ai;
 
     private Location location;
     private int energy;
-    
-    /**
-     * Create a new {@link Bear} with an {@link AI} at
-     * <code>initialLocation</code>. The <code> initialLocation </code> must be
-     * valid and empty
-     *
-     * @param bearAI
-     *            the AI designed for bears
-     * @param initialLocation
-     *            the location where this Bear will be created
-     */
-    public Bear(AI bearAI, Location initialLocation) {
-        this.ai = bearAI;
-        this.location = initialLocation;
 
-        this.energy = INITIAL_ENERGY;
+    /**
+     * Create a new {@link FlyingSquirrel} with an {@link AI} at
+     * <code> initialLocation </code>. The <code> initialLoation
+     * </code> must be valid and empty.
+     *
+     * @param squirrelAI
+     *            : The AI designed for FlyingSquirrel
+     * @param initialLocation
+     *            : the location where this squirrel will be created
+     */
+    public FlyingSquirrel(AI squirrelAI, Location initialLocation) {
+        ai = squirrelAI;
+        location = initialLocation;
+        energy = INITIAL_ENERGY;
     }
 
     @Override
     public LivingItem breed() {
-        Bear child = new Bear(ai, location);
+        FlyingSquirrel child = new FlyingSquirrel(ai, location);
         child.energy = energy / 2;
         this.energy = energy / 2;
         return child;
@@ -53,7 +52,7 @@ public class Bear implements ArenaAnimal {
     @Override
     public void eat(Food food) {
         // Note that energy does not exceed energy limit.
-        energy = Math.min(MAX_ENERGY, energy + food.getMeatCalories());
+        energy = Math.min(MAX_ENERGY, energy + food.getPlantCalories());
     }
 
     @Override
@@ -68,7 +67,7 @@ public class Bear implements ArenaAnimal {
 
     @Override
     public ImageIcon getImage() {
-        return bearImage;
+        return squirrelImage;
     }
 
     @Override
@@ -100,7 +99,7 @@ public class Bear implements ArenaAnimal {
 
     @Override
     public String getName() {
-        return "Bear";
+        return "Squirrel";
     }
 
     @Override
@@ -112,7 +111,7 @@ public class Bear implements ArenaAnimal {
 
     @Override
     public int getPlantCalories() {
-        // This Bear is not a plant.
+        // This FlyingSquirrel is not a plant.
         return 0;
     }
 
@@ -133,11 +132,12 @@ public class Bear implements ArenaAnimal {
 
     @Override
     public void loseEnergy(int energyLoss) {
-        this.energy = this.energy - energyLoss;
+        this.energy -= energyLoss;
     }
 
     @Override
     public void moveTo(Location targetLocation) {
         location = targetLocation;
+
     }
 }

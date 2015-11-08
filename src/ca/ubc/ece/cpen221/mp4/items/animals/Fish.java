@@ -10,15 +10,15 @@ import ca.ubc.ece.cpen221.mp4.ai.AI;
 import ca.ubc.ece.cpen221.mp4.commands.Command;
 import ca.ubc.ece.cpen221.mp4.items.LivingItem;
 
-public class Bear implements ArenaAnimal {
+public class Fish implements ArenaAnimal {
 
-    private static final int INITIAL_ENERGY = 200;
-    private static final int MAX_ENERGY = 1600;
-    private static final int STRENGTH = 900;
-    private static final int VIEW_RANGE = 4;
-    private static final int MIN_BREEDING_ENERGY = 300;
-    private static final int COOLDOWN = 5;
-    private static final ImageIcon bearImage = Util.loadImage("bear.gif");
+    private static final int INITIAL_ENERGY = 20;
+    private static final int MAX_ENERGY = 40;
+    private static final int STRENGTH = 25;
+    private static final int VIEW_RANGE = 1;
+    private static final int MIN_BREEDING_ENERGY = 7;
+    private static final int COOLDOWN = 2;
+    private static final ImageIcon fishImage = Util.loadImage("fish.gif");
 
     private final AI ai;
 
@@ -26,17 +26,17 @@ public class Bear implements ArenaAnimal {
     private int energy;
     
     /**
-     * Create a new {@link Bear} with an {@link AI} at
+     * Create a new {@link Fish} with an {@link AI} at
      * <code>initialLocation</code>. The <code> initialLocation </code> must be
      * valid and empty
      *
-     * @param bearAI
-     *            the AI designed for bears
+     * @param fishAI
+     *            the AI designed for fish
      * @param initialLocation
-     *            the location where this Bear will be created
+     *            the location where this Fish will be created
      */
-    public Bear(AI bearAI, Location initialLocation) {
-        this.ai = bearAI;
+    public Fish(AI fishAI, Location initialLocation) {
+        this.ai = fishAI;
         this.location = initialLocation;
 
         this.energy = INITIAL_ENERGY;
@@ -44,7 +44,7 @@ public class Bear implements ArenaAnimal {
 
     @Override
     public LivingItem breed() {
-        Bear child = new Bear(ai, location);
+        Fish child = new Fish(ai, location);
         child.energy = energy / 2;
         this.energy = energy / 2;
         return child;
@@ -68,7 +68,7 @@ public class Bear implements ArenaAnimal {
 
     @Override
     public ImageIcon getImage() {
-        return bearImage;
+        return fishImage;
     }
 
     @Override
@@ -100,7 +100,7 @@ public class Bear implements ArenaAnimal {
 
     @Override
     public String getName() {
-        return "Bear";
+        return "Fish";
     }
 
     @Override
@@ -112,7 +112,7 @@ public class Bear implements ArenaAnimal {
 
     @Override
     public int getPlantCalories() {
-        // This Bear is not a plant.
+        // This Fish is not a plant.
         return 0;
     }
 
