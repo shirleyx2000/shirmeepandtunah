@@ -6,26 +6,26 @@ import ca.ubc.ece.cpen221.mp4.Location;
 import ca.ubc.ece.cpen221.mp4.Util;
 import ca.ubc.ece.cpen221.mp4.items.MoveableItem;
 
-public class HotAirBalloon implements MoveableItem {
+public class HamsterBall implements MoveableItem {
 
-    private static final int STRENGTH = 5; // in air, so almost no strength unless you're flying? 
-    private static final int COOLDOWN = 5; //slow
-    private static final ImageIcon balloonImage = Util.loadImage("balloon.gif");
+    private static final int STRENGTH = 20;
+    private static final int COOLDOWN = 10; //medium fast 
+    private static final ImageIcon ballImage = Util.loadImage("hamster.gif");
     private Location location;
     private int energy;
     
-    public HotAirBalloon(Location initialLocation) {
+    public HamsterBall(Location initialLocation) {
         this.location = initialLocation;
     }    
     
     @Override
     public ImageIcon getImage() {
-        return balloonImage;
+        return ballImage;
     }
 
     @Override
     public String getName() {
-        return "Hot Air Balloon"; 
+        return "Hamster Ball"; 
     }
 
     @Override
@@ -41,24 +41,25 @@ public class HotAirBalloon implements MoveableItem {
 
     @Override
     public void loseEnergy(int energy) {
-        // TODO Auto-generated method stub ????
+        // TODO Auto-generated method stub
         this.energy = this.energy - energy;
     }
 
     @Override
     public boolean isDead() {
+        // TODO Auto-generated method stub
         return energy<=0;
     }
 
     @Override
     public int getPlantCalories() {
-        //Hot air balloon does not contain meat calories
+        //hamster ball does not contain meat calories
         return 0;
     }
 
     @Override
     public int getMeatCalories() {
-        //Hot air balloon does not contain meat calories
+        //hamster ball does not contain meat calories
         return 0;
     }
 
@@ -69,8 +70,7 @@ public class HotAirBalloon implements MoveableItem {
 
     @Override
     public int getMovingRange() {
-        return 5;
+        return 2;
     }
-
 
 }
