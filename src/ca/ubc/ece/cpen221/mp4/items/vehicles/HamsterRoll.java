@@ -2,20 +2,24 @@ package ca.ubc.ece.cpen221.mp4.items.vehicles;
 
 import javax.swing.ImageIcon;
 
+import ca.ubc.ece.cpen221.mp4.Direction;
 import ca.ubc.ece.cpen221.mp4.Location;
 import ca.ubc.ece.cpen221.mp4.Util;
 import ca.ubc.ece.cpen221.mp4.World;
 import ca.ubc.ece.cpen221.mp4.commands.Command;
+import ca.ubc.ece.cpen221.mp4.commands.MoveCommand;
+import ca.ubc.ece.cpen221.mp4.commands.WaitCommand;
 
 public class HamsterRoll implements Vehicle {
 
     private static final int STRENGTH = 20;
     private static final int COOLDOWN = 10; //medium fast 
     private static final ImageIcon ballImage = Util.loadImage("hamster.gif");
-    private static final int VIEW_RANGE = 1;
+    private static final int VIEW_RANGE = 6;
     private Location location;
     private boolean isDead; 
     private int energy;
+    private int currCoolDown = getCoolDownPeriod(); 
     
     public HamsterRoll(Location initialLocation) {
         this.location = initialLocation;
@@ -29,15 +33,35 @@ public class HamsterRoll implements Vehicle {
 
     @Override
     public Command getNextAction(World world) {
-        return null;
+        Direction dir = Util.getRandomDirection();
+        Location targetLocation = new Location(this.getLocation(), dir);
+        if (Util.isValidLocation(world, targetLocation) && Util.isLocationEmpty(world, targetLocation)) {
+            moveTo(targetLocation);
+            return new MoveCommand(this, targetLocation);
+        }
+
+        return new WaitCommand();
     }
 
     @Override
     public void moveTo(Location targetLocation) {
         // TODO Auto-generated method stub
+        
 
     }
+    
+    void accelerate() {
+        if (currCoolDown > 0) {
+            currCoolDown--; 
+        }
+    }
 
+    void decelerate() {
+        if (currCoolDown < 0) {
+            currCoolDown++; 
+        }
+    }
+    
     @Override
     public int getMovingRange() {
         return VIEW_RANGE; 
