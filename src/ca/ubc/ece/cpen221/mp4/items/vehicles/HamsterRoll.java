@@ -4,20 +4,45 @@ import javax.swing.ImageIcon;
 
 import ca.ubc.ece.cpen221.mp4.Location;
 import ca.ubc.ece.cpen221.mp4.Util;
-import ca.ubc.ece.cpen221.mp4.items.MoveableItem;
+import ca.ubc.ece.cpen221.mp4.World;
+import ca.ubc.ece.cpen221.mp4.commands.Command;
 
-public class HamsterBall implements MoveableItem {
+public class HamsterRoll implements Vehicle {
 
     private static final int STRENGTH = 20;
     private static final int COOLDOWN = 10; //medium fast 
     private static final ImageIcon ballImage = Util.loadImage("hamster.gif");
+    private static final int VIEW_RANGE = 1;
     private Location location;
+    private boolean isDead; 
     private int energy;
     
-    public HamsterBall(Location initialLocation) {
+    public HamsterRoll(Location initialLocation) {
         this.location = initialLocation;
-    }    
+        this.isDead = false; 
+    }
     
+    @Override
+    public int getCoolDownPeriod() {
+        return COOLDOWN;
+    }
+
+    @Override
+    public Command getNextAction(World world) {
+        return null;
+    }
+
+    @Override
+    public void moveTo(Location targetLocation) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public int getMovingRange() {
+        return VIEW_RANGE; 
+    }
+
     @Override
     public ImageIcon getImage() {
         return ballImage;
@@ -25,13 +50,12 @@ public class HamsterBall implements MoveableItem {
 
     @Override
     public String getName() {
-        return "Hamster Ball"; 
+        return "hamster";
     }
 
     @Override
     public Location getLocation() {
         return location;
-
     }
 
     @Override
@@ -41,36 +65,23 @@ public class HamsterBall implements MoveableItem {
 
     @Override
     public void loseEnergy(int energy) {
-        // TODO Auto-generated method stub
         this.energy = this.energy - energy;
     }
 
     @Override
     public boolean isDead() {
-        // TODO Auto-generated method stub
-        return energy<=0;
+        //comparison of strengths where?
+        return false;
     }
 
     @Override
     public int getPlantCalories() {
-        //hamster ball does not contain meat calories
         return 0;
     }
 
     @Override
     public int getMeatCalories() {
-        //hamster ball does not contain meat calories
         return 0;
-    }
-
-    @Override
-    public void moveTo(Location targetLocation) {
-        location = targetLocation;
-    }
-
-    @Override
-    public int getMovingRange() {
-        return 2;
     }
 
 }

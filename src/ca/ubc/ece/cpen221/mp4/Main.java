@@ -6,6 +6,7 @@ import ca.ubc.ece.cpen221.mp4.ai.*;
 import ca.ubc.ece.cpen221.mp4.items.Gardener;
 import ca.ubc.ece.cpen221.mp4.items.Grass;
 import ca.ubc.ece.cpen221.mp4.items.animals.*;
+import ca.ubc.ece.cpen221.mp4.items.extra.Tree;
 import ca.ubc.ece.cpen221.mp4.staff.WorldImpl;
 import ca.ubc.ece.cpen221.mp4.staff.WorldUI;
 
@@ -21,11 +22,13 @@ public class Main {
 	static final int X_DIM = 40;
 	static final int Y_DIM = 40;
 	static final int SPACES_PER_GRASS = 7;
+	static final int SPACES_PER_TREE = 50; 
+	static final int INITIAL_TREE = X_DIM * Y_DIM / SPACES_PER_TREE; 
 	static final int INITIAL_GRASS = X_DIM * Y_DIM / SPACES_PER_GRASS;
 	static final int INITIAL_GNATS = INITIAL_GRASS / 4;
 	static final int INITIAL_RABBITS = INITIAL_GRASS / 4;
 	static final int INITIAL_FISH = INITIAL_GRASS / 7; 
-    static final int INITIAL_SQUIRREL = INITIAL_GRASS / 20; 
+    static final int INITIAL_SQUIRREL = INITIAL_GRASS / 30; 
 	static final int INITIAL_FOXES = INITIAL_GRASS / 32;
 	static final int INITIAL_TIGERS = INITIAL_GRASS / 32;
 	static final int INITIAL_BEARS = INITIAL_GRASS / 40;
@@ -36,6 +39,7 @@ public class Main {
 	static final int INITIAL_MANS = INITIAL_GRASS / 150;
 	static final int INITIAL_WOMANS = INITIAL_GRASS / 100;
 	static final int INITIAL_HUNTERS = INITIAL_GRASS / 150;
+
 
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
@@ -54,6 +58,7 @@ public class Main {
 
 	public void initialize(World world) {
 		addGrass(world);
+		addTree(world); 
 		world.addActor(new Gardener());
 
 		addGnats(world);
@@ -65,6 +70,14 @@ public class Main {
 		// TODO: You may add your own creatures here!
 	}
 
+	//Ensure trees are located at the corner, because we don't want it to interact with 
+	private void addTree(World world) {
+	    for (int i = 0; i < INITIAL_TREE; i++) {
+	        Location loc = Util.getRandomEmptyLocation(world, 0, 0, 10, 10);
+	        world.addItem(new Tree(loc));
+	    }
+	}
+	
 	private void addGrass(World world) {
 		for (int i = 0; i < INITIAL_GRASS; i++) {
 			Location loc = Util.getRandomEmptyLocation(world);
@@ -100,12 +113,13 @@ public class Main {
     }
 
     private void addSquirrel(World world) {
-         for (int i = 0; i < INITIAL_SQUIRREL; i++) {
-             Location loc = Util.getRandomEmptyLocation(world);
-             FlyingSquirrel squirrel = new FlyingSquirrel(loc);
-             world.addItem(squirrel);
-             world.addActor(squirrel);
-         }
+        
+        for (int i = 0; i < INITIAL_SQUIRREL; i++) {
+            Location loc = Util.getRandomEmptyLocation(world, 0, 0, 11, 11);
+            FlyingSquirrel squirrel = new FlyingSquirrel(loc);
+            world.addItem(squirrel);
+            world.addActor(squirrel);
+        }
      }
     
 	private void addFoxes(World world) {

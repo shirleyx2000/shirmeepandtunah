@@ -2,11 +2,14 @@ package ca.ubc.ece.cpen221.mp4.items.vehicles;
 
 import javax.swing.ImageIcon;
 
+import ca.ubc.ece.cpen221.mp4.Actor;
 import ca.ubc.ece.cpen221.mp4.Location;
 import ca.ubc.ece.cpen221.mp4.Util;
+import ca.ubc.ece.cpen221.mp4.World;
+import ca.ubc.ece.cpen221.mp4.commands.Command;
 import ca.ubc.ece.cpen221.mp4.items.MoveableItem;
 
-public class HotAirBalloon implements MoveableItem {
+public class HotAirBalloon implements MoveableItem, Actor {
 
     private static final int STRENGTH = 5; // in air, so almost no strength unless you're flying? 
     private static final int COOLDOWN = 5; //slow
@@ -70,6 +73,18 @@ public class HotAirBalloon implements MoveableItem {
     @Override
     public int getMovingRange() {
         return 5;
+    }
+
+    @Override
+    public int getCoolDownPeriod() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public Command getNextAction(World world) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 

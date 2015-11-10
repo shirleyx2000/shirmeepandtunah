@@ -102,7 +102,7 @@ public class Fish implements ArenaAnimal {
 
     @Override
     public Command getNextAction(World world) {
-        // The FlyingSquirrel selects a random direction and check if the next location at
+        // The Fish selects a random direction in WATER and check if the next location at
         // the direction is valid and empty. If yes, then it moves to the
         // location, otherwise it waits.
         Direction dir = Util.getRandomDirection();

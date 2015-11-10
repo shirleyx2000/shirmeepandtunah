@@ -2,36 +2,30 @@ TODO:
 
 SPEC -> TEST -> IMPLEMENT
 
-1. Create 3 new Animal classes (extend from AbstractArenaAnimal)
-	a. Bear
-		i. Set private fields:
-		
-			private static final int INITIAL_ENERGY = 
-			private static final int MAX_ENERGY =
-			private static final int STRENGTH = 
-			private static final int VIEW_RANGE =
-			private static final int MIN_BREEDING_ENERGY = 
-			private static final int COOLDOWN =
-		
-		ii. Make setter and getter methods
-		iii. Implement breed() and getName()
-		
-	b. Fish
-			see Bear
-			
-	c. Flying squirrel
-			see Bear
+
+1. Create 3 new Animal classes
 	
-2. Implement 3 new Vehicle classes
-	a. Hamster ball
+a. Bear
+	b. Fish
+	c. Flying squirrel
+	
+
+2. Create 3 new Vehicle classes
+	
+a. Hamster ball
 	b. Log raft
 	c. Hot air balloon
 	
+
 3. Create 3 new <own type> classes
-	a. Carnivorous tree
+	
+a. Carnivorous tree
 	b. Island
 	c. Ocean
 
+
+
 4. Add more commands to FoxAI.java 
+
 
 5. Add more commands to RabbitAI.java
