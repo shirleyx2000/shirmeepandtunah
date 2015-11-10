@@ -13,19 +13,6 @@ import ca.ubc.ece.cpen221.mp4.items.MoveableItem;
 
 public interface Vehicle extends Actor, MoveableItem {
     
-    //getCoolDownPeriod
-    //getNextAction
-    //getMovingRange
-    //moveTo
-    //getImage
-    //getLocation
-    //getName
-    //getStrength
-    //isDead
-    //loseEnergy
-    
-            
-
     /**
      * Increases the vehicle's speed by 1 step
      * 

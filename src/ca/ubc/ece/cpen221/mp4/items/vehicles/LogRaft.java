@@ -9,7 +9,7 @@ import ca.ubc.ece.cpen221.mp4.World;
 import ca.ubc.ece.cpen221.mp4.commands.Command;
 import ca.ubc.ece.cpen221.mp4.items.MoveableItem;
 
-public class LogRaft implements MoveableItem, Actor {
+public class LogRaft implements Vehicle {
 
     private static final int STRENGTH = 80; //in water 
     private static final int COOLDOWN = 50; //slow
@@ -85,6 +85,18 @@ public class LogRaft implements MoveableItem, Actor {
     public Command getNextAction(World world) {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public void accelerate() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void decelerate() {
+        // TODO Auto-generated method stub
+        
     }
 
 

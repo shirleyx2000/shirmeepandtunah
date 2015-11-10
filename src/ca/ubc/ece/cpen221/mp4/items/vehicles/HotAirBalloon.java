@@ -9,7 +9,7 @@ import ca.ubc.ece.cpen221.mp4.World;
 import ca.ubc.ece.cpen221.mp4.commands.Command;
 import ca.ubc.ece.cpen221.mp4.items.MoveableItem;
 
-public class HotAirBalloon implements MoveableItem, Actor {
+public class HotAirBalloon implements Vehicle {
 
     private static final int STRENGTH = 5; // in air, so almost no strength unless you're flying? 
     private static final int COOLDOWN = 5; //slow
@@ -85,6 +85,18 @@ public class HotAirBalloon implements MoveableItem, Actor {
     public Command getNextAction(World world) {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public void accelerate() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void decelerate() {
+        // TODO Auto-generated method stub
+        
     }
 
 

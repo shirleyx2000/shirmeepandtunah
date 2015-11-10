@@ -50,13 +50,13 @@ public class HamsterRoll implements Vehicle {
 
     }
     
-    void accelerate() {
+    public void accelerate() {
         if (currCoolDown > 0) {
             currCoolDown--; 
         }
     }
 
-    void decelerate() {
+    public void decelerate() {
         if (currCoolDown < 0) {
             currCoolDown++; 
         }
