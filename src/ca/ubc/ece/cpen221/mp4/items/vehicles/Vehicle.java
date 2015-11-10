@@ -6,9 +6,9 @@ import ca.ubc.ece.cpen221.mp4.items.MoveableItem;
 
 /**
  * A Vehicle is an object in a {@link World} that is defined by:
- *      - Acceleration upon startup and deceleration upon stopping
+ *      - Acceleration upon startup
  *      - Run over and destroy items of lesser strength, otherwise dies
- *      - Can only turn at low speeds
+ *      - Decelerate/slow down upon turning
  */
 
 public interface Vehicle extends Actor, MoveableItem {
@@ -18,7 +18,7 @@ public interface Vehicle extends Actor, MoveableItem {
      * 
      * modifies: decreases the cool down period by 1 step       
      */
-    void accelerate();
+    void increaseSpeed();
     
     
     /**
@@ -26,7 +26,7 @@ public interface Vehicle extends Actor, MoveableItem {
      * 
      * modifies: increases the cool down period by 1 step
      */
-    void decelerate();
+    void decreaseSpeed();
     
     //How to enforce turning only at low speeds???
 
