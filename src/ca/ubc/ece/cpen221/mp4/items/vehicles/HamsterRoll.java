@@ -14,13 +14,14 @@ import ca.ubc.ece.cpen221.mp4.World;
 import ca.ubc.ece.cpen221.mp4.commands.Command;
 import ca.ubc.ece.cpen221.mp4.commands.MoveCommand;
 import ca.ubc.ece.cpen221.mp4.commands.WaitCommand;
+import ca.ubc.ece.cpen221.mp4.items.Item;
 
 public class HamsterRoll implements Vehicle {
 
     private static final ImageIcon ballImage = Util.loadImage("hamster.gif");
     
     //Constants
-    private static final int STRENGTH = 20;
+    private static final int STRENGTH = 40;
     private static final int INITIAL_COOLDOWN = 5; //Min speed; medium fast 
     private static final int MIN_COOLDOWN = 0; //Max speed (smaller number = faster)
     private static final int MOVING_RANGE = 1; //Can only move to adj tile per step
@@ -31,7 +32,6 @@ public class HamsterRoll implements Vehicle {
     private int cooldown = INITIAL_COOLDOWN; 
     private Direction direction = Util.getRandomDirection();
     private boolean isDead = false; 
-    private boolean start = true;
     
     public HamsterRoll(Location initialLocation) {
         this.location = initialLocation;
@@ -78,34 +78,27 @@ public class HamsterRoll implements Vehicle {
         return MOVING_RANGE; 
     }
 
-
     @Override
     public Command getNextAction(World world) {
         
         //HamsterRolls act like cars. If possible, will move to adj. location.
         
-        //Accelerate until reach max speed.
+        //Increment speed unless at max.
         increaseSpeed();
         
         //Move! 
         Location targetLocation = new Location(this.getLocation(), direction);
-        if (Util.isValidLocation(world, targetLocation) && Util.isLocationEmpty(world, targetLocation)) {
-            return new MoveCommand(this, targetLocation);
-        } else{ //Location to move to is either off-grid (i.e. wall) or not empty. 
-            
-            //Obstacle avoidance. Keep track of possible moves.
+        
+        if( !Util.isValidLocation(world, targetLocation) ){
+            //Keep track of possible directions to go towards.
             Map<Direction, Integer> facedDir = new HashMap<Direction, Integer>();
             for( Direction d : Direction.values() ){
                 facedDir.put(d, 0); //Not facing other directions
             }
-            //while loop will only run until possible moves in all 4 directions have been tried
-            while( !Util.isValidLocation(world, targetLocation) || !Util.isLocationEmpty(world, targetLocation) ) { 
+            //Get valid location
+            while( !Util.isValidLocation(world, targetLocation) ) { 
                 System.out.println(facedDir);
                 facedDir.put(direction, 1);
-                if( !facedDir.values().contains(0) ){ 
-                    //At this point, no possible moves left i.e. trapped by other objects.
-                    return new WaitCommand();
-                }
                 //Try random direction. Make sure it hasn't been faced yet.
                 Direction d = Util.getRandomDirection();
                 if( facedDir.get(d).equals(0) ){ 
@@ -113,18 +106,63 @@ public class HamsterRoll implements Vehicle {
                     targetLocation = new Location(this.getLocation(), direction);
                 }
             }
-            //Managed to exit while loop! A possible move has been found.
-            return new MoveCommand(this, targetLocation);
-            
-            
+            //Valid location must have been found.
         }
-            //If item in targetLocation
-                //If item.strength < own strength
-                    //Destroy
-                //Else
-                    //Die
+        
+        if( Util.isLocationEmpty(world, targetLocation) ) {
+            return new MoveCommand(this, targetLocation);
+        } else {
+            //Target (adj) location not empty. Check if item has less strength. If so, destroy. Else, die.
+            for( Item item: world.searchSurroundings(location, this.getMovingRange())){
+                //if( direction.equals(Util.getDirectionTowards(location, item.getLocation())) ){
+                if( item.getLocation().equals(targetLocation) ){
+                  //If the item has strength < HR, then item dies
+                    if( item.getStrength() < this.getStrength() ){
+                        item.loseEnergy(Integer.MAX_VALUE); //*dying noises*
+                        return new MoveCommand(this, targetLocation);
+                    } else if ( item.getStrength() == this.getStrength() ){ //Bounce off object
+                        
+                      //Keep track of possible directions to go towards.
+                      Map<Direction, Integer> facedDir = new HashMap<Direction, Integer>();
+                      for( Direction d : Direction.values() ){
+                          if( d.equals(direction) ){
+                              facedDir.put(d, 1);
+                          } else{
+                              facedDir.put(d, 0); //Not facing other directions
+                          }
+                      }
+                      //while loop will only run until possible moves in all 4 directions have been tried
+                      while( !Util.isValidLocation(world, targetLocation) || !Util.isLocationEmpty(world, targetLocation) ) { 
+                          System.out.println(facedDir);
+                          facedDir.put(direction, 1);
+                          if( !facedDir.values().contains(0) ){ 
+                              //At this point, no possible moves left i.e. trapped by other objects with equal strength.
+                              return new WaitCommand();
+                          }
+                          //Try random direction. Make sure it hasn't been faced yet.
+                          Direction d = Util.getRandomDirection();
+                          if( facedDir.get(d).equals(0) ){ 
+                              direction = d;
+                              targetLocation = new Location(this.getLocation(), direction);
+                          }
+                      }
+                      //Managed to exit while loop! A possible move has been found.
+                      return new MoveCommand(this, targetLocation);
+                        
+                    } else { //Else, HR dies
+                        isDead = true; 
+                        return new WaitCommand();
+                    }
+                }
+            }
+            
+            //And this point here, an adj location is not empty AND there's no item in its surroundings equal to an adj location... Method should not reach here.
+            System.out.println("Unreachable code reached.");
+            return new WaitCommand();
+        }
     }
-    
+
+
     public void increaseSpeed() {
         if (cooldown > 0) {
             cooldown--; 
