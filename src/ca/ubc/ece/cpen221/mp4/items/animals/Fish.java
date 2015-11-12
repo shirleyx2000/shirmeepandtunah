@@ -27,7 +27,7 @@ public class Fish implements ArenaAnimal {
     private int energy;
     
     /**
-     * Create a new Fish at <code>initialLocation</code>. The
+     * Create a new Land Fish at <code>initialLocation</code>. The
      * <code>initialLocation</code> must be valid and empty.
      *
      * @param initialLocation
@@ -35,7 +35,6 @@ public class Fish implements ArenaAnimal {
      */
     public Fish(Location initialLocation) {
         this.location = initialLocation;
-
         this.energy = INITIAL_ENERGY;
     }
 
@@ -102,9 +101,6 @@ public class Fish implements ArenaAnimal {
 
     @Override
     public Command getNextAction(World world) {
-        // The Fish selects a random direction in WATER and check if the next location at
-        // the direction is valid and empty. If yes, then it moves to the
-        // location, otherwise it waits.
         Direction dir = Util.getRandomDirection();
         Location targetLocation = new Location(this.getLocation(), dir);
         if (Util.isValidLocation(world, targetLocation) && Util.isLocationEmpty(world, targetLocation)) {
