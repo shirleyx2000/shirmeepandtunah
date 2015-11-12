@@ -1,7 +1,5 @@
 package ca.ubc.ece.cpen221.mp4.items.animals;
 
-import java.util.Set;
-
 import javax.swing.ImageIcon;
 
 import ca.ubc.ece.cpen221.mp4.Direction;
@@ -9,7 +7,6 @@ import ca.ubc.ece.cpen221.mp4.Food;
 import ca.ubc.ece.cpen221.mp4.Location;
 import ca.ubc.ece.cpen221.mp4.Util;
 import ca.ubc.ece.cpen221.mp4.World;
-//import ca.ubc.ece.cpen221.mp4.ai.AI;
 import ca.ubc.ece.cpen221.mp4.commands.Command;
 import ca.ubc.ece.cpen221.mp4.commands.MoveCommand;
 import ca.ubc.ece.cpen221.mp4.commands.WaitCommand;
@@ -26,9 +23,9 @@ public class FlyingSquirrel implements ArenaAnimal {
     private static final int COOLDOWN = 2;
     private static final ImageIcon squirrelImage = Util.loadImage("squirrel.gif");
 
-
     private Location location;
     private int energy;
+    private boolean isDead;
 
     /**
      * Create a new FlyingSquirrel at <code>initialLocation</code>. The
@@ -75,23 +72,23 @@ public class FlyingSquirrel implements ArenaAnimal {
     @Override
     public void loseEnergy(int energy) {
         this.energy -= energy;
+        if( this.energy <= 0){
+            isDead = true;
+        }
     }
 
     @Override
     public boolean isDead() {
-        return energy <= 0;
-//        return false;
+        return isDead;
     }
 
     @Override
     public int getPlantCalories() {
-        // TODO Auto-generated method stub
-        return 0;
+        return 0; //Not a plant
     }
 
     @Override
     public int getMeatCalories() {
-        // TODO Auto-generated method stub
         return energy;
     }
 
@@ -107,12 +104,9 @@ public class FlyingSquirrel implements ArenaAnimal {
         for (Item item : world.searchSurroundings(this)) {
             if (item.getName().equals("tree")){
                 this.energy--; //loses energy if it moves
-                System.out.println (item.getName());
                 Direction dir = Util.getDirectionTowards(this.getLocation(), item.getLocation());
-                System.out.println (dir.toString());
                 Location targetLocation = new Location(this.getLocation(), dir);
                 if (Util.isValidLocation(world, targetLocation) && Util.isLocationEmpty(world, targetLocation)) {
-                    System.out.println(targetLocation.toString());
                     return new MoveCommand(this, targetLocation);
                 }
             }
@@ -120,15 +114,6 @@ public class FlyingSquirrel implements ArenaAnimal {
         }
         
         return new WaitCommand(); 
-        
-//        Direction dir1 = Util.getRandomDirection();
-//        Location targetLocation = new Location(this.getLocation(), dir1);
-//        if (Util.isValidLocation(world, targetLocation) && Util.isLocationEmpty(world, targetLocation)) {
-//            this.energy--; // Loses 1 energy regardless of action.
-//            return new MoveCommand(this, targetLocation);
-//        }
-//
-//        return new WaitCommand();
     }
 
     @Override

@@ -1,7 +1,10 @@
 package ca.ubc.ece.cpen221.mp4.items.vehicles;
 
 import ca.ubc.ece.cpen221.mp4.Actor;
+import ca.ubc.ece.cpen221.mp4.Direction;
+import ca.ubc.ece.cpen221.mp4.Location;
 import ca.ubc.ece.cpen221.mp4.World;
+import ca.ubc.ece.cpen221.mp4.commands.Command;
 import ca.ubc.ece.cpen221.mp4.items.MoveableItem;
 
 /**
@@ -14,25 +17,18 @@ import ca.ubc.ece.cpen221.mp4.items.MoveableItem;
 public interface Vehicle extends Actor, MoveableItem {
     
     /**
-     * Increases the vehicle's speed by 1 step
+     * Increases the vehicle's speed by decreasing the cooldown period by 1 step
      * 
-     * modifies: decreases the cool down period by 1 step       
+     * modifies: cooldown period decreases by 1 step
      */
-    void increaseSpeed();
+    void speedUp();
     
     
     /**
-     * Decreases the vehicle's speed by 1 step
+     * Decreases the vehicle's speed by increasing the cooldown period by 1 step
      * 
-     * modifies: increases the cool down period by 1 step
+     * modifies: cooldown period increases by 1 step
      */
-    void decreaseSpeed();
-    
-    //How to enforce turning only at low speeds???
-
-    
-    
-        
-    
-    
+    void slowDown();
+ 
 }

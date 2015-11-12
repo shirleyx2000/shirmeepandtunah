@@ -16,7 +16,7 @@ public class Bear implements ArenaAnimal {
 
     private static final int INITIAL_ENERGY = 200;
     private static final int MAX_ENERGY = 1600;
-    private static final int STRENGTH = 900;
+    private static final int STRENGTH = 150;
     private static final int VIEW_RANGE = 4;
     private static final int MIN_BREEDING_ENERGY = 300;
     private static final int COOLDOWN = 5;
