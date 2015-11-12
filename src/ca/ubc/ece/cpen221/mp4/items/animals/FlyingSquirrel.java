@@ -1,7 +1,5 @@
 package ca.ubc.ece.cpen221.mp4.items.animals;
 
-import java.util.Set;
-
 import javax.swing.ImageIcon;
 
 import ca.ubc.ece.cpen221.mp4.Direction;
@@ -9,7 +7,6 @@ import ca.ubc.ece.cpen221.mp4.Food;
 import ca.ubc.ece.cpen221.mp4.Location;
 import ca.ubc.ece.cpen221.mp4.Util;
 import ca.ubc.ece.cpen221.mp4.World;
-//import ca.ubc.ece.cpen221.mp4.ai.AI;
 import ca.ubc.ece.cpen221.mp4.commands.Command;
 import ca.ubc.ece.cpen221.mp4.commands.MoveCommand;
 import ca.ubc.ece.cpen221.mp4.commands.WaitCommand;
@@ -102,17 +99,14 @@ public class FlyingSquirrel implements ArenaAnimal {
 
     @Override
     public Command getNextAction(World world) {
-        // The FlyingSquirrel selects a random tree location. 
+        // The FlyingSquirrel stays by the trees 
         // Since no new trees are planted, it just keeps moving from tree to tree
         for (Item item : world.searchSurroundings(this)) {
             if (item.getName().equals("tree")){
                 this.energy--; //loses energy if it moves
-                System.out.println (item.getName());
                 Direction dir = Util.getDirectionTowards(this.getLocation(), item.getLocation());
-                System.out.println (dir.toString());
                 Location targetLocation = new Location(this.getLocation(), dir);
                 if (Util.isValidLocation(world, targetLocation) && Util.isLocationEmpty(world, targetLocation)) {
-                    System.out.println(targetLocation.toString());
                     return new MoveCommand(this, targetLocation);
                 }
             }
@@ -120,15 +114,6 @@ public class FlyingSquirrel implements ArenaAnimal {
         }
         
         return new WaitCommand(); 
-        
-//        Direction dir1 = Util.getRandomDirection();
-//        Location targetLocation = new Location(this.getLocation(), dir1);
-//        if (Util.isValidLocation(world, targetLocation) && Util.isLocationEmpty(world, targetLocation)) {
-//            this.energy--; // Loses 1 energy regardless of action.
-//            return new MoveCommand(this, targetLocation);
-//        }
-//
-//        return new WaitCommand();
     }
 
     @Override
