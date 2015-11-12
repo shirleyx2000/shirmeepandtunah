@@ -22,7 +22,7 @@ public class HamsterRoll implements Vehicle {
     
     //Constants
     private static final int STRENGTH = 40;
-    private static final int INITIAL_COOLDOWN = 5; //Min speed; medium fast 
+    private static final int INITIAL_COOLDOWN = 3; //Min speed; medium fast 
     private static final int MIN_COOLDOWN = 0; //Max speed (smaller number = faster)
     private static final int MOVING_RANGE = 1; //Can only move to adj tile per step
     
@@ -59,16 +59,6 @@ public class HamsterRoll implements Vehicle {
     }
     
     @Override
-    public int getPlantCalories() {
-        return 0;
-    }
-
-    @Override
-    public int getMeatCalories() {
-        return 0;
-    }
-    
-    @Override
     public int getCoolDownPeriod() {
         return cooldown;
     }
@@ -89,6 +79,33 @@ public class HamsterRoll implements Vehicle {
         //Move! 
         Location targetLocation = new Location(this.getLocation(), direction);
         
+        //If object within range of 2 tiles in current direction, slow down.
+        for( Item nearbyItem : world.searchSurroundings(this.getLocation(), 2) ){
+            if( Util.getDirectionTowards(this.getLocation(), nearbyItem.getLocation()).equals(direction) ){
+                decreaseSpeed();
+                decreaseSpeed();
+            }
+        }
+        
+        //If there is a wall within 2 tiles in its current direction, slow down
+        int range = 3;
+        int x = this.getLocation().getX();
+        int y = this.getLocation().getY();
+        if( direction.equals(Direction.NORTH) ){
+            y+=range;
+        } else if( direction.equals(Direction.EAST) ){
+            x+=range;
+        } else if( direction.equals(Direction.SOUTH) ){
+            y-=range;
+        } else {
+            x-=range;
+        } 
+        if( !Util.isValidLocation(world, new Location(x, y))){
+            decreaseSpeed();
+            decreaseSpeed();
+        }
+        
+        //Faced with wall...
         if( !Util.isValidLocation(world, targetLocation) ){
             //Keep track of possible directions to go towards.
             Map<Direction, Integer> facedDir = new HashMap<Direction, Integer>();
@@ -112,16 +129,14 @@ public class HamsterRoll implements Vehicle {
         if( Util.isLocationEmpty(world, targetLocation) ) {
             return new MoveCommand(this, targetLocation);
         } else {
-            //Target (adj) location not empty. Check if item has less strength. If so, destroy. Else, die.
+            //Target (adj) location not empty. Check if item has less strength. If so, destroy. If equal, bounce off. Else, die.
             for( Item item: world.searchSurroundings(location, this.getMovingRange())){
-                //if( direction.equals(Util.getDirectionTowards(location, item.getLocation())) ){
                 if( item.getLocation().equals(targetLocation) ){
                   //If the item has strength < HR, then item dies
                     if( item.getStrength() < this.getStrength() ){
                         item.loseEnergy(Integer.MAX_VALUE); //*dying noises*
                         return new MoveCommand(this, targetLocation);
                     } else if ( item.getStrength() == this.getStrength() ){ //Bounce off object
-                        
                       //Keep track of possible directions to go towards.
                       Map<Direction, Integer> facedDir = new HashMap<Direction, Integer>();
                       for( Direction d : Direction.values() ){
@@ -146,7 +161,7 @@ public class HamsterRoll implements Vehicle {
                               targetLocation = new Location(this.getLocation(), direction);
                           }
                       }
-                      //Managed to exit while loop! A possible move has been found.
+                      //Bouncing off object here.
                       return new MoveCommand(this, targetLocation);
                         
                     } else { //Else, HR dies
@@ -164,7 +179,7 @@ public class HamsterRoll implements Vehicle {
 
 
     public void increaseSpeed() {
-        if (cooldown > 0) {
+        if (cooldown > MIN_COOLDOWN) {
             cooldown--; 
         } else {
             cooldown = MIN_COOLDOWN; //Max speed
@@ -172,7 +187,7 @@ public class HamsterRoll implements Vehicle {
     }
 
     public void decreaseSpeed() {
-        if (cooldown < this.getCoolDownPeriod()) {
+        if (cooldown < INITIAL_COOLDOWN) {
             cooldown++; 
         } else {
             cooldown = INITIAL_COOLDOWN;
@@ -192,6 +207,16 @@ public class HamsterRoll implements Vehicle {
     @Override
     public boolean isDead() {
         return isDead;
+    }
+
+    @Override
+    public int getPlantCalories() {
+        return 0;
+    }
+
+    @Override
+    public int getMeatCalories() {
+        return 0;
     }
 
 
