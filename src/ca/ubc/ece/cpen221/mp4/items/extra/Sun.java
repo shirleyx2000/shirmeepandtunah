@@ -6,44 +6,41 @@ import ca.ubc.ece.cpen221.mp4.Location;
 import ca.ubc.ece.cpen221.mp4.Util;
 import ca.ubc.ece.cpen221.mp4.items.Item;
 
-public class Tree implements Item {
+public class Sun implements Item {
 
-    private final static ImageIcon treeImage = Util.loadImage("tree.gif");
-
-    private Location location;
-    private boolean isDead;
+    private final static ImageIcon sunImage = Util.loadImage("sun.gif");
     
+    private Location location;
     /**
-     * Places a Tree at <code> location </code>. The location must be valid and
-     * empty. Only way to die is through collision with car? 
+     * Places a Sun at <code> location </code>. The location must be valid and
+     * empty. The sun is the strongest, it should destroy everything 
+     * that tries to invade its location.
      *
      * @param location
-     *            : the location where this tree will be created
+     *            : the one location where this sun will be created
      */
-    public Tree(Location location) {
+    public Sun(Location location) {
         this.location = location;
     }
     
     @Override
     public int getPlantCalories() {
-        //same as plants 
-        return 10;
+        return 0;
     }
 
     @Override
     public int getMeatCalories() {
-        // not a meat
         return 0;
     }
 
     @Override
     public ImageIcon getImage() {
-        return treeImage;
+        return sunImage;
     }
 
     @Override
     public String getName() {
-        return "tree";
+        return "sun";
     }
 
     @Override
@@ -53,19 +50,19 @@ public class Tree implements Item {
 
     @Override
     public int getStrength() {
-        //stronger than all animals
-        return 1000;
+        //strongest
+        //if used, will destroy others
+        return 100000;
     }
 
     @Override
     public void loseEnergy(int energy) {
-        // tree shouldn't die because we have no planters
-        isDead = false; 
+        //it can never lose energy 
     }
 
     @Override
     public boolean isDead() {
-        // groot shall not die!
+        // will never die!
         return false;
     }
 

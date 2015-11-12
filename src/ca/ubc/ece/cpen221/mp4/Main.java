@@ -6,6 +6,8 @@ import ca.ubc.ece.cpen221.mp4.ai.*;
 import ca.ubc.ece.cpen221.mp4.items.Gardener;
 import ca.ubc.ece.cpen221.mp4.items.Grass;
 import ca.ubc.ece.cpen221.mp4.items.animals.*;
+import ca.ubc.ece.cpen221.mp4.items.extra.Flower;
+import ca.ubc.ece.cpen221.mp4.items.extra.Sun;
 import ca.ubc.ece.cpen221.mp4.items.extra.Tree;
 import ca.ubc.ece.cpen221.mp4.items.vehicles.HamsterRoll;
 import ca.ubc.ece.cpen221.mp4.items.vehicles.HotAirBalloon;
@@ -31,7 +33,7 @@ public class Main {
 	static final int INITIAL_HAMSTERROLL = INITIAL_GRASS / 150; 
 	static final int INITIAL_HOTAIRBALLOON = INITIAL_GRASS / 40; 
 	static final int INITIAL_LOGRAFT = INITIAL_GRASS / 40; 
-	static final int INITIAL_GNATS = INITIAL_GRASS / 40;
+	static final int INITIAL_GNATS = INITIAL_GRASS / 4;
 	static final int INITIAL_RABBITS = INITIAL_GRASS / 4;
 	static final int INITIAL_FISH = INITIAL_GRASS / 7; 
     static final int INITIAL_SQUIRREL = INITIAL_GRASS / 30; 
@@ -63,9 +65,12 @@ public class Main {
 	}
 
 	public void initialize(World world) {
-	    
+	    //sun must be added first to ensure it's location at corner
+	    addSingleSun(world);
 		addGrass(world);
 		addTree(world); 
+	    //Add extra items to world
+        addFlower(world);
 		world.addActor(new Gardener());
 
 		//Add animals
@@ -81,7 +86,7 @@ public class Main {
 		addHotAirBalloon(world);
 		addLogRaft(world);
 		
-		//Add extra items to world
+
 	}
 	
     private void addHamsterRolls(World world) {
@@ -110,6 +115,17 @@ public class Main {
         }
     }
 
+	private void addSingleSun(World world) {
+	    world.addItem(new Sun(new Location(39,0)));
+	}
+	
+    private void addFlower(World world) {
+        for (int i = 0; i < INITIAL_GRASS/4; i++) {
+            Location loc = Util.getRandomEmptyLocation(world);
+            world.addItem(new Flower(loc));
+        }
+    }
+	
 	//Ensure trees are located at the corner, because we don't want it to interact with 
 	private void addTree(World world) {
 	    for (int i = 0; i < INITIAL_TREE; i++) {

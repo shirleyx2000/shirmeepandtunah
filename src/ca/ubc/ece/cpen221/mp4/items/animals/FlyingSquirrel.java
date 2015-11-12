@@ -99,7 +99,7 @@ public class FlyingSquirrel implements ArenaAnimal {
 
     @Override
     public Command getNextAction(World world) {
-        // The FlyingSquirrel selects a random tree location. 
+        // The FlyingSquirrel stays by the trees 
         // Since no new trees are planted, it just keeps moving from tree to tree
         for (Item item : world.searchSurroundings(this)) {
             if (item.getName().equals("tree")){
