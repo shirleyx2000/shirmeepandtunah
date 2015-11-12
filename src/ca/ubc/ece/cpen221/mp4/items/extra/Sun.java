@@ -13,11 +13,11 @@ public class Sun implements Item {
     private Location location;
     /**
      * Places a Sun at <code> location </code>. The location must be valid and
-     * empty. The sun is the strongest, it will destroy everything 
+     * empty. The sun is the strongest, it should destroy everything 
      * that tries to invade its location.
      *
      * @param location
-     *            : the location where this sun will be created
+     *            : the one location where this sun will be created
      */
     public Sun(Location location) {
         this.location = location;
@@ -50,7 +50,9 @@ public class Sun implements Item {
 
     @Override
     public int getStrength() {
-        return 1000000;
+        //strongest
+        //if used, will destroy others
+        return 100000;
     }
 
     @Override

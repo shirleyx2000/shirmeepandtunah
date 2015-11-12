@@ -11,22 +11,23 @@ public class Flower implements Item {
     private final static ImageIcon flowerImage = Util.loadImage("flower.gif");
 
     private Location location;
-    private int energy; 
+    private boolean isDead; 
     
     /**
-     * Places a Sun at <code> location </code>. The location must be valid and
-     * empty. The sun is the strongest, it will destroy everything 
-     * that tries to invade its location.
+     * Places a Flower at <code> location </code>. The location must be valid and
+     * empty. A Flower is the weakest and can get trampled over easily by anything
      *
      * @param location
-     *            : the location where this sun will be created
+     *            : the location where this flower will be created
      */
     public Flower(Location location) {
         this.location = location;
+        isDead = false; 
     }
     
     @Override
     public int getPlantCalories() {
+        //about half of what a grass can provide IF eaten
         return 5;
     }
 
@@ -52,18 +53,21 @@ public class Flower implements Item {
 
     @Override
     public int getStrength() {
-        return 5;
+        //almost no strength, therefore easily dies
+        return 1;
     }
 
     @Override
     public void loseEnergy(int energy) {
-//        this.energy = this.energy - energy;
-        
+        //live or die mechanism, it doesn't lose energy overtime
+        //current AI does not implement eating flower, 
+        //but flower behaves similarly to grass if used. 
+        isDead = true; 
     }
 
     @Override
     public boolean isDead() {
-        return false; 
+        return isDead; 
     }
 
 }

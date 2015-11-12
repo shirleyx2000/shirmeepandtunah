@@ -11,8 +11,6 @@ public class Tree implements Item {
     private final static ImageIcon treeImage = Util.loadImage("tree.gif");
 
     private Location location;
-    private boolean isDead;
-    
     /**
      * Places a Tree at <code> location </code>. The location must be valid and
      * empty. Only way to die is through collision with car? 
@@ -22,7 +20,6 @@ public class Tree implements Item {
      */
     public Tree(Location location) {
         this.location = location;
-        this.isDead = false;
     }
     
     @Override
@@ -54,13 +51,13 @@ public class Tree implements Item {
 
     @Override
     public int getStrength() {
-        return 100;
+        //stronger than all animals
+        return 1000;
     }
 
     @Override
-    public void loseEnergy(int energy) {
-        // tree shouldn't die because we have no planters
-        isDead = false; 
+    public void loseEnergy(int energy) { 
+        //doesn't die, until further AI changes
     }
 
     @Override

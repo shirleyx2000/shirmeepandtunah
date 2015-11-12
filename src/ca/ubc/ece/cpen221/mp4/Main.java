@@ -59,6 +59,8 @@ public class Main {
 	}
 
 	public void initialize(World world) {
+	    //sun must be added first to ensure it's location at corner
+	    addSingleSun(world);
 		addGrass(world);
 		addTree(world); 
 		world.addActor(new Gardener());
@@ -69,13 +71,12 @@ public class Main {
 		addBears(world); 
 		addFish(world);
 		addSquirrel(world); 
-		addSingleSun(world);
 		addFlower(world);
 		// TODO: You may add your own creatures here!
 	}
 
 	private void addSingleSun(World world) {
-	    world.addItem(new Sun(new Location(38,0)));
+	    world.addItem(new Sun(new Location(39,0)));
 	}
 	
     private void addFlower(World world) {
