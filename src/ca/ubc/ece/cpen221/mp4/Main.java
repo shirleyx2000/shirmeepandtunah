@@ -7,6 +7,9 @@ import ca.ubc.ece.cpen221.mp4.items.Gardener;
 import ca.ubc.ece.cpen221.mp4.items.Grass;
 import ca.ubc.ece.cpen221.mp4.items.animals.*;
 import ca.ubc.ece.cpen221.mp4.items.extra.Tree;
+import ca.ubc.ece.cpen221.mp4.items.vehicles.HamsterRoll;
+import ca.ubc.ece.cpen221.mp4.items.vehicles.HotAirBalloon;
+import ca.ubc.ece.cpen221.mp4.items.vehicles.LogRaft;
 import ca.ubc.ece.cpen221.mp4.staff.WorldImpl;
 import ca.ubc.ece.cpen221.mp4.staff.WorldUI;
 
@@ -25,7 +28,10 @@ public class Main {
 	static final int SPACES_PER_TREE = 50; 
 	static final int INITIAL_TREE = X_DIM * Y_DIM / SPACES_PER_TREE; 
 	static final int INITIAL_GRASS = X_DIM * Y_DIM / SPACES_PER_GRASS;
-	static final int INITIAL_GNATS = INITIAL_GRASS / 4;
+	static final int INITIAL_HAMSTERROLL = INITIAL_GRASS / 150; 
+	static final int INITIAL_HOTAIRBALLOON = INITIAL_GRASS / 40; 
+	static final int INITIAL_LOGRAFT = INITIAL_GRASS / 40; 
+	static final int INITIAL_GNATS = INITIAL_GRASS / 40;
 	static final int INITIAL_RABBITS = INITIAL_GRASS / 4;
 	static final int INITIAL_FISH = INITIAL_GRASS / 7; 
     static final int INITIAL_SQUIRREL = INITIAL_GRASS / 30; 
@@ -57,18 +63,52 @@ public class Main {
 	}
 
 	public void initialize(World world) {
+	    
 		addGrass(world);
 		addTree(world); 
 		world.addActor(new Gardener());
 
+		//Add animals
 		addGnats(world);
 		addRabbits(world);
 		addFoxes(world);
 		addBears(world); 
 		addFish(world);
 		addSquirrel(world); 
-		// TODO: You may add your own creatures here!
+		
+		//Add vehicles
+		addHamsterRolls(world);
+		addHotAirBalloon(world);
+		addLogRaft(world);
+		
+		//Add extra items to world
 	}
+	
+    private void addHamsterRolls(World world) {
+        for (int i = 0; i < INITIAL_HAMSTERROLL; i++) {
+            Location loc = Util.getRandomEmptyLocation(world);
+            HamsterRoll hr = new HamsterRoll(loc);
+            world.addItem(hr);
+            world.addActor(hr);
+        }
+    }
+    private void addHotAirBalloon(World world) {
+        for (int i = 0; i < INITIAL_HOTAIRBALLOON; i++) {
+            Location loc = Util.getRandomEmptyLocation(world);
+            HotAirBalloon hab = new HotAirBalloon(loc);
+            world.addItem(hab);
+            world.addActor(hab);
+        }
+    }
+
+    private void addLogRaft(World world) {
+        for (int i = 0; i < INITIAL_LOGRAFT; i++) {
+            Location loc = Util.getRandomEmptyLocation(world);
+            LogRaft lr = new LogRaft(loc);
+            world.addItem(lr);
+            world.addActor(lr);
+        }
+    }
 
 	//Ensure trees are located at the corner, because we don't want it to interact with 
 	private void addTree(World world) {
