@@ -6,6 +6,8 @@ import ca.ubc.ece.cpen221.mp4.ai.*;
 import ca.ubc.ece.cpen221.mp4.items.Gardener;
 import ca.ubc.ece.cpen221.mp4.items.Grass;
 import ca.ubc.ece.cpen221.mp4.items.animals.*;
+import ca.ubc.ece.cpen221.mp4.items.extra.Flower;
+import ca.ubc.ece.cpen221.mp4.items.extra.Sun;
 import ca.ubc.ece.cpen221.mp4.items.extra.Tree;
 import ca.ubc.ece.cpen221.mp4.staff.WorldImpl;
 import ca.ubc.ece.cpen221.mp4.staff.WorldUI;
@@ -25,7 +27,7 @@ public class Main {
 	static final int SPACES_PER_TREE = 50; 
 	static final int INITIAL_TREE = X_DIM * Y_DIM / SPACES_PER_TREE; 
 	static final int INITIAL_GRASS = X_DIM * Y_DIM / SPACES_PER_GRASS;
-	static final int INITIAL_GNATS = INITIAL_GRASS / 4;
+	static final int INITIAL_GNATS = INITIAL_GRASS / 25;
 	static final int INITIAL_RABBITS = INITIAL_GRASS / 4;
 	static final int INITIAL_FISH = INITIAL_GRASS / 7; 
     static final int INITIAL_SQUIRREL = INITIAL_GRASS / 30; 
@@ -67,9 +69,22 @@ public class Main {
 		addBears(world); 
 		addFish(world);
 		addSquirrel(world); 
+		addSingleSun(world);
+		addFlower(world);
 		// TODO: You may add your own creatures here!
 	}
 
+	private void addSingleSun(World world) {
+	    world.addItem(new Sun(new Location(38,0)));
+	}
+	
+    private void addFlower(World world) {
+        for (int i = 0; i < INITIAL_GRASS/4; i++) {
+            Location loc = Util.getRandomEmptyLocation(world);
+            world.addItem(new Flower(loc));
+        }
+    }
+	
 	//Ensure trees are located at the corner, because we don't want it to interact with 
 	private void addTree(World world) {
 	    for (int i = 0; i < INITIAL_TREE; i++) {
