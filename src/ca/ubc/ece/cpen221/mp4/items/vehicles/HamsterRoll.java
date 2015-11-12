@@ -1,8 +1,6 @@
 package ca.ubc.ece.cpen221.mp4.items.vehicles;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.swing.ImageIcon;
@@ -21,7 +19,7 @@ public class HamsterRoll implements Vehicle {
     private static final ImageIcon ballImage = Util.loadImage("hamster.gif");
     
     //Constants
-    private static final int STRENGTH = 80;
+    private static final int STRENGTH = 300;
     private static final int INITIAL_COOLDOWN = 3; //Min speed; medium fast 
     private static final int MIN_COOLDOWN = 0; //Max speed (smaller number = faster)
     private static final int MOVING_RANGE = 1; //Can only move to adj tile per step

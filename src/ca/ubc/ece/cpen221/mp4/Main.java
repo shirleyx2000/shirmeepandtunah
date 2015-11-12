@@ -30,10 +30,10 @@ public class Main {
 	static final int SPACES_PER_TREE = 50; 
 	static final int INITIAL_TREE = X_DIM * Y_DIM / SPACES_PER_TREE; 
 	static final int INITIAL_GRASS = X_DIM * Y_DIM / SPACES_PER_GRASS;
-	static final int INITIAL_HAMSTERROLL = INITIAL_GRASS / 150; 
+	static final int INITIAL_HAMSTERROLL = INITIAL_GRASS / 40; 
 	static final int INITIAL_HOTAIRBALLOON = INITIAL_GRASS / 40; 
 	static final int INITIAL_LOGRAFT = INITIAL_GRASS / 40; 
-	static final int INITIAL_GNATS = INITIAL_GRASS / 4;
+	static final int INITIAL_GNATS = INITIAL_GRASS / 40;
 	static final int INITIAL_RABBITS = INITIAL_GRASS / 4;
 	static final int INITIAL_FISH = INITIAL_GRASS / 7; 
     static final int INITIAL_SQUIRREL = INITIAL_GRASS / 30; 
