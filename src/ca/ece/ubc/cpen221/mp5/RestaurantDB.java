@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -24,7 +25,13 @@ import org.json.simple.parser.ParseException;
 // TODO: This class represents the Restaurant Database.
 // Define the internal representation and 
 // state the rep invariant and the abstraction function.
-
+/**
+ * Abstract datatype: List of maps per restaurant/review/users represented by their respective ADT
+ * Rep invariant: dataset will always keep 3 data file information separate. 
+ * 
+ * @author Shirley
+ *
+ */
 public class RestaurantDB {
 
 	/**
@@ -45,26 +52,28 @@ public class RestaurantDB {
 	 *            the filename for the users
 	 */
 	public RestaurantDB(String restaurantJSONfilename, String reviewsJSONfilename, String usersJSONfilename) {
-		// TODO: Implement this method
+		// TODO: Generate a list of restaurants/reviews/users objects, instead of a list of java map exactly like json
 	    
-	    Map json = generateDictionary(restaurantJSONfilename);
+	    List<Map> json_restaurant = generateDictionary(restaurantJSONfilename);
         
         System.out.println("\n\n\n");
-        Map json2 = generateDictionary(reviewsJSONfilename);
+        List<Map> json_reviews = generateDictionary(reviewsJSONfilename);
         
         System.out.println("\n\n\n");
-        Map json3 = generateDictionary(usersJSONfilename);
+        List<Map> json_users = generateDictionary(usersJSONfilename);
+        System.out.println(json_users);
         
 	}
 
 	/**
-	 * This helps the constructor generate a java map from the JSON file
+	 * Helper method to help constructor generate a java map from the JSON file
 	 * 
 	 * @param file
 	 * @return json 
 	 */
-	public Map generateDictionary(String file) {
+	public List<Map> generateDictionary(String file) {
 	    
+	    List<Map> allMaps = new ArrayList<Map>();  
         BufferedReader in;
         Map json = new HashMap(); 
         try {
@@ -97,8 +106,9 @@ public class RestaurantDB {
                         while(iter.hasNext()) {
                             Map.Entry entry = (Map.Entry)iter.next(); 
                         }
-                        System.out.println(JSONValue.toJSONString(json));
+                        System.out.println(JSONValue.toJSONString(json)); // only one restaurant 
                         System.out.println(json.get("type"));
+                        allMaps.add(json);
                         
                     } catch (ParseException pe) {
                         System.out.println(pe);
@@ -115,25 +125,27 @@ public class RestaurantDB {
             e.printStackTrace();
         }
         
-        return json; 
-	}
-	
-	
-	//TO DELETE, testing only 
-	public static void main (String [] args) {
-	    RestaurantDB res = new RestaurantDB ("restaurants.json", "reviews.json", "users.json");
+        return allMaps; 
 	}
 	
 	/** 
+	 * Retrieves a set of restaurants given a query which consists of a combination of 
+	 * names, neighbourhoods, categories, rating, and price when client requests 
+	 * through command line
+	 * 
 	 * @param queryString
 	 * @return Set<Restaurant> 
 	 */
 	public Set<Restaurant> query(String queryString) {
 		// TODO: Implement this method
 		// Write specs, etc.
-	    // search that retrieves a set of restaurants given a query = 
-	    // comb. of names, neighbourhoods, categories, rating, price 
 		return null;
 	}
+	
+	   
+    //TO DELETE, testing only 
+    public static void main (String [] args) {
+        RestaurantDB res = new RestaurantDB ("restaurants.json", "reviews.json", "users.json");
+    }
 
 }
