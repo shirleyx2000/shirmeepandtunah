@@ -25,9 +25,9 @@ public class Restaurant {
     
     public double longitude; 
     public double latitude; 
-    public double stars; 
+    public double stars; //TODO: Should this change to an Integer?
     public long review_count; 
-    public long price; 
+    public long price; //TODO: Change to float
     
     public boolean open; 
     public List<String> categories; 
