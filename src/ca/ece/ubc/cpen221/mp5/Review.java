@@ -19,6 +19,9 @@ public class Review {
      * AVOIDING REP EXPOSURE:
      * If field is immutable, references to same object are okay
      * Else (mutable), reference to new object is returned
+     * 
+     * REP INVARIANT:
+     * Once created, a Review cannot be edited. (subject to change)
      */
     
     //Methods 
@@ -40,7 +43,7 @@ public class Review {
         return this.user_id;
     }
     
-    public int getStars(){ //no rep exposure for primitive types
+    public int getStars(){ //no rep exposure for primitive types, value returned not reference
         return this.stars;
     }
     

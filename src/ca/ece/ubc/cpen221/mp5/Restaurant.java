@@ -27,10 +27,10 @@ public class Restaurant {
     public double latitude; 
     public double stars; //TODO: Should this change to an Integer?
     public long review_count; 
-    public long price; //TODO: Change to float
+    public long price; //Number of dollar signs
     
     public boolean open; 
-    public List<String> categories; 
+    public List<String> categories; //TODO: Account for rep exposure for Lists
     public List<String> neighbours; 
     public List<String> schools;
     
