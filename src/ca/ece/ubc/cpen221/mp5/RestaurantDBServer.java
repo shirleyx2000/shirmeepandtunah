@@ -33,15 +33,6 @@ public class RestaurantDBServer {
 	    String reviewsDetailsFile = filename2;
 	    String usersDetailsFile = filename3;
 	    
-    	    
-            
-            //Call RDB.query to process input and return output
-    	    //Send output to client
-        
-	    //CATCH: If i/o exception, print error msg
-	    
-	    //*Single thread for now
-	    
 	    try( 
 	            ServerSocket rdbsSocket = new ServerSocket( port );
 	            Socket clientSocket = rdbsSocket.accept(); //Waits for client to connect, blocks other threads until successful
@@ -63,7 +54,12 @@ public class RestaurantDBServer {
 	        outputSet = rdb.query( inputLine );
 	        
 	        //Convert Set<Restaurant> to String in JSON format
-	        //Return resulting string to client as "output = ..."
+	        String outputString = "";
+	        for( Restaurant restaurant : outputSet ){
+	            outputString += convertRestaurantToJSON( restaurant );
+	        }
+	        //Return resulting string to client
+	        output.print( outputString );
 
 	        
 	    } catch ( IOException ioe ){
@@ -98,7 +94,7 @@ public class RestaurantDBServer {
 	    //add review to RestaurantDB object
 	}
 	
-	//PARSING METHODS
+	//TODO: PARSING METHODS; discuss with Shirley how to implement these methods
 	
 	//Converts a Restaurant into a JSON formatted string
 	private String convertRestaurantToJSON( Restaurant restaurant ){
@@ -132,34 +128,34 @@ public class RestaurantDBServer {
 	
     //MAIN
     
-	public static void main( String[] args ) throws ReservedPortException, IOException{
-	    
-	    //Check number of arguments passed
-	    if( args.length != 4 ){
-	        System.err.println("Usage: java RestaurantDBServer /n"
-	                + "    <port number>/n"
-	                + "    <name of file containing restaurants>/n"
-	                + "    <name of file containing review>/n"
-	                + "    <name of file containing users>");
-	        System.exit(1);
-	    }
-	    
-	    //Get command line arguments
-	    int port = Integer.parseInt(args[0]);
-	    String restaurantDetailsFile = args[1];
-        String reviewsDetailsFile = args[2];
-        String usersDetailsFile = args[4];
-        boolean listening = true;
-	    
-	    //Don't forget to check for reserved (well-known) port numbers
-	    if( port >=0 && port <= 1023 ){
-	        throw new ReservedPortException("Using well-known port " + port);
-	    }
-	    
-	    //Create instance of RDBS using args values, loop infinitely
-	    RestaurantDBServer rdbs = new RestaurantDBServer( port, restaurantDetailsFile, reviewsDetailsFile, usersDetailsFile );
-	    //while( listening );
-	    
-	}
+//	public static void main( String[] args ) throws ReservedPortException, IOException{
+//	    
+//	    //Check number of arguments passed
+//	    if( args.length != 4 ){
+//	        System.err.println("Usage: java RestaurantDBServer /n"
+//	                + "    <port number>/n"
+//	                + "    <name of file containing restaurants>/n"
+//	                + "    <name of file containing review>/n"
+//	                + "    <name of file containing users>");
+//	        System.exit(1);
+//	    }
+//	    
+//	    //Get command line arguments
+//	    int port = Integer.parseInt(args[0]);
+//	    String restaurantDetailsFile = args[1];
+//        String reviewsDetailsFile = args[2];
+//        String usersDetailsFile = args[4];
+//        boolean listening = true;
+//	    
+//	    //Don't forget to check for reserved (well-known) port numbers
+//	    if( port >=0 && port <= 1023 ){
+//	        throw new ReservedPortException("Using well-known port " + port);
+//	    }
+//	    
+//	    //Create instance of RDBS using args values, loop infinitely
+//	    RestaurantDBServer rdbs = new RestaurantDBServer( port, restaurantDetailsFile, reviewsDetailsFile, usersDetailsFile );
+//	    //while( listening );
+//	    
+//	}
 
 }
