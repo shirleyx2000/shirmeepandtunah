@@ -12,6 +12,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.json.simple.JSONArray;
@@ -34,46 +35,82 @@ import org.json.simple.parser.ParseException;
  */
 public class RestaurantDB {
 
-	/**
-	 * Create a database from the Yelp dataset given the names of three files:
-	 * <ul>
-	 * <li>One that contains data about the restaurants;</li>
-	 * <li>One that contains reviews of the restaurants;</li>
-	 * <li>One that contains information about the users that submitted reviews.
-	 * </li>
-	 * </ul>
-	 * The files contain data in JSON format.
-	 * 
-	 * @param restaurantJSONfilename
-	 *            the filename for the restaurant data
-	 * @param reviewsJSONfilename
-	 *            the filename for the reviews
-	 * @param usersJSONfilename
-	 *            the filename for the users
-	 */
-	public RestaurantDB(String restaurantJSONfilename, String reviewsJSONfilename, String usersJSONfilename) {
-		// TODO: Generate a list of restaurants/reviews/users objects, instead of a list of java map exactly like json
-	    
-	    List<Map> json_restaurant = generateDictionary(restaurantJSONfilename);
+    /**
+     * Create a database from the Yelp dataset given the names of three files:
+     * <ul>
+     * <li>One that contains data about the restaurants;</li>
+     * <li>One that contains reviews of the restaurants;</li>
+     * <li>One that contains information about the users that submitted reviews.
+     * </li>
+     * </ul>
+     * The files contain data in JSON format.
+     * 
+     * @param restaurantJSONfilename
+     *            the filename for the restaurant data
+     * @param reviewsJSONfilename
+     *            the filename for the reviews
+     * @param usersJSONfilename
+     *            the filename for the users
+     */
+    public RestaurantDB(String restaurantJSONfilename, String reviewsJSONfilename, String usersJSONfilename) {
+        // TODO: Generate a list of restaurants/reviews/users objects, instead of a list of java map exactly like json
+        
+        List<Map> obj_restuarant = new ArrayList<Map>(); 
+        Map<String, Restaurant> each_restaurant = new HashMap<String, Restaurant>(); 
+        
+        List<Map> json_restaurant = generateDictionary(restaurantJSONfilename);
+         
+        for (Map e : json_restaurant) {
+            //each restaurant ... 
+            System.out.println(e);
+            Iterator entries = e.entrySet().iterator();
+            while (entries.hasNext()) {
+                Entry thisEntry = (Entry) entries.next(); 
+                System.out.println("KEY: " + thisEntry.getKey() + "    Value: " + thisEntry.getValue());
+            }
+            Restaurant new_res = new Restaurant((String) e.get("name"));
+            new_res.setOpen((Boolean) e.get("open")); 
+            new_res.setURL((String) e.get("url")); 
+            new_res.setLong((double) e.get("longitude")); 
+            new_res.setNeighbours((List<String>) e.get("neighborhoods"));
+            new_res.setBusID((String) e.get("business_id"));
+            new_res.setCategories((List<String>) e.get("categories"));
+            new_res.setState((String) e.get("state"));
+            new_res.setType((String) e.get("type"));
+            new_res.setStars((double) e.get("stars"));
+            new_res.setCity((String) e.get("city"));
+            new_res.setAddr((String) e.get("full_address"));
+            new_res.setReviewCnt((long) e.get("review_count"));
+            new_res.setPhotoURL((String) e.get("photo_url"));
+            new_res.setSchools((List<String>) e.get("schools"));
+            new_res.setLat((double) e.get("latitude"));
+            new_res.setPrice((long) e.get("price"));
+            
+            each_restaurant.putIfAbsent((String) e.get("name"), new_res);
+        }
         
         System.out.println("\n\n\n");
         List<Map> json_reviews = generateDictionary(reviewsJSONfilename);
+//        for (Map f : json_reviews) {
+//            System.out.println(f);
+//        }
         
         System.out.println("\n\n\n");
         List<Map> json_users = generateDictionary(usersJSONfilename);
-        System.out.println(json_users);
-        
-	}
+//        for (Map g : json_users) {
+//            System.out.println(g);
+//        }
+    }
 
-	/**
-	 * Helper method to help constructor generate a java map from the JSON file
-	 * 
-	 * @param file
-	 * @return json 
-	 */
-	public List<Map> generateDictionary(String file) {
-	    
-	    List<Map> allMaps = new ArrayList<Map>();  
+    /**
+     * Helper method to help constructor generate a java map from the JSON file
+     * 
+     * @param file
+     * @return json 
+     */
+    private List<Map> generateDictionary(String file) {
+        
+        List<Map> allMaps = new ArrayList<Map>();  
         BufferedReader in;
         Map json = new HashMap(); 
         try {
@@ -106,8 +143,8 @@ public class RestaurantDB {
                         while(iter.hasNext()) {
                             Map.Entry entry = (Map.Entry)iter.next(); 
                         }
-                        System.out.println(JSONValue.toJSONString(json)); // only one restaurant 
-                        System.out.println(json.get("type"));
+//                        System.out.println(JSONValue.toJSONString(json)); // only one restaurant 
+//                        System.out.println(json.get("type"));
                         allMaps.add(json);
                         
                     } catch (ParseException pe) {
@@ -126,23 +163,23 @@ public class RestaurantDB {
         }
         
         return allMaps; 
-	}
-	
-	/** 
-	 * Retrieves a set of restaurants given a query which consists of a combination of 
-	 * names, neighbourhoods, categories, rating, and price when client requests 
-	 * through command line
-	 * 
-	 * @param queryString
-	 * @return Set<Restaurant> 
-	 */
-	public Set<Restaurant> query(String queryString) {
-		// TODO: Implement this method
-		// Write specs, etc.
-		return null;
-	}
-	
-	   
+    }
+    
+    /** 
+     * Retrieves a set of restaurants given a query which consists of a combination of 
+     * names, neighbourhoods, categories, rating, and price when client requests 
+     * through command line
+     * 
+     * @param queryString
+     * @return Set<Restaurant> 
+     */
+    public Set<Restaurant> query(String queryString) {
+        // TODO: Implement this method
+        // Write specs, etc.
+        return null;
+    }
+    
+       
     //TO DELETE, testing only 
     public static void main (String [] args) {
         RestaurantDB res = new RestaurantDB ("restaurants.json", "reviews.json", "users.json");

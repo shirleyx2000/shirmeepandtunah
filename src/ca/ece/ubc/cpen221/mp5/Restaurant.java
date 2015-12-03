@@ -74,8 +74,16 @@ public class Restaurant {
         this.latitude = latitude; 
     }
     
-    public void setStars(double stars) {
+    public void setReviewCnt (long review_count) {
+        this.review_count = review_count; 
+    }
+
+    public void setStars (double stars) {
         this.stars = stars; 
+    }
+    
+    public void setPrice (long price) {
+        this.price = price; 
     }
     
     public void setOpen(boolean open) {
