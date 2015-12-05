@@ -53,16 +53,15 @@ public class RestaurantDB {
      *            the filename for the users
      */
     public RestaurantDB(String restaurantJSONfilename, String reviewsJSONfilename, String usersJSONfilename) {
-        // TODO: Generate a list of restaurants/reviews/users objects, instead of a list of java map exactly like json
-        
-        List<Map> obj_restuarant = new ArrayList<Map>(); 
+
+        //this map contains "name" -> restaurant object
         Map<String, Restaurant> each_restaurant = new HashMap<String, Restaurant>(); 
         
         List<Map> json_restaurant = generateDictionary(restaurantJSONfilename);
          
         for (Map e : json_restaurant) {
             //each restaurant ... 
-            System.out.println(e);
+            System.out.println(e.get("JSONStr"));
             Iterator entries = e.entrySet().iterator();
             while (entries.hasNext()) {
                 Entry thisEntry = (Entry) entries.next(); 
@@ -85,21 +84,34 @@ public class RestaurantDB {
             new_res.setSchools((List<String>) e.get("schools"));
             new_res.setLat((double) e.get("latitude"));
             new_res.setPrice((long) e.get("price"));
+            new_res.setJSONStr("JSONStr");
             
             each_restaurant.putIfAbsent((String) e.get("name"), new_res);
         }
         
         System.out.println("\n\n\n");
         List<Map> json_reviews = generateDictionary(reviewsJSONfilename);
-//        for (Map f : json_reviews) {
-//            System.out.println(f);
-//        }
+        System.out.println(json_reviews.size());
+        for (Map f : json_reviews) {
+            
+            Iterator entries = f.entrySet().iterator();
+            while (entries.hasNext()) {
+                Entry thisEntry = (Entry) entries.next(); 
+                System.out.println("KEY: " + thisEntry.getKey() + "    Value: " + thisEntry.getValue());
+            }
+            
+            Review new_rev = new Review(); 
+//            new_rev.set
+
+        }
         
         System.out.println("\n\n\n");
         List<Map> json_users = generateDictionary(usersJSONfilename);
-//        for (Map g : json_users) {
+        for (Map g : json_users) {
 //            System.out.println(g);
-//        }
+            
+            
+        }
     }
 
     /**
@@ -143,6 +155,8 @@ public class RestaurantDB {
                         while(iter.hasNext()) {
                             Map.Entry entry = (Map.Entry)iter.next(); 
                         }
+                        //add one more non-JSON file element 
+                        json.put("JSONStr",str);
 //                        System.out.println(JSONValue.toJSONString(json)); // only one restaurant 
 //                        System.out.println(json.get("type"));
                         allMaps.add(json);
@@ -179,7 +193,12 @@ public class RestaurantDB {
         return null;
     }
     
-       
+//    public void addRestaurant (String restaurantJSON);
+//    
+//    public void addReview (String reviewJSON);
+//       
+//    public void addUser (String userJSON);
+    
     //TO DELETE, testing only 
     public static void main (String [] args) {
         RestaurantDB res = new RestaurantDB ("restaurants.json", "reviews.json", "users.json");
