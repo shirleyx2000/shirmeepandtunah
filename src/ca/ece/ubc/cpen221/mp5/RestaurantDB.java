@@ -200,8 +200,8 @@ public class RestaurantDB {
 //    public void addUser (String userJSON);
     
     //TO DELETE, testing only 
-    public static void main (String [] args) {
-        RestaurantDB res = new RestaurantDB ("restaurants.json", "reviews.json", "users.json");
-    }
+//    public static void main (String [] args) {
+//        RestaurantDB res = new RestaurantDB ("restaurants.json", "reviews.json", "users.json");
+//    }
 
 }

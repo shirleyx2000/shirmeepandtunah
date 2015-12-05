@@ -8,6 +8,8 @@ import java.util.Map;
 public class User {
     
     //Private fields
+    private String url;
+    private String type = "user";
     private String user_id;
     private String name;
     private int review_count;
@@ -31,6 +33,14 @@ public class User {
         //None
     
     //Observer
+    public String getUrl(){
+        return this.url;
+    }
+    
+    public String getType(){
+        return this.type;
+    }
+    
     public String getUserId(){
         return this.user_id;
     }
@@ -53,6 +63,10 @@ public class User {
 
     
     //Mutator
+    public void setUrl( String url ){
+        this.url = url;
+    }
+    
     public void setUserId( String user_id ){
         this.user_id  = user_id  ;
     }
