@@ -60,13 +60,12 @@ public class RestaurantDB {
         List<Map> json_restaurant = generateDictionary(restaurantJSONfilename);
          
         for (Map e : json_restaurant) {
-            //each restaurant ... 
-            System.out.println(e.get("JSONStr"));
-            Iterator entries = e.entrySet().iterator();
-            while (entries.hasNext()) {
-                Entry thisEntry = (Entry) entries.next(); 
-                System.out.println("KEY: " + thisEntry.getKey() + "    Value: " + thisEntry.getValue());
-            }
+            //Testing only...
+//            Iterator entries = e.entrySet().iterator();
+//            while (entries.hasNext()) {
+//                Entry thisEntry = (Entry) entries.next(); 
+//                System.out.println("KEY: " + thisEntry.getKey() + "    Value: " + thisEntry.getValue());
+//            }
             Restaurant new_res = new Restaurant((String) e.get("name"));
             new_res.setOpen((Boolean) e.get("open")); 
             new_res.setURL((String) e.get("url")); 
@@ -75,7 +74,6 @@ public class RestaurantDB {
             new_res.setBusID((String) e.get("business_id"));
             new_res.setCategories((List<String>) e.get("categories"));
             new_res.setState((String) e.get("state"));
-            new_res.setType((String) e.get("type"));
             new_res.setStars((double) e.get("stars"));
             new_res.setCity((String) e.get("city"));
             new_res.setAddr((String) e.get("full_address"));
@@ -94,22 +92,45 @@ public class RestaurantDB {
         System.out.println(json_reviews.size());
         for (Map f : json_reviews) {
             
-            Iterator entries = f.entrySet().iterator();
-            while (entries.hasNext()) {
-                Entry thisEntry = (Entry) entries.next(); 
-                System.out.println("KEY: " + thisEntry.getKey() + "    Value: " + thisEntry.getValue());
-            }
+            //Testing only 
+//            Iterator entries = f.entrySet().iterator();
+//            while (entries.hasNext()) {
+//                Entry thisEntry = (Entry) entries.next(); 
+//                System.out.println("KEY: " + thisEntry.getKey() + "    Value: " + thisEntry.getValue());
+////                System.out.println(thisEntry.getValue().getClass());
+//            }
             
             Review new_rev = new Review(); 
-//            new_rev.set
-
+            new_rev.setBusinessId((String) f.get("business_id"));
+            new_rev.setVotes((Map<String, Integer>) f.get("votes")); 
+            new_rev.setReviewId((String) f.get("review_id"));
+            new_rev.setText((String) f.get("text"));
+            new_rev.setStars((long) f.get("stars"));
+            new_rev.setUserId((String) f.get("user_id"));
+            new_rev.setDate((String) f.get("date"));
+            new_rev.setJSONStr((String) f.get("JSONStr"));
+            
         }
         
         System.out.println("\n\n\n");
         List<Map> json_users = generateDictionary(usersJSONfilename);
         for (Map g : json_users) {
-//            System.out.println(g);
             
+            //TESTING only....
+//            Iterator entries = g.entrySet().iterator();
+//            while (entries.hasNext()) {
+//                Entry thisEntry = (Entry) entries.next(); 
+//                System.out.println("KEY: " + thisEntry.getKey() + "    Value: " + thisEntry.getValue());
+//                System.out.println(thisEntry.getValue().getClass());
+//            }
+            
+            User new_user = new User((String) g.get("name"));
+            new_user.setUserId((String) g.get("user_id"));
+            new_user.setAverageStars((double) g.get("average_stars"));
+            new_user.setJSONStr((String) g.get("JSONStr"));
+            new_user.setUrl((String) g.get("url"));
+            new_user.setVotes((Map<String,Integer>) g.get("votes"));
+            new_user.setReviewCount((long) g.get("review_count"));
             
         }
     }
@@ -200,8 +221,8 @@ public class RestaurantDB {
 //    public void addUser (String userJSON);
     
     //TO DELETE, testing only 
-//    public static void main (String [] args) {
-//        RestaurantDB res = new RestaurantDB ("restaurants.json", "reviews.json", "users.json");
-//    }
+    public static void main (String [] args) {
+        RestaurantDB res = new RestaurantDB ("restaurants.json", "reviews.json", "users.json");
+    }
 
 }

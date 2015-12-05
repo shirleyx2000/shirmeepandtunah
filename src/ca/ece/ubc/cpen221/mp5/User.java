@@ -12,8 +12,9 @@ public class User {
     private String type = "user";
     private String user_id;
     private String name;
-    private int review_count;
-    private float average_stars;
+    private String JSONStr;
+    private long review_count;
+    private double average_stars;
     private Map<String, Integer> votes; //useful, funny, cool
     
     /*
@@ -49,20 +50,27 @@ public class User {
         return this.name;
     }
     
-    public int getReviewCount(){ //no rep exposure for primitive types
+    public long getReviewCount(){ //no rep exposure for primitive types
         return this.review_count;
     }
     
-    public float getAverageStars(){ 
+    public double getAverageStars(){ 
         return this.average_stars;
     }
     
     public Map<String, Integer> getVotes(){
         return new HashMap<String, Integer>(this.votes);
     }
-
+    
+    public String getJsonStr() {
+        return this.JSONStr; 
+    }
     
     //Mutator
+    public void setJSONStr (String JSONStr) {
+        this.JSONStr = JSONStr;
+    }
+    
     public void setUrl( String url ){
         this.url = url;
     }
@@ -71,11 +79,11 @@ public class User {
         this.user_id  = user_id  ;
     }
     
-    public void setReviewCount( int review_count ){
+    public void setReviewCount( long review_count ){
         this.review_count = review_count;
     }
     
-    public void setAverageStars( float average_stars ){
+    public void setAverageStars( double average_stars ){
         this.average_stars = average_stars;
     }
     

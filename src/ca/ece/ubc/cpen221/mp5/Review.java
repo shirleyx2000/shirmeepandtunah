@@ -12,9 +12,10 @@ public class Review {
     private String review_id;
     private String business_id;
     private String user_id;
-    private int stars;
+    private long stars;
     private String text;
     private String date;
+    private String JSONStr; 
     private Map<String, Integer> votes; //useful, funny, cool
     
     /*
@@ -53,7 +54,7 @@ public class Review {
         return this.user_id;
     }
     
-    public int getStars(){ //no rep exposure for primitive types, value returned not reference
+    public long getStars(){ //no rep exposure for primitive types, value returned not reference
         return this.stars;
     }
     
@@ -69,8 +70,16 @@ public class Review {
         return new HashMap<String, Integer>(this.votes);
     }
 
+    public String getJsonStr() {
+        return this.JSONStr; 
+    }
     
     //Mutator
+    
+    public void setJSONStr (String JSONStr) {
+        this.JSONStr = JSONStr;
+    }
+    
     public void setReviewId( String review_id ){
         this.review_id = review_id;
     }
@@ -83,7 +92,7 @@ public class Review {
         this.user_id  = user_id  ;
     }
     
-    public void setStars( int stars ){
+    public void setStars( long stars ){
         this.stars = stars;
     }
     

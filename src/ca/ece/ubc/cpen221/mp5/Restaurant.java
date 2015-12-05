@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class Restaurant {
     
-    public String type;
+    public String type = "business";
     public String business_id; 
     public String name; 
     public String full_address; 
@@ -51,10 +51,6 @@ public class Restaurant {
     
     public String getJsonStr() {
         return this.JSONStr; 
-    }
-    
-    public void setType(String type) {
-        this.type = type; 
     }
     
     public String getType() {
