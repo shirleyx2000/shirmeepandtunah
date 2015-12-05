@@ -8,6 +8,8 @@ import java.util.Map;
 public class Review {
     
     //Private fields
+    private String type = "review";
+    private String review_id;
     private String business_id;
     private String user_id;
     private int stars;
@@ -34,6 +36,14 @@ public class Review {
         //None
     
     //Observer
+    public String getType(){
+        return this.type;
+    }
+    
+    public String getReviewId(){
+        return this.review_id;
+    }
+    
     public String getBusinessId(){
         return this.business_id; //String is immutable so sharing the reference does not pose a risk 
                                  //in changing the object which this.business_id points to
@@ -61,6 +71,10 @@ public class Review {
 
     
     //Mutator
+    public void setReviewId( String review_id ){
+        this.review_id = review_id;
+    }
+    
     public void setBusinessId( String business_id ){
         this.business_id = business_id ;
     }
