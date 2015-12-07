@@ -29,26 +29,28 @@ package ca.ece.ubc.cpen221.mp5;
  * These are the lexical rules. They define the tokens used by the lexer.
  *   *** Antlr requires tokens to be CAPITALIZED, like START_ITALIC, END_ITALIC, and TEXT.
  */
-OREXPR : ANDEXPR(OR ANDEXPR)*
-ANDEXPR : ATOM(AND ATOM)*
-ATOM : IN | CATEGORY | RATING | PRICE | NAME | LPAREN OREXPR RPAREN
-OR : '||'
-AND : '&&'
-IN : 'in' LPAREN STRING RPAREN
-CATEGORY : 'category' LPAREN STRING RPAREN
-NAME : 'name' LPAREN STRING RPAREN
-RATING : 'rating' LPAREN RANGE RPAREN
-PRICE : 'price' LPAREN RANGE RPAREN
-RANGE : LPAREN [1-5]..[1-5] RPAREN
-LPAREN : '('
-RPAREN : ')'
+OR : '||' ;
+AND : '&&' ;
+IN : 'in' LPAREN STRING RPAREN ;
+CATEGORY : 'category' LPAREN STRING RPAREN ;
+NAME : 'name' LPAREN STRING RPAREN ;
+RATING : 'rating' LPAREN RANGE RPAREN ;
+PRICE : 'price' LPAREN RANGE RPAREN ;
+STRING : ~[<>]+ ; 
+RANGE : LPAREN [1-5]'..'[1-5] RPAREN ;
+LPAREN : '(' ;
+RPAREN : ')' ;
 
 /*
  * These are the parser rules. They define the structures used by the parser.
  *    *** Antlr requires grammar nonterminals to be lowercase, like html, normal, and italic.
  * 
- * TODO: Given the query string, construct together
  */
+ 
+root : query EOF ; 
+query : andExp (OR andExp)* ;
+andExp : atom (AND atom)* ;
+atom : IN | CATEGORY | RATING | PRICE | NAME | LPAREN query RPAREN ;
 
 
 
