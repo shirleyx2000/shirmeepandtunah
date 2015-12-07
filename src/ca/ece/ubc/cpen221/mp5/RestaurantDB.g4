@@ -34,6 +34,7 @@ OR : '||' ;
 AND : '&&' ;
 STRING : ( '\"' | '\'' )+ [a-zA-Z0-9 ]+ ( '\"' | '\'' )+ ; 
 RANGE_BOUND : [1-5] ; 
+RANGE_DOUBLE : [1-5] ('.'[0-9])* ;
 RANGE : '..' ; 
 LPAREN : '(' ;
 RPAREN : ')' ; 
@@ -51,9 +52,9 @@ WHITESPACE : [ \t\r\n]+ -> skip ;
  atom : in | category | rating | price | name | LPAREN query RPAREN ;
  in : 'in' LPAREN STRING RPAREN ; 
  category : 'category' LPAREN STRING RPAREN ; 
- rating : 'rating' range ;
- price : 'price' range ;
+ rating : 'rating' LPAREN RANGE_DOUBLE RANGE RANGE_DOUBLE RPAREN ;
+ price : 'price' LPAREN RANGE_BOUND RANGE RANGE_BOUND RPAREN ;
  name : 'name' LPAREN STRING RPAREN ;
- range : LPAREN RANGE_BOUND RANGE RANGE_BOUND RPAREN ; 
+ //range : LPAREN RANGE_BOUND RANGE RANGE_BOUND RPAREN ; 
 
 

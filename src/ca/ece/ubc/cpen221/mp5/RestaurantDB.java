@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.Stack;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -46,6 +47,7 @@ public class RestaurantDB {
     private Map<String, Restaurant> all_restaurants;
     private Map<String, Review> all_reviews; 
     private Map<String, User> all_users; 
+    private Set<Restaurant> filtered_restaurants;
     
     /**
      * Create a database from the Yelp dataset given the names of three files:
@@ -223,24 +225,229 @@ public class RestaurantDB {
      * @return Set<Restaurant> 
      */
     public Set<Restaurant> query(String queryString) {
-        // TODO: Implement this method
         
-        //in("Telegraph Ave") && (category("Chinese") || category("Italian")) && price(1..2)
         CharStream stream = new ANTLRInputStream(queryString);
         RestaurantDBLexer lexer = new RestaurantDBLexer(stream);
         TokenStream tokens = new CommonTokenStream(lexer);
         
+        //Feed tokens into the parser
         RestaurantDBParser parser = new RestaurantDBParser(tokens);
+        
+        //Generate the parse tree using starter rule 
         ParseTree tree = parser.root(); 
+        
+        //Print tree 
         ((RuleContext)tree).inspect(parser);
+        System.err.println(tree.toStringTree(parser));
         
         ParseTreeWalker walker = new ParseTreeWalker();
-        RestaurantDBListener listener = new RestaurantDBBaseListener(); 
+        RestaurantDBListener listener = new RestaurantDBListener_Advanced();  //need to extend baseListener!
+        walker.walk(listener, tree);
         
-        
-        return null;
+//        return listener.getFormula();
+        return null; 
     }
     
+    private class RestaurantDBListener_Advanced extends RestaurantDBBaseListener {
+        
+        private Stack ORExpression; 
+        private Stack ANDExpreesion; 
+        private List<Restaurant> categoryls;
+        private List<Restaurant> inls; 
+        private List<Restaurant> pricels; 
+        private List<Restaurant> ratingls;
+        private List<Restaurant> namels; 
+        
+        @Override
+        public void enterAndExp (RestaurantDBParser.AndExpContext ctx) {
+            System.err.println("entering && expression");
+        }
+        
+        @Override
+        public void exitAndExp (RestaurantDBParser.AndExpContext ctx) {
+            System.err.println("exiting && expression");
+        }
+        
+        @Override 
+        public void enterIn (RestaurantDBParser.InContext ctx) {
+            System.err.println("entering IN expression");
+            String subStringCtx; 
+            inls = new ArrayList<Restaurant>(); 
+            
+            for (Map.Entry<String, Restaurant> entry : all_restaurants.entrySet()) {
+//              System.err.println(entry.getKey() + "/" + entry.getValue().getCategories());
+              System.err.println(entry.getKey());
+              //per restaurant 
+              for (String s : entry.getValue().getNeighbours()) {
+                  subStringCtx = ctx.getChild(2).toString().substring(1, ctx.getChild(2).toString().length()-1);
+                  System.err.println(subStringCtx);
+                  System.err.println(s);
+                  if (s.equals(subStringCtx)) {
+                      inls.add(entry.getValue());
+                      System.err.println("FOUND IT~~~~~");
+                      break;
+                  }
+              }
+              System.err.println("NEXT RESTAURANT...\n");
+          }
+          
+          System.err.println(inls);
+        }
+        
+        @Override 
+        public void exitIn (RestaurantDBParser.InContext ctx) {
+            System.err.println("exiting IN expression");
+        }
+        
+        @Override 
+        public void enterPrice (RestaurantDBParser.PriceContext ctx) {
+            System.err.println("entering PRICE expression");
+            
+            pricels = new ArrayList<Restaurant>(); 
+            long longMin = Long.parseLong(ctx.getChild(2).toString()); 
+            long longMax = Long.parseLong(ctx.getChild(4).toString()); 
+            for (Map.Entry<String, Restaurant> entry : all_restaurants.entrySet()) {
+//              System.err.println(entry.getKey() + "/" + entry.getValue().getCategories());
+              System.err.println(entry.getValue().getPrice());
+              System.err.println("Beginning: " + longMin + "  -- Ending: " + longMax);
+              //per restaurant 
+              
+              if (longMin <= entry.getValue().getPrice() &&  entry.getValue().getPrice() <= longMax) {
+                  pricels.add(entry.getValue());
+                  System.err.println("FOUND IT~~~~~");
+              }
+              System.err.println("NEXT RESTAURANT...\n");
+          }
+          
+          System.err.println(pricels);
+        }
+        
+        @Override 
+        public void exitPrice (RestaurantDBParser.PriceContext ctx) {
+            System.err.println("exiting PRICE expression");
+        }
+        
+        @Override 
+        public void enterRoot (RestaurantDBParser.RootContext ctx) {
+            System.err.println("entering ROOT expression");
+        }
+        
+        @Override 
+        public void exitRoot (RestaurantDBParser.RootContext ctx) {
+            System.err.println("exiting ROOT expression");
+        }
+        
+        @Override 
+        public void enterQuery (RestaurantDBParser.QueryContext ctx) {
+            System.err.println("entering QUERY expression");
+            System.err.println(ctx.start);
+            System.err.println(ctx.children);
+            
+        }
+        
+        @Override 
+        public void exitQuery (RestaurantDBParser.QueryContext ctx) {
+            System.err.println("exiting QUERY expression");
+        }
+        
+        @Override 
+        public void enterRating (RestaurantDBParser.RatingContext ctx) {
+            System.err.println("entering RATING expression");
+            
+            ratingls = new ArrayList<Restaurant>(); 
+            double doubleMin = Double.parseDouble(ctx.getChild(2).toString()); 
+            double doubleMax = Double.parseDouble(ctx.getChild(4).toString()); 
+            for (Map.Entry<String, Restaurant> entry : all_restaurants.entrySet()) {
+//              System.err.println(entry.getKey() + "/" + entry.getValue().getCategories());
+              System.err.println(entry.getValue().getStars());
+              System.err.println("Beginning: " + doubleMin + "  -- Ending: " + doubleMax);
+              //per restaurant 
+              
+              //TODO: max bound is not correct ...  
+              if (doubleMin <= entry.getValue().getStars() &&  entry.getValue().getPrice() <= doubleMax) {
+                  ratingls.add(entry.getValue());
+                  System.err.println("FOUND IT~~~~~");
+              }
+              System.err.println("NEXT RESTAURANT...\n");
+          }
+          
+          System.err.println(ratingls);
+        }
+        
+        @Override 
+        public void exitRating (RestaurantDBParser.RatingContext ctx) {
+            System.err.println("exiting RATING expression");
+        }
+        
+        @Override
+        public void enterName (RestaurantDBParser.NameContext ctx) {
+            System.err.println("entering NAME expression");
+            
+            String subStringCtx = ctx.getChild(2).toString().substring(1, ctx.getChild(2).toString().length()-1); 
+            namels = new ArrayList<Restaurant>(); 
+            
+            for (Map.Entry<String, Restaurant> entry : all_restaurants.entrySet()) {
+//              System.err.println(entry.getKey() + "/" + entry.getValue().getCategories());
+              System.err.println(entry.getValue().name);
+              System.err.println(subStringCtx); 
+
+                  if (entry.getValue().name.equals(subStringCtx)) {
+                      namels.add(entry.getValue());
+                      System.err.println("FOUND IT~~~~~");
+                  }
+              System.err.println("NEXT RESTAURANT...\n");
+          }
+          
+          System.err.println(namels);
+        }
+        
+        @Override
+        public void exitName (RestaurantDBParser.NameContext ctx) {
+            System.err.println("exiting NAME expression");
+        }
+        
+        @Override
+        public void enterAtom (RestaurantDBParser.AtomContext ctx) {
+            System.err.println("entering ATOM expression");
+        }
+        
+        @Override 
+        public void exitAtom (RestaurantDBParser.AtomContext ctx) {
+            System.err.println("exiting ATOM expression");
+        }
+        
+        @Override 
+        public void enterCategory (RestaurantDBParser.CategoryContext ctx) {
+            String subStringCtx; 
+            System.err.println("entering CATEGORY expression");
+            System.err.println(ctx.getText()); //the whole token 
+            System.err.println(ctx.getChild(2).toString().getClass()); //cuisine name
+            categoryls = new ArrayList<Restaurant>(); 
+            
+            for (Map.Entry<String, Restaurant> entry : all_restaurants.entrySet()) {
+//                System.err.println(entry.getKey() + "/" + entry.getValue().getCategories());
+                System.err.println(entry.getKey());
+                //per restaurant 
+                for (String s : entry.getValue().getCategories()) {
+                    subStringCtx = ctx.getChild(2).toString().substring(1, ctx.getChild(2).toString().length()-1);
+                    if (s.equals(subStringCtx)) {
+                        categoryls.add(entry.getValue());
+                        System.err.println("FOUND IT~~~~~");
+                        break;
+                    }
+                }
+                System.err.println("NEXT RESTAURANT...\n");
+            }
+            
+            System.err.println(categoryls);
+        }
+        
+        @Override
+        public void exitCategory (RestaurantDBParser.CategoryContext ctx) {
+            System.err.println ("exiting CATEGORY expression");
+            // categoryls
+        }
+    }
     
     /**
      * Precondition: input must be a single element JSON string
@@ -312,11 +519,13 @@ public class RestaurantDB {
     public static void main (String [] args) {
         RestaurantDB res = new RestaurantDB ("restaurants.json", "reviews.json", "users.json");
         String queryString0 = "in(\"Telegraph Ave\")"; 
+        String queryString5 = "rating(2.1..3.3)";
         String queryString3 = "price(1..2)";
         String queryString4 = "category(\"Chinese\") || category(\"Italian\")";
         String queryString1 = "in(\"Telegraph Ave\") && price(1..2)";
         String queryString2 = "in(\"Telegraph Ave\") && (category(\"Chinese\") || category(\"Italian\")) && price(1..2)";
-        res.query(queryString2);
+        String queryString6 = "name(\"Alborz\")"; 
+        res.query(queryString6);
     }
 
 }
