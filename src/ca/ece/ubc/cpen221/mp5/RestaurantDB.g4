@@ -30,37 +30,30 @@ package ca.ece.ubc.cpen221.mp5;
  *   *** Antlr requires tokens to be CAPITALIZED, like START_ITALIC, END_ITALIC, and TEXT.
  */
 
-
 OR : '||' ;
 AND : '&&' ;
 STRING : ( '\"' | '\'' )+ [a-zA-Z0-9 ]+ ( '\"' | '\'' )+ ; 
 RANGE_BOUND : [1-5] ; 
 RANGE : '..' ; 
 LPAREN : '(' ;
-RPAREN : ')' ;
-IN_STR : 'in' ; 
-CATEGORY_STR : 'category' ; 
-NAME_STR : 'name' ;
-RATING_STR : 'rating' ; 
-PRICE_STR : 'price' ; 
+RPAREN : ')' ; 
 WHITESPACE : [ \t\r\n]+ -> skip ;
-
-
 
 /*
  * These are the parser rules. They define the structures used by the parser.
  *    *** Antlr requires grammar nonterminals to be lowercase, like html, normal, and italic.
  * 
  */
-
+ 
  root : query EOF ; 
  query : andExp ( OR andExp ) * ;
  andExp : atom ( AND atom ) * ;
  atom : in | category | rating | price | name | LPAREN query RPAREN ;
- in : IN_STR LPAREN STRING RPAREN ; 
+ in : 'in' LPAREN STRING RPAREN ; 
  category : 'category' LPAREN STRING RPAREN ; 
  rating : 'rating' range ;
  price : 'price' range ;
  name : 'name' LPAREN STRING RPAREN ;
  range : LPAREN RANGE_BOUND RANGE RANGE_BOUND RPAREN ; 
+
 
