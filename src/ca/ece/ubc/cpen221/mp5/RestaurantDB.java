@@ -364,7 +364,7 @@ public class RestaurantDB {
               //per restaurant 
               
               //TODO: max bound is not correct ...  
-              if (doubleMin <= entry.getValue().getStars() &&  entry.getValue().getPrice() <= doubleMax) {
+              if (doubleMin <= entry.getValue().getStars() &&  entry.getValue().getStars() <= doubleMax) {
                   ratingls.add(entry.getValue());
                   System.err.println("FOUND IT~~~~~");
               }
@@ -518,14 +518,14 @@ public class RestaurantDB {
     //TO DELETE, testing only 
     public static void main (String [] args) {
         RestaurantDB res = new RestaurantDB ("restaurants.json", "reviews.json", "users.json");
-        String queryString0 = "in(\"Telegraph Ave\")"; 
-        String queryString5 = "rating(2.1..3.3)";
-        String queryString3 = "price(1..2)";
-        String queryString4 = "category(\"Chinese\") || category(\"Italian\")";
-        String queryString1 = "in(\"Telegraph Ave\") && price(1..2)";
-        String queryString2 = "in(\"Telegraph Ave\") && (category(\"Chinese\") || category(\"Italian\")) && price(1..2)";
-        String queryString6 = "name(\"Alborz\")"; 
-        res.query(queryString6);
+        String queryIn = "in(\"Telegraph Ave\")"; 
+        String queryRating = "rating(2.1..2.9)";
+        String queryPrice = "price(1..2)";
+        String queryORCategory = "category(\"Chinese\") || category(\"Italian\")";
+        String queryString0 = "in(\"Telegraph Ave\") && price(1..2)";
+        String queryString1 = "in(\"Telegraph Ave\") && (category(\"Chinese\") || category(\"Italian\")) && price(1..2)";
+        String queryStringName = "name(\"Alborz\")"; 
+        res.query(queryRating);
     }
 
 }
