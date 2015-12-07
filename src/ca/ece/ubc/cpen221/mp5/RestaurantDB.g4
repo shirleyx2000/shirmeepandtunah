@@ -30,22 +30,12 @@ package ca.ece.ubc.cpen221.mp5;
  *   *** Antlr requires tokens to be CAPITALIZED, like START_ITALIC, END_ITALIC, and TEXT.
  */
 
+STRING : [A-Za-z0-9 ]+ ;
+QUOTES: '\"' ;
 OR : '||' ;
 AND : '&&' ;
-STRING : '\"' WORDS '\"' | '\'' WORDS '\''; 
-//STRING : ~[<>]+ ; 
-RANGE : RANGE_BOUND [\.][\.] RANGE_BOUND ; 
-LPAREN : [(] ;
-RPAREN : [)] ;
-IN_STR : 'in' ; 
-CATEGORY_STR : 'category' ; 
-NAME_STR : 'name' ;
-RATING_STR : 'rating' ; 
-PRICE_STR : 'price' ; 
-fragment
-RANGE_BOUND : [1-5] ;
-WORDS : [A-Za-z0-9WHITESPACE]+ ; 
-WHITESPACE : [ \t\r\n]+ -> skip ;
+LPAREN : '(' ;
+RPAREN : ')' ;
 
 
 /*
@@ -58,11 +48,8 @@ WHITESPACE : [ \t\r\n]+ -> skip ;
  query : andExp ( OR andExp ) * ;
  andExp : atom ( AND atom ) * ;
  atom : in | category | name | LPAREN query RPAREN ;
- // atom : in | category | rating | price | name | LPAREN query RPAREN ;
- in : 'in' LPAREN STRING RPAREN ; 
- category : 'category' LPAREN STRING RPAREN ; 
- //rating : 'rating' range ;
- //price : 'price' range ;
- name : 'name' LPAREN STRING RPAREN ;
- //range : LPAREN RANGE RPAREN ; 
+ in : 'in' LPAREN QUOTES STRING QUOTES RPAREN  ; 
+ category : 'category' LPAREN QUOTES STRING QUOTES RPAREN ; 
+ name : 'name' LPAREN QUOTES STRING QUOTES RPAREN  ; 
+
 
