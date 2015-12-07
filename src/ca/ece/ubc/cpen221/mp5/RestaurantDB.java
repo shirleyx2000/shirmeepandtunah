@@ -316,7 +316,7 @@ public class RestaurantDB {
         String queryString4 = "category(\"Chinese\") || category(\"Italian\")";
         String queryString1 = "in(\"Telegraph Ave\") && price(1..2)";
         String queryString2 = "in(\"Telegraph Ave\") && (category(\"Chinese\") || category(\"Italian\")) && price(1..2)";
-        res.query(queryString0);
+        res.query(queryString4);
     }
 
 }

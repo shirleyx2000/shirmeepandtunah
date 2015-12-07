@@ -33,22 +33,15 @@ package ca.ece.ubc.cpen221.mp5;
 
 OR : '||' ;
 AND : '&&' ;
-STRING : '\"' WORDS '\"' | '\'' WORDS '\''; 
-
-//STRING : ~[<>]+ ; 
-RANGE : RANGE_BOUND [\.][\.] RANGE_BOUND ; 
-LPAREN : [(] ;
-RPAREN : [)] ;
+STRING : ( '\"' | '\'' ) [a-zA-Z0-9 ]+ ( '\"' | '\'' ) ; 
+RANGE : [1-5] [\.][\.] [1-5] ; 
+LPAREN : '(' ;
+RPAREN : ')' ;
 IN_STR : 'in' ; 
 CATEGORY_STR : 'category' ; 
 NAME_STR : 'name' ;
 RATING_STR : 'rating' ; 
 PRICE_STR : 'price' ; 
-fragment
-RANGE_BOUND : [1-5] ;
-WORDS : [A-Za-z0-9WHITESPACE]+ ; 
-WHITESPACE : [ \t\r\n]+ -> skip ;
-
 
 
 /*
@@ -60,12 +53,11 @@ WHITESPACE : [ \t\r\n]+ -> skip ;
  root : query EOF ; 
  query : andExp ( OR andExp ) * ;
  andExp : atom ( AND atom ) * ;
- atom : in | category | name | LPAREN query RPAREN ;
- // atom : in | category | rating | price | name | LPAREN query RPAREN ;
- in : 'in' LPAREN STRING RPAREN ; 
+ atom : in | category | rating | price | name | LPAREN query RPAREN ;
+ in : IN_STR LPAREN STRING RPAREN ; 
  category : 'category' LPAREN STRING RPAREN ; 
- //rating : 'rating' range ;
- //price : 'price' range ;
+ rating : 'rating' range ;
+ price : 'price' range ;
  name : 'name' LPAREN STRING RPAREN ;
- //range : LPAREN RANGE RPAREN ; 
+ range : LPAREN RANGE RPAREN ; 
 
