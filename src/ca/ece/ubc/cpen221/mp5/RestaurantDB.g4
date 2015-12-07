@@ -36,7 +36,8 @@ OR : '||' ;
 AND : '&&' ;
 LPAREN : '(' ;
 RPAREN : ')' ;
-
+RANGE : RANGE_BOUND'..'RANGE_BOUND ; 
+RANGE_BOUND : [1-5] ;
 
 /*
  * These are the parser rules. They define the structures used by the parser.
@@ -47,9 +48,11 @@ RPAREN : ')' ;
  root : query EOF ; 
  query : andExp ( OR andExp ) * ;
  andExp : atom ( AND atom ) * ;
- atom : in | category | name | LPAREN query RPAREN ;
+ atom : in | category | rating | price | name | LPAREN query RPAREN ;
  in : 'in' LPAREN QUOTES STRING QUOTES RPAREN  ; 
- category : 'category' LPAREN QUOTES STRING QUOTES RPAREN ; 
+ category : 'category' LPAREN QUOTES STRING QUOTES RPAREN ;
  name : 'name' LPAREN QUOTES STRING QUOTES RPAREN  ; 
-
+ rating: 'rating' range;
+ price: 'price' range ;  
+ range : 'range' LPAREN RANGE_BOUND '..' RANGE_BOUND ;  
 
