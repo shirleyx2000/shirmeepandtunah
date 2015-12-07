@@ -22,6 +22,14 @@ import org.json.simple.parser.ContainerFactory;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.RuleContext;
+import org.antlr.v4.runtime.TokenStream;
+import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
+
 
 // TODO: This class represents the Restaurant Database.
 // Define the internal representation and 
@@ -35,6 +43,10 @@ import org.json.simple.parser.ParseException;
  */
 public class RestaurantDB {
 
+    private Map<String, Restaurant> all_restaurants;
+    private Map<String, Review> all_reviews; 
+    private Map<String, User> all_users; 
+    
     /**
      * Create a database from the Yelp dataset given the names of three files:
      * <ul>
@@ -55,7 +67,9 @@ public class RestaurantDB {
     public RestaurantDB(String restaurantJSONfilename, String reviewsJSONfilename, String usersJSONfilename) {
 
         //this map contains "name" -> restaurant object
-        Map<String, Restaurant> each_restaurant = new HashMap<String, Restaurant>(); 
+        all_restaurants = new HashMap<String, Restaurant>(); 
+        all_reviews = new HashMap<String, Review>(); 
+        all_users = new HashMap<String, User>(); 
         
         List<Map> json_restaurant = generateDictionary(restaurantJSONfilename);
          
@@ -82,9 +96,9 @@ public class RestaurantDB {
             new_res.setSchools((List<String>) e.get("schools"));
             new_res.setLat((double) e.get("latitude"));
             new_res.setPrice((long) e.get("price"));
-            new_res.setJSONStr("JSONStr");
+            new_res.setJSONStr((String) e.get("JSONStr"));
             
-            each_restaurant.putIfAbsent((String) e.get("name"), new_res);
+            all_restaurants.putIfAbsent((String) e.get("name"), new_res);
         }
         
         System.out.println("\n\n\n");
@@ -110,6 +124,7 @@ public class RestaurantDB {
             new_rev.setDate((String) f.get("date"));
             new_rev.setJSONStr((String) f.get("JSONStr"));
             
+            all_reviews.putIfAbsent((String) f.get("review_id"), new_rev);
         }
         
         System.out.println("\n\n\n");
@@ -132,6 +147,7 @@ public class RestaurantDB {
             new_user.setVotes((Map<String,Integer>) g.get("votes"));
             new_user.setReviewCount((long) g.get("review_count"));
             
+            all_users.putIfAbsent((String) g.get("name"), new_user);
         }
     }
 
@@ -202,20 +218,92 @@ public class RestaurantDB {
     
     /** 
      * Retrieves a set of restaurants given a query which consists of a combination of 
-     * names, neighbourhoods, categories, rating, and price when client requests 
-     * through command line
-     * 
+     * names, neighbourhoods, categories, rating, and price when client requests
      * @param queryString
      * @return Set<Restaurant> 
      */
     public Set<Restaurant> query(String queryString) {
         // TODO: Implement this method
-        // Write specs, etc.
+        
+        //in("Telegraph Ave") && (category("Chinese") || category("Italian")) && price(1..2)
+        CharStream stream = new ANTLRInputStream(queryString);
+        RestaurantDBLexer lexer = new RestaurantDBLexer(stream);
+        TokenStream tokens = new CommonTokenStream(lexer);
+        
+        RestaurantDBParser parser = new RestaurantDBParser(tokens);
+        ParseTree tree = parser.root(); 
+        ((RuleContext)tree).inspect(parser);
+        
+        ParseTreeWalker walker = new ParseTreeWalker();
+        RestaurantDBListener listener = new RestaurantDBBaseListener(); 
+        
+        
         return null;
     }
     
-//    public void addRestaurant (String restaurantJSON);
-//    
+    
+    /**
+     * Precondition: input must be a single element JSON string
+     * 
+     * @param restaurantJSON
+     */
+    public void addRestaurant (String restaurantJSON) {
+        Map json = new HashMap(); 
+
+        JSONParser parser = new JSONParser(); 
+        ContainerFactory containerFactory = new ContainerFactory() {
+            public List createArrayContainer() {
+                return new LinkedList(); 
+            }
+            
+            public Map createObjectContainer() {
+                return new LinkedHashMap(); 
+            }
+
+          @Override
+          public List creatArrayContainer() {
+              // TODO Auto-generated method stub
+              return null;
+          }
+        };
+        
+        try {
+            json = (Map)parser.parse(restaurantJSON, containerFactory);
+            Iterator iter = (Iterator) json.entrySet().iterator(); 
+            while(iter.hasNext()) {
+                Map.Entry entry = (Map.Entry)iter.next(); 
+            }
+            //add one more non-JSON file element 
+            json.put("JSONStr",restaurantJSON);
+//            System.out.println(JSONValue.toJSONString(json)); // only one restaurant 
+//            System.out.println(json.get("type"));
+            
+            Restaurant new_res = new Restaurant((String) json.get("name"));
+            new_res.setOpen((Boolean) json.get("open")); 
+            new_res.setURL((String) json.get("url")); 
+            new_res.setLong((double) json.get("longitude")); 
+            new_res.setNeighbours((List<String>) json.get("neighborhoods"));
+            new_res.setBusID((String) json.get("business_id"));
+            new_res.setCategories((List<String>) json.get("categories"));
+            new_res.setState((String) json.get("state"));
+            new_res.setStars((double) json.get("stars"));
+            new_res.setCity((String) json.get("city"));
+            new_res.setAddr((String) json.get("full_address"));
+            new_res.setReviewCnt((long) json.get("review_count"));
+            new_res.setPhotoURL((String) json.get("photo_url"));
+            new_res.setSchools((List<String>) json.get("schools"));
+            new_res.setLat((double) json.get("latitude"));
+            new_res.setPrice((long) json.get("price"));
+            new_res.setJSONStr((String) json.get("JSONStr"));
+            
+            all_restaurants.putIfAbsent((String) json.get("name"), new_res);
+            
+        } catch (ParseException pe) {
+            System.out.println(pe);
+        }
+          
+    }
+    
 //    public void addReview (String reviewJSON);
 //       
 //    public void addUser (String userJSON);
@@ -223,6 +311,12 @@ public class RestaurantDB {
     //TO DELETE, testing only 
     public static void main (String [] args) {
         RestaurantDB res = new RestaurantDB ("restaurants.json", "reviews.json", "users.json");
+        String queryString0 = "in(\"Telegraph Ave\")"; 
+        String queryString3 = "price(1..2)";
+        String queryString4 = "category(\"Chinese\") || category(\"Italian\")";
+        String queryString1 = "in(\"Telegraph Ave\") && price(1..2)";
+        String queryString2 = "in(\"Telegraph Ave\") && (category(\"Chinese\") || category(\"Italian\")) && price(1..2)";
+        res.query(queryString0);
     }
 
 }

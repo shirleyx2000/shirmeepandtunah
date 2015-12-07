@@ -29,17 +29,24 @@ package ca.ece.ubc.cpen221.mp5;
  * These are the lexical rules. They define the tokens used by the lexer.
  *   *** Antlr requires tokens to be CAPITALIZED, like START_ITALIC, END_ITALIC, and TEXT.
  */
+
 OR : '||' ;
 AND : '&&' ;
-IN : 'in' LPAREN STRING RPAREN ;
-CATEGORY : 'category' LPAREN STRING RPAREN ;
-NAME : 'name' LPAREN STRING RPAREN ;
-RATING : 'rating' LPAREN RANGE RPAREN ;
-PRICE : 'price' LPAREN RANGE RPAREN ;
-STRING : ~[<>]+ ; 
-RANGE : LPAREN [1-5]'..'[1-5] RPAREN ;
-LPAREN : '(' ;
-RPAREN : ')' ;
+STRING : '\"' WORDS '\"' | '\'' WORDS '\''; 
+//STRING : ~[<>]+ ; 
+RANGE : RANGE_BOUND [\.][\.] RANGE_BOUND ; 
+LPAREN : [(] ;
+RPAREN : [)] ;
+IN_STR : 'in' ; 
+CATEGORY_STR : 'category' ; 
+NAME_STR : 'name' ;
+RATING_STR : 'rating' ; 
+PRICE_STR : 'price' ; 
+fragment
+RANGE_BOUND : [1-5] ;
+WORDS : [A-Za-z0-9WHITESPACE]+ ; 
+WHITESPACE : [ \t\r\n]+ -> skip ;
+
 
 /*
  * These are the parser rules. They define the structures used by the parser.
@@ -47,10 +54,15 @@ RPAREN : ')' ;
  * 
  */
  
-root : query EOF ; 
-query : andExp (OR andExp)* ;
-andExp : atom (AND atom)* ;
-atom : IN | CATEGORY | RATING | PRICE | NAME | LPAREN query RPAREN ;
-
-
+ root : query EOF ; 
+ query : andExp ( OR andExp ) * ;
+ andExp : atom ( AND atom ) * ;
+ atom : in | category | name | LPAREN query RPAREN ;
+ // atom : in | category | rating | price | name | LPAREN query RPAREN ;
+ in : 'in' LPAREN STRING RPAREN ; 
+ category : 'category' LPAREN STRING RPAREN ; 
+ //rating : 'rating' range ;
+ //price : 'price' range ;
+ name : 'name' LPAREN STRING RPAREN ;
+ //range : LPAREN RANGE RPAREN ; 
 
