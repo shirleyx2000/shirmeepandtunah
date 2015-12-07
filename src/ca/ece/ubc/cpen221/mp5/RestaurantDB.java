@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -250,17 +251,20 @@ public class RestaurantDB {
     
     private class RestaurantDBListener_Advanced extends RestaurantDBBaseListener {
         
-        private Stack ORExpression; 
-        private Stack ANDExpreesion; 
+        private Stack<String> ORANDExpression = new Stack<String>(); 
         private List<Restaurant> categoryls;
         private List<Restaurant> inls; 
         private List<Restaurant> pricels; 
         private List<Restaurant> ratingls;
         private List<Restaurant> namels; 
+        private  List<ArrayList<Restaurant>> ORList; 
         
         @Override
         public void enterAndExp (RestaurantDBParser.AndExpContext ctx) {
             System.err.println("entering && expression");
+            
+            //TODO: check AND operator 
+            
         }
         
         @Override
@@ -275,22 +279,15 @@ public class RestaurantDB {
             inls = new ArrayList<Restaurant>(); 
             
             for (Map.Entry<String, Restaurant> entry : all_restaurants.entrySet()) {
-//              System.err.println(entry.getKey() + "/" + entry.getValue().getCategories());
-              System.err.println(entry.getKey());
               //per restaurant 
               for (String s : entry.getValue().getNeighbours()) {
                   subStringCtx = ctx.getChild(2).toString().substring(1, ctx.getChild(2).toString().length()-1);
-                  System.err.println(subStringCtx);
-                  System.err.println(s);
                   if (s.equals(subStringCtx)) {
                       inls.add(entry.getValue());
-                      System.err.println("FOUND IT~~~~~");
                       break;
                   }
               }
-              System.err.println("NEXT RESTAURANT...\n");
           }
-          
           System.err.println(inls);
         }
         
@@ -307,16 +304,11 @@ public class RestaurantDB {
             long longMin = Long.parseLong(ctx.getChild(2).toString()); 
             long longMax = Long.parseLong(ctx.getChild(4).toString()); 
             for (Map.Entry<String, Restaurant> entry : all_restaurants.entrySet()) {
-//              System.err.println(entry.getKey() + "/" + entry.getValue().getCategories());
-              System.err.println(entry.getValue().getPrice());
-              System.err.println("Beginning: " + longMin + "  -- Ending: " + longMax);
               //per restaurant 
               
               if (longMin <= entry.getValue().getPrice() &&  entry.getValue().getPrice() <= longMax) {
                   pricels.add(entry.getValue());
-                  System.err.println("FOUND IT~~~~~");
               }
-              System.err.println("NEXT RESTAURANT...\n");
           }
           
           System.err.println(pricels);
@@ -339,15 +331,57 @@ public class RestaurantDB {
         
         @Override 
         public void enterQuery (RestaurantDBParser.QueryContext ctx) {
-            System.err.println("entering QUERY expression");
+            System.err.println("----------> entering QUERY expression");
             System.err.println(ctx.start);
             System.err.println(ctx.children);
+            System.err.println(ctx.getChildCount());
+            System.err.println(RestaurantDBLexer.OR);
+            
+            //CHECK if child contains || token through TOKEN 
+            for (ParseTree pt : ctx.children) {
+                if (pt.toString().equals("||")) {
+                    System.err.println("OR operator exists");
+                    ORList = new ArrayList<ArrayList<Restaurant>>();
+                    ORANDExpression.push("OR");
+                    
+                    for (int i = 0; i < (ctx.getChildCount()/2+1); i++) {
+                        //one list per element OR'ed 
+                         ORList.add(new ArrayList<Restaurant>());
+                    }
+                }
+            }
             
         }
         
         @Override 
         public void exitQuery (RestaurantDBParser.QueryContext ctx) {
-            System.err.println("exiting QUERY expression");
+            System.err.println("<---------- exiting QUERY expression");
+            
+            System.err.println(ctx.children);
+          //CHECK if child contains || token through TOKEN 
+            for (ParseTree pt : ctx.children) {
+                if (pt.toString().equals("||")) {
+                    System.err.println("OR operator exists");
+                    
+                    //should at least exist one list after returning from an OREXP
+                    Set<Restaurant> resSet = new LinkedHashSet<>(ORList.get(0));
+                    
+                    //iterate through each list and combine into SETs
+                    for (ArrayList<Restaurant> ls : ORList) {
+                        System.err.println(ls);
+                        resSet.addAll(ls);
+                    }
+                    
+                    //Check combined list
+                    System.err.println(resSet);            
+                    
+                    System.err.println(ORANDExpression.peek());
+                    ORANDExpression.pop(); 
+                    //should process ORList, once returned 
+                }
+            }
+            
+           
         }
         
         @Override 
@@ -358,12 +392,9 @@ public class RestaurantDB {
             double doubleMin = Double.parseDouble(ctx.getChild(2).toString()); 
             double doubleMax = Double.parseDouble(ctx.getChild(4).toString()); 
             for (Map.Entry<String, Restaurant> entry : all_restaurants.entrySet()) {
-//              System.err.println(entry.getKey() + "/" + entry.getValue().getCategories());
               System.err.println(entry.getValue().getStars());
               System.err.println("Beginning: " + doubleMin + "  -- Ending: " + doubleMax);
-              //per restaurant 
               
-              //TODO: max bound is not correct ...  
               if (doubleMin <= entry.getValue().getStars() &&  entry.getValue().getStars() <= doubleMax) {
                   ratingls.add(entry.getValue());
                   System.err.println("FOUND IT~~~~~");
@@ -419,33 +450,49 @@ public class RestaurantDB {
         @Override 
         public void enterCategory (RestaurantDBParser.CategoryContext ctx) {
             String subStringCtx; 
-            System.err.println("entering CATEGORY expression");
-            System.err.println(ctx.getText()); //the whole token 
+            System.err.println("\n>>>> entering CATEGORY expression");
+            System.err.println(ctx.depth()); //the whole token 
             System.err.println(ctx.getChild(2).toString().getClass()); //cuisine name
-            categoryls = new ArrayList<Restaurant>(); 
+            
+            //find a list to populate: 
+            if (ORANDExpression.peek().equals("OR")) {
+                for (ArrayList<Restaurant> ls : ORList) {
+                    if (ls.isEmpty()) {
+                        categoryls = ls; 
+                        break;
+                    }
+                }
+            } else if (ORANDExpression.peek().equals("AND")){ 
+                //TODO: ADD AND COUNTERPART
+            } else {
+                System.err.println("WHAT HAPPENED?");
+            }
+            
+            //TESTING: restaurant list in string, instead of restaurant objects
+            List<String> stringls = new ArrayList<String>();
             
             for (Map.Entry<String, Restaurant> entry : all_restaurants.entrySet()) {
-//                System.err.println(entry.getKey() + "/" + entry.getValue().getCategories());
-                System.err.println(entry.getKey());
                 //per restaurant 
                 for (String s : entry.getValue().getCategories()) {
                     subStringCtx = ctx.getChild(2).toString().substring(1, ctx.getChild(2).toString().length()-1);
                     if (s.equals(subStringCtx)) {
                         categoryls.add(entry.getValue());
-                        System.err.println("FOUND IT~~~~~");
+                        stringls.add(entry.getValue().name);
+//                        System.err.println("FOUND IT~~~~~");
                         break;
                     }
                 }
-                System.err.println("NEXT RESTAURANT...\n");
+//                System.err.println("NEXT RESTAURANT...\n");
             }
             
             System.err.println(categoryls);
+            System.err.println(stringls);
         }
         
         @Override
         public void exitCategory (RestaurantDBParser.CategoryContext ctx) {
-            System.err.println ("exiting CATEGORY expression");
-            // categoryls
+            System.err.println ("<<<< exiting CATEGORY expression\n");
+            //Anything needed to be done? 
         }
     }
     
@@ -522,10 +569,10 @@ public class RestaurantDB {
         String queryRating = "rating(2.1..2.9)";
         String queryPrice = "price(1..2)";
         String queryORCategory = "category(\"Chinese\") || category(\"Italian\")";
-        String queryString0 = "in(\"Telegraph Ave\") && price(1..2)";
+        String queryAND = "in(\"Telegraph Ave\") && price(1..2)";
         String queryString1 = "in(\"Telegraph Ave\") && (category(\"Chinese\") || category(\"Italian\")) && price(1..2)";
         String queryStringName = "name(\"Alborz\")"; 
-        res.query(queryRating);
+        res.query(queryAND);
     }
 
 }
