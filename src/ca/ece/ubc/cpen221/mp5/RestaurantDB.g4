@@ -33,8 +33,9 @@ package ca.ece.ubc.cpen221.mp5;
 
 OR : '||' ;
 AND : '&&' ;
-STRING : ( '\"' | '\'' ) [a-zA-Z0-9 ]+ ( '\"' | '\'' ) ; 
-RANGE : [1-5] [\.][\.] [1-5] ; 
+STRING : ( '\"' | '\'' )+ [a-zA-Z0-9 ]+ ( '\"' | '\'' )+ ; 
+RANGE_BOUND : [1-5] ; 
+RANGE : '..' ; 
 LPAREN : '(' ;
 RPAREN : ')' ;
 IN_STR : 'in' ; 
@@ -42,6 +43,8 @@ CATEGORY_STR : 'category' ;
 NAME_STR : 'name' ;
 RATING_STR : 'rating' ; 
 PRICE_STR : 'price' ; 
+WHITESPACE : [ \t\r\n]+ -> skip ;
+
 
 
 /*
@@ -59,5 +62,5 @@ PRICE_STR : 'price' ;
  rating : 'rating' range ;
  price : 'price' range ;
  name : 'name' LPAREN STRING RPAREN ;
- range : LPAREN RANGE RPAREN ; 
+ range : LPAREN RANGE_BOUND RANGE RANGE_BOUND RPAREN ; 
 
