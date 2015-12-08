@@ -132,7 +132,7 @@ public class RestaurantDB {
         System.err.println(tree.toStringTree(parser));
         
         ParseTreeWalker walker = new ParseTreeWalker();
-        RestaurantDBListener listener = new RestaurantDBListener_Advanced();  //need to extend baseListener!
+        RestaurantDBListener_Advanced listener = new RestaurantDBListener_Advanced();  //need to extend baseListener!
         walker.walk(listener, tree);
         
         return new HashSet<Restaurant>(listener.getRestaurants()); 

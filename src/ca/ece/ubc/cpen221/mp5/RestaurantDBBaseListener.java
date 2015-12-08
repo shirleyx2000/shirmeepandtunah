@@ -3,8 +3,6 @@
 package ca.ece.ubc.cpen221.mp5;
 
 
-import java.util.Collection;
-
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -149,9 +147,4 @@ public class RestaurantDBBaseListener implements RestaurantDBListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void visitErrorNode(@NotNull ErrorNode node) { }
-    @Override
-    public Collection<? extends Restaurant> getRestaurants() {
-        // TODO Auto-generated method stub
-        return null;
-    }
 }

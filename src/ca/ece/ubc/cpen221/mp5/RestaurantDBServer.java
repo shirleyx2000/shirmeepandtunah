@@ -19,7 +19,7 @@ import java.util.Set;
  * Returns JSON formatted string to client if client requests or database updates are illegal/invalid/incorrect.
  * 
  * @author guess_000
- * Referenced from https://github.com/CPEN-221/example15 SocialServer.java
+ * Referenced from https://github.com/CPEN-221/example16
  * 
  */
 
@@ -106,11 +106,11 @@ public class RestaurantDBServer {
                 clientSocket.getOutputStream()), true);
         
         try {
-            //TODO: Modify this to account for other client requests!
+            //TODO: Modify this to account for other client requests! If request ill-formatted, throw RequestFormatException()
             //Each request is a single-line string
             for( String request = in.readLine(); request != null; request = in.readLine() ){
                 System.err.println("query : " + request);
-                try {
+                //try {
                     //Get query reply from database
                     String replyJson = "";
                     Set<Restaurant> restaurants = rdb.query( request );
@@ -120,10 +120,10 @@ public class RestaurantDBServer {
                     }
                     System.err.println("reply : " + replyJson);
                     out.println(replyJson);
-                } catch (QueryFormatException qfe){
-                    System.err.println("reply : err");
-                    out.println("err\n");
-                }
+//                } catch (QueryFormatException qfe){
+//                    System.err.println("reply : err");
+//                    out.println("err\n");
+//                }
             }
         } finally {
             out.close();
@@ -219,9 +219,34 @@ public class RestaurantDBServer {
 	    rdb.addReview( reviewJSON );
 	}
 	
+	/**
+	 * Given a client request, checks if format is valid.
+	 * 
+	 * @param request
+	 * @throws RequestFormatException
+	 */
+	private void checkRequestFormat( String request ) throws RequestFormatException {
+	    
+//	    String strCloseParen = "\")";
+//	    String randomReviewRegex = "randomReview(\"";
+//	    String getRestaurantRegex = "getRestaurant(\"";
+//	    String addRestaurantRegex = "addRestaurant(\"";
+//	    String addUserRegex = "addUser(\"";
+//	    String addReviewRegex = "addReview(\"";
+//	    
+//	    //Check if request contains any of the strings:
+//	    if( (request.indexOf(randomReviewRegex) > -1) 
+//	        && (request.indexOf(strCloseParen) > request.indexOf(randomReviewRegex)) ){
+//	            return;
+//	    } else if( (request.indexOf(getRestaurantRegex) > -1) 
+//	            && (request.indexOf(strCloseParen) > request.indexOf(getRestaurantRegex)) ){
+//            return;
+	    
+	}
+	
     //MAIN
     
-	public static void main( String[] args ) throws ReservedPortException, IOException{
+	public static void main( String[] args ) throws IOException{
 	    
 	    //Check number of arguments passed
 	    if( args.length != 4 ){
