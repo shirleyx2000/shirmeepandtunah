@@ -45,8 +45,12 @@ public class RestaurantDBServer {
 	    String usersDetailsFile = filename3;
 	    
 	    rdb = new RestaurantDB( restaurantDetailsFile, reviewsDetailsFile, usersDetailsFile );
-	    serverSocket = new ServerSocket( port );
-	    
+	    try {
+	        System.out.println("Trying to initalized socket");
+	        serverSocket = new ServerSocket( port );
+	    } catch (IOException ioex) {
+	        ioex.printStackTrace();
+	    }
 	}
 	
 	/**
@@ -65,6 +69,8 @@ public class RestaurantDBServer {
 	                try {
 	                    try {
 	                        handle( clientSocket );
+	                    } catch (IOException ioe){
+	                        ioe.printStackTrace(); 
 	                    } finally {
 	                        clientSocket.close();
 	                    }
@@ -97,37 +103,63 @@ public class RestaurantDBServer {
 	    System.err.println("client connected huzzah");
 	    
 	    //Get client socket's input stream. 
-	    //InputStreamReader converts byte stream to character stream.
-	    //BufferedReader allow reading one line at a time.
         BufferedReader in = new BufferedReader(new InputStreamReader(
                 clientSocket.getInputStream()));
         
-        //PrintWriter is easy to use. Auto-flush on.
-        //Wrap client's output stream with OutputStreamWriter; converts character stream to byte stream
         PrintWriter out = new PrintWriter(new OutputStreamWriter(
                 clientSocket.getOutputStream()), true);
         
+        System.err.println("Should be getting client request here");
         try {
             //TODO: Modify this to account for other client requests! If request ill-formatted, throw RequestFormatException()
             //Each request is a single-line string
             for( String request = in.readLine(); request != null; request = in.readLine() ){
-                System.err.println("query : " + request);
                 //try {
                     //Get query reply from database
-                    String replyJson = "";
-                    Set<Restaurant> restaurants = rdb.query( request );
-                    for( Restaurant r : restaurants ){
-                        //Separate each restaurant with a new line
-                        replyJson.concat(r.toString() + "\n");
+                    StringBuilder replyJson = new StringBuilder("");
+                    System.err.println("query : " + request);
+
+                    if (request.contains("randomReview")) {
+                        request = request.substring(14, request.length()-2);
+                        replyJson.append(randomReview(request));
+                    } else if (request.contains("getRestaurant")) {
+                        request = request.substring(15, request.length()-2);
+                        replyJson.append(getRestaurant(request));
+                    } else if (request.contains("addRestaurant")) {
+                        request = request.substring(14, request.length()-1);
+                        addRestaurant(request);
+                    } else if (request.contains("addReview")) {
+                        request = request.substring(10, request.length()-1);
+                        addReview(request);
+                    } else if (request.contains("addUser")) {
+                        request = request.substring(8, request.length()-1);
+                        addUser(request);
+                    } 
+                    else {
+                        Set<Restaurant> restaurants = rdb.query( request );
+                        for( Restaurant r : restaurants ){
+                            //Separate each restaurant with a new line
+                            System.err.println(r.getJSONStr());
+                            replyJson.append(r.getJSONStr() + "; ");
+                        }
                     }
-                    System.err.println("reply : " + replyJson);
-                    out.println(replyJson);
+                    
+                    System.err.println("query after : " + request);
+                    
+                    System.err.println("reply : " + replyJson); 
+                    System.err.println("Check addUser: " + getUser("1234567890abcdefghi"));
+
+                    out.println(replyJson.toString());
 //                } catch (QueryFormatException qfe){
 //                    System.err.println("reply : err");
 //                    out.println("err\n");
 //                }
             }
+        } catch (QueryFormatException e) {
+            System.err.println("Ill-formatted query");
+            e.printStackTrace();
         } finally {
+            System.err.println("closing client I/O");
             out.close();
             in.close();
         }
@@ -182,11 +214,43 @@ public class RestaurantDBServer {
 	    for( Restaurant r : allRestaurants ){
 	        //Check if restuarant.businessId equals businessId
 	        if( r.business_id.equals(businessId) ){
-	            return r.getJsonStr();
+	            return r.getJSONStr();
 	        }
 	    }
 	    return restaurantJSON;
 	}
+	
+    private String getReview( String reviewId ){
+        
+        String reviewJSON = "";
+        
+        //Get the collection of values (Restaurant objects) from all_restaurants map
+        Collection<Review> allReviews = rdb.getAllReviews().values();
+        //Iterate through restaurant objects 
+        for( Review r : allReviews ){
+            //Check if restuarant.businessId equals businessId
+            if( r.getReviewId().equals(reviewId) ){
+                return r.getJsonStr();
+            }
+        }
+        return reviewJSON;
+    }
+    
+    private String getUser( String userId ){
+        
+        String userJSON = "";
+        
+        //Get the collection of values (Restaurant objects) from all_restaurants map
+        Collection<User> allUsers = rdb.getAllUsers().values();
+        //Iterate through restaurant objects 
+        for( User r : allUsers ){
+            //Check if restuarant.businessId equals businessId
+            if( r.getUserId().equals(userId) ){
+                return r.getJsonStr();
+            }
+        }
+        return userJSON;
+    }
 	
 	/**
 	 * Adds a restaurant to Restaurant database.
@@ -244,30 +308,32 @@ public class RestaurantDBServer {
     //MAIN
     
 	public static void main( String[] args ) throws IOException{
+
+	    //Check number of arguments passed
+	    System.out.println(args[0]);
+	    System.out.println(args[1]);
+	    System.out.println(args[2]);
+	    System.out.println(args[3]);
 	    
-//	    //Check number of arguments passed
-//	    if( args.length != 4 ){
-//	        System.err.println("Usage: java RestaurantDBServer /n"
-//	                + "    <port number>/n"
-//	                + "    <name of file containing restaurants>/n"
-//	                + "    <name of file containing review>/n"
-//	                + "    <name of file containing users>");
-//	        System.exit(1);
-//	    }
-//	    
-//	    //Get command line arguments
-//	    int port = Integer.parseInt(args[0]);
-//	    String restaurantDetailsFile = args[1];
-//        String reviewsDetailsFile = args[2];
-//        String usersDetailsFile = args[4];
-	    
-	    int port = 4949;
-        String restaurantDetailsFile = "restaurants.json";
-        String reviewsDetailsFile = "reviews.json";
-        String usersDetailsFile = "users.json";
+	    if( args.length != 4 ){
+	        System.err.println("Usage: java RestaurantDBServer /n"
+	                + "    <port number>/n"
+	                + "    <name of file containing restaurants>/n"
+	                + "    <name of file containing review>/n"
+	                + "    <name of file containing users>");
+	        System.exit(1);
+	    }
+
+
+	    //Get command line arguments
+	    int port = Integer.parseInt(args[0]);
+	    String restaurantDetailsFile = args[1];
+        String reviewsDetailsFile = args[2];
+        String usersDetailsFile = args[3];
 	    
 	    //Create instance of RDBS, returns only if IOException
 	    try{
+//	        RestaurantDBServer rdbs = new RestaurantDBServer( 4949, "restaurants.json", "reviews.json", "users.json" );
 	        RestaurantDBServer rdbs = new RestaurantDBServer( port, restaurantDetailsFile, reviewsDetailsFile, usersDetailsFile );
 	        rdbs.serve();
 	    } catch ( IOException ioe ){

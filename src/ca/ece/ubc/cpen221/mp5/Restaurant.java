@@ -49,7 +49,7 @@ public class Restaurant {
         this.JSONStr = JSONStr;
     }
     
-    public String getJsonStr() {
+    public String getJSONStr() {
         return this.JSONStr; 
     }
     
