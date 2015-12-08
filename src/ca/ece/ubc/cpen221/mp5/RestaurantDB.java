@@ -245,7 +245,7 @@ public class RestaurantDB {
      * @return Set<Restaurant> 
      */
     public Set<Restaurant> query(String queryString) {
-        
+        //TODO: throw QFException
         CharStream stream = new ANTLRInputStream(queryString);
         RestaurantDBLexer lexer = new RestaurantDBLexer(stream);
         TokenStream tokens = new CommonTokenStream(lexer);
@@ -268,14 +268,32 @@ public class RestaurantDB {
         return null; 
     }
     
+    /**
+     * Private class to walk through each parser of the ANTLR tree
+     * 
+     * @author Shirley
+     *
+     */
     private class RestaurantDBListener_Advanced extends RestaurantDBBaseListener {
         
         private Stack<String> ORANDExpression = new Stack<String>(); 
+        //**!!
+        private Stack<ArrayList<Restaurant>> fullStack = new Stack<ArrayList<Restaurant>>(); 
+        List<Restaurant> ANDR = new ArrayList<Restaurant>(); 
+        List<Restaurant> ANDL = new ArrayList<Restaurant>(); 
+        List<Restaurant> ANDF = new ArrayList<Restaurant>(); 
+
+        List<Restaurant> ORR = new ArrayList<Restaurant>(); 
+        List<Restaurant> ORL = new ArrayList<Restaurant>(); 
+        List<Restaurant> ORF = new ArrayList<Restaurant>(); 
+
+        //**!!
         private List<Restaurant> categoryls;
-        private List<Restaurant> inls; 
+        private ArrayList<Restaurant> inls; 
         private List<Restaurant> pricels; 
         private List<Restaurant> ratingls;
         private List<Restaurant> namels; 
+        
         private List<ArrayList<Restaurant>> ORList = new ArrayList<ArrayList<Restaurant>>();
         private List<ArrayList<Restaurant>> ANDList = new ArrayList<ArrayList<Restaurant>>();
 
@@ -284,58 +302,37 @@ public class RestaurantDB {
         public void enterAndExp (RestaurantDBParser.AndExpContext ctx) {
             System.err.println("\n==============> entering && expression");
             System.err.println("Child count: " + ctx.getChildCount());
-            int ANDCount = 0; 
-            //TODO: check AND operator 
-            //CHECK if child contains && token through TOKEN 
-            for (ParseTree pt : ctx.children) {
-                if (pt.toString().equals("&&")) {
-                    System.err.println("AND operator exists");
-//                    ANDList = new ArrayList<ArrayList<Restaurant>>();
-                    ORANDExpression.push("AND");
-                    ANDCount++; 
-                }
-            }
-            
-            for (int i = 0; i < ANDCount+1; i++) {
-                //one list per element OR'ed 
-                ANDList.add(new ArrayList<Restaurant>());
-            }
         }
         
         @Override
         public void exitAndExp (RestaurantDBParser.AndExpContext ctx) {
             System.err.println("<============== exiting && expression\n");
+            int addCount = 0; 
             
-          //CHECK if child contains && token through TOKEN 
+            //Check if this AndExp contains && operator
             for (ParseTree pt : ctx.children) {
                 if (pt.toString().equals("&&")) {
                     System.err.println("AND operator exists");
-                    
-                    List<Restaurant> resSet = new ArrayList<Restaurant>(ANDList.get(0)); 
-                    //iterate through each list and combine into SETs
-                    for (ArrayList<Restaurant> ls : ANDList) {
-                        System.err.println(ls);
-                        //INTERSECTION OF LISTS
-                        resSet.retainAll(ls);
-                    }
-                    
-                    //Check combined list
-                    System.err.println("FINAL PRODUCT: \n" + resSet);            
-                    
-                    //release the OPERATOR
-                    System.err.println(ORANDExpression.peek());
-                    ORANDExpression.pop(); 
-                    //should reset ANDList, once returned 
-                    int size = ANDList.size(); 
-//                    for (int i = 0; i < (ctx.getChildCount()/2+1); i++) {
-//                        //one list per element OR'ed 
-//                        ANDList.remove(size-1-i);
-//                    }
-                    //if higher levels of add needs to AND this product
-//                    ANDList.add((ArrayList<Restaurant>) resSet);
+                    addCount++; 
                 }
             }
-            System.err.println("AND LIST finalized to be: \n" + ANDList);
+            
+            //Confirms this expression contains && operator
+            for (int i = 0; i<addCount; i++) {
+                System.err.println("I am intersecting");
+                ANDL = fullStack.pop();
+                ANDR = fullStack.pop();
+                // ANDF = ANDL & ANDR; 
+                ANDF = ANDL; 
+                ANDF.retainAll(ANDR);
+                fullStack.push((ArrayList<Restaurant>) ANDF);
+            }
+            addCount = 0; 
+            
+            System.err.println("AND LIST finalized to be: \n" + fullStack.peek());
+            for (Restaurant r : fullStack.peek()) {
+                System.err.println(r.name);
+            }
         }
         
         @Override 
@@ -343,27 +340,9 @@ public class RestaurantDB {
             System.err.println("\nentering IN expression");
             String subStringCtx; 
             
+            inls = new ArrayList<Restaurant>(); 
             List<String> testls = new ArrayList<String>(); 
             
-            //find a list to populate: 
-            if (ORANDExpression.peek().equals("OR")) {
-                for (ArrayList<Restaurant> ls : ORList) {
-                    if (ls.isEmpty()) {
-                        inls = ls; 
-                        break;
-                    }
-                }
-            } else if (ORANDExpression.peek().equals("AND")){ 
-                for (ArrayList<Restaurant> ls : ANDList) {
-                    if (ls.isEmpty()) {
-                        inls = ls; 
-                        break;
-                    }
-                }
-            } else {
-                System.err.println("WHAT HAPPENED?");
-            }
-                        
             for (Map.Entry<String, Restaurant> entry : all_restaurants.entrySet()) {
               //per restaurant 
               for (String s : entry.getValue().getNeighbours()) {
@@ -374,9 +353,12 @@ public class RestaurantDB {
                       break;
                   }
               }
-          }
-          System.err.println(inls);
-          System.err.println(testls);
+            }
+            
+            //finalized string exiting In; 
+            fullStack.push(inls);
+            System.err.println(fullStack.peek());
+            System.err.println(testls);
         }
         
         @Override 
@@ -388,28 +370,9 @@ public class RestaurantDB {
         public void enterPrice (RestaurantDBParser.PriceContext ctx) {
             System.err.println("\nentering PRICE expression");
             
+            pricels = new ArrayList<Restaurant>(); 
             List<String> testls = new ArrayList<String>();
             
-            //find a list to populate: 
-            if (ORANDExpression.peek().equals("OR")) {
-                System.err.println("OR LIST");
-                for (ArrayList<Restaurant> ls : ORList) {
-                    if (ls.isEmpty()) {
-                        pricels = ls; 
-                        break;
-                    }
-                }
-            } else if (ORANDExpression.peek().equals("AND")){ 
-                System.err.println("AND LIST");
-                for (ArrayList<Restaurant> ls : ANDList) {
-                    if (ls.isEmpty()) {
-                        pricels = ls; 
-                        break;
-                    }
-                }
-            } else {
-                System.err.println("*****WHAT HAPPENED?");
-            }
             
             long longMin = Long.parseLong(ctx.getChild(2).toString()); 
             long longMax = Long.parseLong(ctx.getChild(4).toString()); 
@@ -420,10 +383,11 @@ public class RestaurantDB {
                   pricels.add(entry.getValue());
                   testls.add(entry.getValue().name);
               }
-          }
+            }
           
-          System.err.println(pricels);
-          System.err.println(testls);
+            fullStack.push((ArrayList<Restaurant>) pricels);
+            System.err.println(fullStack.peek());
+            System.err.println(testls);
         }
         
         @Override 
@@ -439,61 +403,49 @@ public class RestaurantDB {
         @Override 
         public void exitRoot (RestaurantDBParser.RootContext ctx) {
             System.err.println("exiting ROOT expression\n");
+            //TODO: take the last element of the stack to return! final product
         }
         
         @Override 
         public void enterQuery (RestaurantDBParser.QueryContext ctx) {
             System.err.println("\n----------> entering QUERY expression");
             System.err.println("Child count : " + ctx.getChildCount());
-            int ORCount = 0; 
-            
-            //CHECK if child contains || token through TOKEN 
-            for (ParseTree pt : ctx.children) {
-                if (pt.toString().equals("||")) {
-                    System.err.println("OR operator exists");
-                    ORANDExpression.push("OR");
-                    ORCount++; 
-                }
-            }
-            
-            
-            for (int i = 0; i < ORCount+1; i++) {
-                //one list per element OR'ed 
-                 ORList.add(new ArrayList<Restaurant>());
-            }
             
         }
         
         @Override 
         public void exitQuery (RestaurantDBParser.QueryContext ctx) {
             System.err.println("<---------- exiting QUERY expression\n");
-            
             System.err.println(ctx.children);
-            //CHECK if child contains || token through TOKEN 
+
+            int ORCount = 0; 
+            
+            //Check if this AndExp contains && operator
             for (ParseTree pt : ctx.children) {
                 if (pt.toString().equals("||")) {
                     System.err.println("OR operator exists");
-                    
-                    //should at least exist one list after returning from an OREXP
-                    Set<Restaurant> resSet = new LinkedHashSet<Restaurant>();
-                    
-                    //find UNION by combining lists into ONE set
-                    for (ArrayList<Restaurant> ls : ORList) {
-                        System.err.println(ls);
-                        resSet.addAll(ls);
-                    }
-                    
-                    //FINAL PRODUCT: union of combined list --> set
-                    System.err.println(resSet);            
-                    
-                    System.err.println(ORANDExpression.peek());
-                    ORANDExpression.pop(); 
-                    //should process ORList, once returned 
-                    ORList = null; 
+                    ORCount++; 
                 }
             }
             
-           
+            //Confirms this expression contains && operator
+            for (int i = 0; i<ORCount; i++) {
+                System.err.println("I am unioning");
+                ORL = fullStack.pop();
+                ORR = fullStack.pop();
+                // ORF = ORL + ORR; 
+                ORF = ORL; 
+                ORF.addAll(ORR);
+                fullStack.push((ArrayList<Restaurant>) ORF);
+            }
+            
+            ORCount = 0; 
+            
+            //Test
+            System.err.println("OR LIST finalized to be: \n" + fullStack.peek());
+            for (Restaurant r : fullStack.peek()) {
+                System.err.println(r.name);
+            }
         }
         
         @Override 
@@ -501,25 +453,8 @@ public class RestaurantDB {
             System.err.println("\nentering RATING expression");
             
             List <String> testls = new ArrayList<String>();
-            
-            if (ORANDExpression.peek().equals("OR")) {
-                for (ArrayList<Restaurant> ls : ORList) {
-                    if (ls.isEmpty()) {
-                        ratingls = ls; 
-                        break;
-                    }
-                }
-            } else if (ORANDExpression.peek().equals("AND")){ 
-                for (ArrayList<Restaurant> ls : ANDList) {
-                    if (ls.isEmpty()) {
-                        ratingls = ls; 
-                        break;
-                    }
-                }
-            } else {
-                System.err.println("WHAT HAPPENED?");
-            }
-            
+            ratingls = new ArrayList<Restaurant>(); 
+
             double doubleMin = Double.parseDouble(ctx.getChild(2).toString()); 
             double doubleMax = Double.parseDouble(ctx.getChild(4).toString()); 
             for (Map.Entry<String, Restaurant> entry : all_restaurants.entrySet()) {
@@ -531,11 +466,11 @@ public class RestaurantDB {
                   testls.add(entry.getValue().name);
                   System.err.println("FOUND IT~~~~~");
               }
-              System.err.println("NEXT RESTAURANT...\n");
-          }
+            }
           
-          System.err.println(ratingls);
-          System.err.println(testls); 
+            fullStack.push((ArrayList<Restaurant>) ratingls);
+            System.err.println(fullStack.peek());
+            System.err.println(testls); 
         }
         
         @Override 
@@ -546,29 +481,10 @@ public class RestaurantDB {
         @Override
         public void enterName (RestaurantDBParser.NameContext ctx) {
             System.err.println("\nentering NAME expression");
-            
+            namels = new ArrayList<Restaurant>(); 
             String subStringCtx = ctx.getChild(2).toString().substring(1, ctx.getChild(2).toString().length()-1); 
             
-            if (ORANDExpression.peek().equals("OR")) {
-                for (ArrayList<Restaurant> ls : ORList) {
-                    if (ls.isEmpty()) {
-                        namels = ls; 
-                        break;
-                    }
-                }
-            } else if (ORANDExpression.peek().equals("AND")){ 
-                for (ArrayList<Restaurant> ls : ANDList) {
-                    if (ls.isEmpty()) {
-                        namels = ls; 
-                        break;
-                    }
-                }
-            } else {
-                System.err.println("WHAT HAPPENED?");
-            }
-            
             for (Map.Entry<String, Restaurant> entry : all_restaurants.entrySet()) {
-//              System.err.println(entry.getKey() + "/" + entry.getValue().getCategories());
               System.err.println(entry.getValue().name);
               System.err.println(subStringCtx); 
 
@@ -576,10 +492,10 @@ public class RestaurantDB {
                       namels.add(entry.getValue());
                       System.err.println("FOUND IT~~~~~");
                   }
-              System.err.println("NEXT RESTAURANT...\n");
           }
-          
-          System.err.println(namels);
+           
+              fullStack.push((ArrayList<Restaurant>) namels);
+              System.err.println(fullStack.peek());
         }
         
         @Override
@@ -603,44 +519,24 @@ public class RestaurantDB {
             System.err.println("\nentering CATEGORY expression");
             System.err.println(ctx.depth()); //the whole token 
             System.err.println(ctx.getChild(2).toString().getClass()); //cuisine name
-            
-            //find a list to populate: 
-            if (ORANDExpression.peek().equals("OR")) {
-                for (ArrayList<Restaurant> ls : ORList) {
-                    if (ls.isEmpty()) {
-                        categoryls = ls; 
-                        break;
-                    }
-                }
-            } else if (ORANDExpression.peek().equals("AND")){ 
-                for (ArrayList<Restaurant> ls : ANDList) {
-                    if (ls.isEmpty()) {
-                        categoryls = ls; 
-                        break;
-                    }
-                }
-            } else {
-                System.err.println("WHAT HAPPENED?");
-            }
+            categoryls = new ArrayList<Restaurant>(); 
             
             //TESTING: restaurant list in string, instead of restaurant objects
             List<String> stringls = new ArrayList<String>();
             
             for (Map.Entry<String, Restaurant> entry : all_restaurants.entrySet()) {
-                //per restaurant 
                 for (String s : entry.getValue().getCategories()) {
                     subStringCtx = ctx.getChild(2).toString().substring(1, ctx.getChild(2).toString().length()-1);
                     if (s.equals(subStringCtx)) {
                         categoryls.add(entry.getValue());
                         stringls.add(entry.getValue().name);
-//                        System.err.println("FOUND IT~~~~~");
                         break;
                     }
                 }
-//                System.err.println("NEXT RESTAURANT...\n");
             }
             
-            System.err.println(categoryls);
+            fullStack.push((ArrayList<Restaurant>) categoryls);
+            System.err.println(fullStack.peek());
             System.err.println(stringls);
         }
         
