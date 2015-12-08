@@ -43,8 +43,12 @@ public class RestaurantDBServer {
 	    String usersDetailsFile = filename3;
 	    
 	    rdb = new RestaurantDB( restaurantDetailsFile, reviewsDetailsFile, usersDetailsFile );
-	    serverSocket = new ServerSocket( port );
-	    
+	    try {
+	        System.out.println("Trying to initalized socket");
+	        serverSocket = new ServerSocket( port );
+	    } catch (IOException ioex) {
+	        ioex.printStackTrace();
+	    }
 	}
 	
 	/**
@@ -63,6 +67,8 @@ public class RestaurantDBServer {
 	                try {
 	                    try {
 	                        handle( clientSocket );
+	                    } catch (IOException ioe){
+	                        ioe.printStackTrace(); 
 	                    } finally {
 	                        clientSocket.close();
 	                    }
@@ -95,16 +101,13 @@ public class RestaurantDBServer {
 	    System.err.println("client connected huzzah");
 	    
 	    //Get client socket's input stream. 
-	    //InputStreamReader converts byte stream to character stream.
-	    //BufferedReader allow reading one line at a time.
         BufferedReader in = new BufferedReader(new InputStreamReader(
                 clientSocket.getInputStream()));
         
-        //PrintWriter is easy to use. Auto-flush on.
-        //Wrap client's output stream with OutputStreamWriter; converts character stream to byte stream
         PrintWriter out = new PrintWriter(new OutputStreamWriter(
                 clientSocket.getOutputStream()), true);
         
+        System.err.println("Should be getting client request here");
         try {
             //TODO: Modify this to account for other client requests! If request ill-formatted, throw RequestFormatException()
             //Each request is a single-line string
@@ -112,20 +115,22 @@ public class RestaurantDBServer {
                 System.err.println("query : " + request);
                 //try {
                     //Get query reply from database
-                    String replyJson = "";
+                    StringBuilder replyJson = new StringBuilder("");
                     Set<Restaurant> restaurants = rdb.query( request );
                     for( Restaurant r : restaurants ){
                         //Separate each restaurant with a new line
-                        replyJson.concat(r.toString() + "\n");
+                        System.err.println(r.getJSONStr());
+                        replyJson.append(r.getJSONStr() + "; ");
                     }
-                    System.err.println("reply : " + replyJson);
-                    out.println(replyJson);
+                    System.err.println("reply : " + replyJson); 
+                    out.println(replyJson.toString());
 //                } catch (QueryFormatException qfe){
 //                    System.err.println("reply : err");
 //                    out.println("err\n");
 //                }
             }
         } finally {
+            System.err.println("closing server client");
             out.close();
             in.close();
         }
@@ -180,7 +185,7 @@ public class RestaurantDBServer {
 	    for( Restaurant r : allRestaurants ){
 	        //Check if restuarant.businessId equals businessId
 	        if( r.business_id.equals(businessId) ){
-	            return r.getJsonStr();
+	            return r.getJSONStr();
 	        }
 	    }
 	    return restaurantJSON;
@@ -248,25 +253,25 @@ public class RestaurantDBServer {
     
 	public static void main( String[] args ) throws IOException{
 	    
-	    //Check number of arguments passed
-	    if( args.length != 4 ){
-	        System.err.println("Usage: java RestaurantDBServer /n"
-	                + "    <port number>/n"
-	                + "    <name of file containing restaurants>/n"
-	                + "    <name of file containing review>/n"
-	                + "    <name of file containing users>");
-	        System.exit(1);
-	    }
-	    
-	    //Get command line arguments
-	    int port = Integer.parseInt(args[0]);
-	    String restaurantDetailsFile = args[1];
-        String reviewsDetailsFile = args[2];
-        String usersDetailsFile = args[4];
+//	    //Check number of arguments passed
+//	    if( args.length != 4 ){
+//	        System.err.println("Usage: java RestaurantDBServer /n"
+//	                + "    <port number>/n"
+//	                + "    <name of file containing restaurants>/n"
+//	                + "    <name of file containing review>/n"
+//	                + "    <name of file containing users>");
+//	        System.exit(1);
+//	    }
+//	    
+//	    //Get command line arguments
+//	    int port = Integer.parseInt(args[0]);
+//	    String restaurantDetailsFile = args[1];
+//        String reviewsDetailsFile = args[2];
+//        String usersDetailsFile = args[4];
 	    
 	    //Create instance of RDBS, returns only if IOException
 	    try{
-	        RestaurantDBServer rdbs = new RestaurantDBServer( port, restaurantDetailsFile, reviewsDetailsFile, usersDetailsFile );
+	        RestaurantDBServer rdbs = new RestaurantDBServer( 4949, "restaurants.json", "reviews.json", "users.json" );
 	        rdbs.serve();
 	    } catch ( IOException ioe ){
 	        ioe.printStackTrace();
