@@ -5,23 +5,15 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Stack;
-import java.util.TreeSet;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
 import org.json.simple.parser.ContainerFactory;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -77,83 +69,24 @@ public class RestaurantDB {
         all_users = new HashMap<String, User>(); 
         
         List<Map> json_restaurant = generateDictionary(restaurantJSONfilename);
-         
-        for (Map e : json_restaurant) {
-            //Testing only...
-//            Iterator entries = e.entrySet().iterator();
-//            while (entries.hasNext()) {
-//                Entry thisEntry = (Entry) entries.next(); 
-//                System.out.println("KEY: " + thisEntry.getKey() + "    Value: " + thisEntry.getValue());
-//            }
-            Restaurant new_res = new Restaurant((String) e.get("name"));
-            new_res.setOpen((Boolean) e.get("open")); 
-            new_res.setURL((String) e.get("url")); 
-            new_res.setLong((double) e.get("longitude")); 
-            new_res.setNeighbours((List<String>) e.get("neighborhoods"));
-            new_res.setBusID((String) e.get("business_id"));
-            new_res.setCategories((List<String>) e.get("categories"));
-            new_res.setState((String) e.get("state"));
-            new_res.setStars((double) e.get("stars"));
-            new_res.setCity((String) e.get("city"));
-            new_res.setAddr((String) e.get("full_address"));
-            new_res.setReviewCnt((long) e.get("review_count"));
-            new_res.setPhotoURL((String) e.get("photo_url"));
-            new_res.setSchools((List<String>) e.get("schools"));
-            new_res.setLat((double) e.get("latitude"));
-            new_res.setPrice((long) e.get("price"));
-            new_res.setJSONStr((String) e.get("JSONStr"));
-            
-            all_restaurants.putIfAbsent((String) e.get("name"), new_res);
+        for (Map f : json_restaurant) {
+            generateRestaurants(f);
         }
         
         System.out.println("\n\n\n");
         List<Map> json_reviews = generateDictionary(reviewsJSONfilename);
-        System.out.println(json_reviews.size());
-        for (Map f : json_reviews) {
-            
-            //Testing only 
-//            Iterator entries = f.entrySet().iterator();
-//            while (entries.hasNext()) {
-//                Entry thisEntry = (Entry) entries.next(); 
-//                System.out.println("KEY: " + thisEntry.getKey() + "    Value: " + thisEntry.getValue());
-////                System.out.println(thisEntry.getValue().getClass());
-//            }
-            
-            Review new_rev = new Review(); 
-            new_rev.setBusinessId((String) f.get("business_id"));
-            new_rev.setVotes((Map<String, Integer>) f.get("votes")); 
-            new_rev.setReviewId((String) f.get("review_id"));
-            new_rev.setText((String) f.get("text"));
-            new_rev.setStars((long) f.get("stars"));
-            new_rev.setUserId((String) f.get("user_id"));
-            new_rev.setDate((String) f.get("date"));
-            new_rev.setJSONStr((String) f.get("JSONStr"));
-            
-            all_reviews.putIfAbsent((String) f.get("review_id"), new_rev);
+        for (Map g : json_reviews) {
+            generateReviews(g);
         }
+        System.out.println(json_reviews.size());
+        
         
         System.out.println("\n\n\n");
         List<Map> json_users = generateDictionary(usersJSONfilename);
-        for (Map g : json_users) {
-            
-            //TESTING only....
-//            Iterator entries = g.entrySet().iterator();
-//            while (entries.hasNext()) {
-//                Entry thisEntry = (Entry) entries.next(); 
-//                System.out.println("KEY: " + thisEntry.getKey() + "    Value: " + thisEntry.getValue());
-//                System.out.println(thisEntry.getValue().getClass());
-//            }
-            
-            User new_user = new User((String) g.get("name"));
-            new_user.setUserId((String) g.get("user_id"));
-            new_user.setAverageStars((double) g.get("average_stars"));
-            new_user.setJSONStr((String) g.get("JSONStr"));
-            new_user.setUrl((String) g.get("url"));
-            new_user.setVotes((Map<String,Integer>) g.get("votes"));
-            new_user.setReviewCount((long) g.get("review_count"));
-            
-            all_users.putIfAbsent((String) g.get("name"), new_user);
+        for (Map h: json_users) {
+            generateUsers(h);
         }
+
     }
 
     
@@ -173,70 +106,7 @@ public class RestaurantDB {
         return new HashMap<String, User>(all_users);
     }
     
-    /**
-     * Helper method to help constructor generate a java map from the JSON file
-     * 
-     * @param file
-     * @return json 
-     */
-    private List<Map> generateDictionary(String file) {
-        
-        List<Map> allMaps = new ArrayList<Map>();  
-        BufferedReader in;
-        Map json = new HashMap(); 
-        try {
-            in = new BufferedReader(
-                    new FileReader("C:\\Users\\Shirley\\Documents\\Shirley2015\\CPEN221\\mp5-fall2015\\data\\" + file));
-            String str; 
-            
-            try {
-                while ((str=in.readLine()) != null) {
-                    JSONParser parser = new JSONParser(); 
-                    ContainerFactory containerFactory = new ContainerFactory() {
-                        public List createArrayContainer() {
-                            return new LinkedList(); 
-                        }
-                        
-                        public Map createObjectContainer() {
-                            return new LinkedHashMap(); 
-                        }
-
-                      @Override
-                      public List creatArrayContainer() {
-                          // TODO Auto-generated method stub
-                          return null;
-                      }
-                    };
-                    
-                    try {
-                        json = (Map)parser.parse(str, containerFactory);
-                        Iterator iter = (Iterator) json.entrySet().iterator(); 
-                        while(iter.hasNext()) {
-                            Map.Entry entry = (Map.Entry)iter.next(); 
-                        }
-                        //add one more non-JSON file element 
-                        json.put("JSONStr",str);
-//                        System.out.println(JSONValue.toJSONString(json)); // only one restaurant 
-//                        System.out.println(json.get("type"));
-                        allMaps.add(json);
-                        
-                    } catch (ParseException pe) {
-                        System.out.println(pe);
-                    }
-                      
-                }
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        
-        return allMaps; 
-    }
+    
     
     /** 
      * Retrieves a set of restaurants given a query which consists of a combination of 
@@ -580,28 +450,7 @@ public class RestaurantDB {
             }
             //add one more non-JSON file element 
             json.put("JSONStr",restaurantJSON);
-//            System.out.println(JSONValue.toJSONString(json)); // only one restaurant 
-//            System.out.println(json.get("type"));
-            
-            Restaurant new_res = new Restaurant((String) json.get("name"));
-            new_res.setOpen((Boolean) json.get("open")); 
-            new_res.setURL((String) json.get("url")); 
-            new_res.setLong((double) json.get("longitude")); 
-            new_res.setNeighbours((List<String>) json.get("neighborhoods"));
-            new_res.setBusID((String) json.get("business_id"));
-            new_res.setCategories((List<String>) json.get("categories"));
-            new_res.setState((String) json.get("state"));
-            new_res.setStars((double) json.get("stars"));
-            new_res.setCity((String) json.get("city"));
-            new_res.setAddr((String) json.get("full_address"));
-            new_res.setReviewCnt((long) json.get("review_count"));
-            new_res.setPhotoURL((String) json.get("photo_url"));
-            new_res.setSchools((List<String>) json.get("schools"));
-            new_res.setLat((double) json.get("latitude"));
-            new_res.setPrice((long) json.get("price"));
-            new_res.setJSONStr((String) json.get("JSONStr"));
-            
-            all_restaurants.putIfAbsent((String) json.get("name"), new_res);
+            generateRestaurants(json); 
             
         } catch (ParseException pe) {
             System.out.println(pe);
@@ -609,9 +458,247 @@ public class RestaurantDB {
           
     }
     
-//    public void addReview (String reviewJSON);
-//       
-//    public void addUser (String userJSON);
+    /**
+     * Precondition: input must be a single element JSON string
+     * 
+     * @param reviewJSON
+     */
+    public void addReview (String reviewJSON) {
+        Map json = new HashMap(); 
+
+        JSONParser parser = new JSONParser(); 
+        ContainerFactory containerFactory = new ContainerFactory() {
+            public List createArrayContainer() {
+                return new LinkedList(); 
+            }
+            
+            public Map createObjectContainer() {
+                return new LinkedHashMap(); 
+            }
+
+          @Override
+          public List creatArrayContainer() {
+              // TODO Auto-generated method stub
+              return null;
+          }
+        };
+        
+        try {
+            json = (Map)parser.parse(reviewJSON, containerFactory);
+            Iterator iter = (Iterator) json.entrySet().iterator(); 
+            while(iter.hasNext()) {
+                Map.Entry entry = (Map.Entry)iter.next(); 
+            }
+            //add one more non-JSON file element 
+            json.put("JSONStr",reviewJSON);
+            generateReviews(json); 
+            
+        } catch (ParseException pe) {
+            System.out.println(pe);
+        }
+    }
+       
+    /**
+     * Precondition: input must be a single element JSON string
+     * 
+     * @param userJSON
+     */
+    public void addUser (String userJSON) {
+        Map json = new HashMap(); 
+
+        JSONParser parser = new JSONParser(); 
+        ContainerFactory containerFactory = new ContainerFactory() {
+            public List createArrayContainer() {
+                return new LinkedList(); 
+            }
+            
+            public Map createObjectContainer() {
+                return new LinkedHashMap(); 
+            }
+
+          @Override
+          public List creatArrayContainer() {
+              // TODO Auto-generated method stub
+              return null;
+          }
+        };
+        
+        try {
+            json = (Map)parser.parse(userJSON, containerFactory);
+            Iterator iter = (Iterator) json.entrySet().iterator(); 
+            while(iter.hasNext()) {
+                Map.Entry entry = (Map.Entry)iter.next(); 
+            }
+            //add one more non-JSON file element 
+            json.put("JSONStr",userJSON);
+            generateUsers(json); 
+            
+        } catch (ParseException pe) {
+            System.out.println(pe);
+        }
+    }
+    
+    
+    
+    /**
+     * Helper method to help constructor generate a java map from the JSON file
+     * 
+     * @param file
+     * @return json 
+     */
+    private List<Map> generateDictionary(String file) {
+        
+        List<Map> allMaps = new ArrayList<Map>();  
+        BufferedReader in;
+        Map json = new HashMap(); 
+        try {
+            in = new BufferedReader(
+                    new FileReader("C:\\Users\\Shirley\\Documents\\Shirley2015\\CPEN221\\mp5-fall2015\\data\\" + file));
+            String str; 
+            
+            try {
+                while ((str=in.readLine()) != null) {
+                    JSONParser parser = new JSONParser(); 
+                    ContainerFactory containerFactory = new ContainerFactory() {
+                        public List createArrayContainer() {
+                            return new LinkedList(); 
+                        }
+                        
+                        public Map createObjectContainer() {
+                            return new LinkedHashMap(); 
+                        }
+
+                      @Override
+                      public List creatArrayContainer() {
+                          // TODO Auto-generated method stub
+                          return null;
+                      }
+                    };
+                    
+                    try {
+                        json = (Map)parser.parse(str, containerFactory);
+                        Iterator iter = (Iterator) json.entrySet().iterator(); 
+                        while(iter.hasNext()) {
+                            Map.Entry entry = (Map.Entry)iter.next(); 
+                        }
+                        //add one more non-JSON file element 
+                        json.put("JSONStr",str);
+//                        System.out.println(JSONValue.toJSONString(json)); // only one restaurant 
+//                        System.out.println(json.get("type"));
+                        allMaps.add(json);
+                        
+                    } catch (ParseException pe) {
+                        System.out.println(pe);
+                    }
+                      
+                }
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+        return allMaps; 
+    }
+    
+    /**
+     * Helper method to convert JSON maps to Restaurant Object maps. 
+     * 
+     * @modifies: private all_restaurant object
+     * 
+     */
+    
+    private void generateRestaurants (Map JSONRestaurantMap) {
+            
+            //Testing only...
+//            Iterator entries = e.entrySet().iterator();
+//            while (entries.hasNext()) {
+//                Entry thisEntry = (Entry) entries.next(); 
+//                System.out.println("KEY: " + thisEntry.getKey() + "    Value: " + thisEntry.getValue());
+//            }
+            Restaurant new_res = new Restaurant((String) JSONRestaurantMap.get("name"));
+            new_res.setOpen((Boolean) JSONRestaurantMap.get("open")); 
+            new_res.setURL((String) JSONRestaurantMap.get("url")); 
+            new_res.setLong((double) JSONRestaurantMap.get("longitude")); 
+            new_res.setNeighbours((List<String>) JSONRestaurantMap.get("neighborhoods"));
+            new_res.setBusID((String) JSONRestaurantMap.get("business_id"));
+            new_res.setCategories((List<String>) JSONRestaurantMap.get("categories"));
+            new_res.setState((String) JSONRestaurantMap.get("state"));
+            new_res.setStars((double) JSONRestaurantMap.get("stars"));
+            new_res.setCity((String) JSONRestaurantMap.get("city"));
+            new_res.setAddr((String) JSONRestaurantMap.get("full_address"));
+            new_res.setReviewCnt((long) JSONRestaurantMap.get("review_count"));
+            new_res.setPhotoURL((String) JSONRestaurantMap.get("photo_url"));
+            new_res.setSchools((List<String>) JSONRestaurantMap.get("schools"));
+            new_res.setLat((double) JSONRestaurantMap.get("latitude"));
+            new_res.setPrice((long) JSONRestaurantMap.get("price"));
+            new_res.setJSONStr((String) JSONRestaurantMap.get("JSONStr"));
+            
+            all_restaurants.putIfAbsent((String) JSONRestaurantMap.get("name"), new_res);
+    }
+    
+    /**
+     * Helper method to convert JSON maps to Review Object maps. 
+     * 
+     * @modifies: private all_review object
+     * 
+     */
+    
+    private void generateReviews (Map f) {
+            
+            //Testing only 
+//            Iterator entries = f.entrySet().iterator();
+//            while (entries.hasNext()) {
+//                Entry thisEntry = (Entry) entries.next(); 
+//                System.out.println("KEY: " + thisEntry.getKey() + "    Value: " + thisEntry.getValue());
+////                System.out.println(thisEntry.getValue().getClass());
+//            }
+            
+            Review new_rev = new Review(); 
+            new_rev.setBusinessId((String) f.get("business_id"));
+            new_rev.setVotes((Map<String, Integer>) f.get("votes")); 
+            new_rev.setReviewId((String) f.get("review_id"));
+            new_rev.setText((String) f.get("text"));
+            new_rev.setStars((long) f.get("stars"));
+            new_rev.setUserId((String) f.get("user_id"));
+            new_rev.setDate((String) f.get("date"));
+            new_rev.setJSONStr((String) f.get("JSONStr"));
+            
+            all_reviews.putIfAbsent((String) f.get("review_id"), new_rev);
+    }
+    
+    /**
+     * Helper method to convert JSON maps to User object maps.
+     * 
+     * @modifies: private all_users object
+     * 
+     */
+    private void generateUsers (Map g) {
+            
+            //TESTING only....
+//            Iterator entries = g.entrySet().iterator();
+//            while (entries.hasNext()) {
+//                Entry thisEntry = (Entry) entries.next(); 
+//                System.out.println("KEY: " + thisEntry.getKey() + "    Value: " + thisEntry.getValue());
+//                System.out.println(thisEntry.getValue().getClass());
+//            }
+            
+            User new_user = new User((String) g.get("name"));
+            new_user.setUserId((String) g.get("user_id"));
+            new_user.setAverageStars((double) g.get("average_stars"));
+            new_user.setJSONStr((String) g.get("JSONStr"));
+            new_user.setUrl((String) g.get("url"));
+            new_user.setVotes((Map<String,Integer>) g.get("votes"));
+            new_user.setReviewCount((long) g.get("review_count"));
+            
+            all_users.putIfAbsent((String) g.get("name"), new_user);
+    }
+    
+    
     
     //TO DELETE, testing only 
     public static void main (String [] args) {
