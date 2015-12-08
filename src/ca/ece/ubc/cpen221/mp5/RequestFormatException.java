@@ -1,6 +1,6 @@
 package ca.ece.ubc.cpen221.mp5;
 
-/** Exception thrown when a client sends an ill-formatted query to a 
+/** Exception thrown when client sends an ill-formatted request to a 
  * RestaurantDB server. The message field contains information about the
  * particular problem that was encountered.
  *
@@ -8,21 +8,21 @@ package ca.ece.ubc.cpen221.mp5;
  */
 
 
-public class QueryFormatException extends Exception{
+public class RequestFormatException extends Exception{
     
     /**
-     * Constructs a QueryFormatException with no message
+     * Constructs a RequestFormatException with no message
      */
-    public QueryFormatException(){
+    public RequestFormatException(){
         super(); //refers to a constructor of the superclass i.e. Exception
     };
     
     /**
-     * Constructs a QueryFormatException with the detail message
+     * Constructs a RequestFormatException with the detail message
      * 
      * @param message
      */
-    public QueryFormatException( String message ){
+    public RequestFormatException( String message ){
         super( message );
     }
 }
