@@ -111,8 +111,9 @@ public class RestaurantDBServer {
         
         System.err.println("Should be getting client request here");
         try {
-            //TODO: Modify this to account for other client requests! If request ill-formatted, throw RequestFormatException()
-            //Each request is a single-line string
+            //Thread-safety argument: no inter-dependencies among conditional statements.
+            //Data shared between threads is immutable or not vulnerable to rep exposure.
+            
             for( String request = in.readLine(); request != null; request = in.readLine() ){
                 //try {
                     //Get query reply from database
