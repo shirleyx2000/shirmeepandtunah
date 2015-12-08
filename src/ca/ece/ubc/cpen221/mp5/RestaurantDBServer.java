@@ -7,7 +7,11 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 /**
@@ -103,13 +107,13 @@ public class RestaurantDBServer {
         
         try {
             //TODO: Modify this to account for other client requests!
-            //Each query is a single-line string
-            for( String query = in.readLine(); query != null; query = in.readLine() ){
-                System.err.println("query : " + query);
+            //Each request is a single-line string
+            for( String request = in.readLine(); request != null; request = in.readLine() ){
+                System.err.println("query : " + request);
                 try {
                     //Get query reply from database
                     String replyJson = "";
-                    Set<Restaurant> restaurants = rdb.query( query );
+                    Set<Restaurant> restaurants = rdb.query( request );
                     for( Restaurant r : restaurants ){
                         //Separate each restaurant with a new line
                         replyJson.concat(r.toString() + "\n");
@@ -128,23 +132,34 @@ public class RestaurantDBServer {
 	}
 	
 	/**
-	 * Gets a random review from a restaurant.
+	 * Gets a random review from a restaurant. If more than one restaurant matches name, either one is chosen.
 	 * 
 	 * @param restaurantName
 	 * @return randomReviewJSON    Random review of restaurant in JSON format
-	 *                             If restaurant not found, empty string returned.
+	 *                             If restaurant not found or no review exists, empty string returned.
 	 */
 	private String randomReview( String restaurantName ){
-	    //return random review in JSON format
-	    //if more than one restaurant matches name, choose either of one
 	    
 	    String randomReviewJSON = "";
-	    
-	    //Iterate through map of all restaurants
-	    //Get the Restaurant object (value) given the name (key)
-	    //Restaurant object should have collection of reviews
-	    //Get random review from collection
-	    //Return randomReview.toJsonString();
+	   
+	    //Get business_id of restaurant
+	    Map<String, Restaurant> allRestaurants = rdb.getAllRestaurants();
+        String businessId = allRestaurants.get( restaurantName ).business_id;
+	    //Gets all reviews that matches the businessId
+        Collection<Review> allReviews = rdb.getAllReviews().values();
+        ArrayList<Review> thisRestaurantReviews = new ArrayList<Review>();
+        for( Review r : allReviews ){
+            if( r.getBusinessId().equals(businessId) ){
+                thisRestaurantReviews.add(r);
+            }
+        }
+        //Return a review as JSON string at random index of list of reviews for restaurant
+        Random randomGen = new Random(); //Create new random generator
+        int randomIndex = randomGen.nextInt(thisRestaurantReviews.size());
+        //Make sure that reviews for restaurant actually exist!
+        if( thisRestaurantReviews.size() > 0 ){
+            randomReviewJSON = thisRestaurantReviews.get(randomIndex).getJsonStr();
+        }
 	    return randomReviewJSON;
 	}
 	
@@ -156,44 +171,51 @@ public class RestaurantDBServer {
 	 *                            If restaurant not found, empty string returned. 
 	 */
 	private String getRestaurant( String businessId ){
-	    //return restaurant in JSON format
 	    
 	    String restaurantJSON = "";
 	    
 	    //Get the collection of values (Restaurant objects) from all_restaurants map
+	    Collection<Restaurant> allRestaurants = rdb.getAllRestaurants().values();
 	    //Iterate through restaurant objects 
+	    for( Restaurant r : allRestaurants ){
 	        //Check if restuarant.businessId equals businessId
-	            //return restaurant.toJsonString();
+	        if( r.business_id.equals(businessId) ){
+	            return r.getJsonStr();
+	        }
+	    }
 	    return restaurantJSON;
 	}
 	
 	/**
 	 * Adds a restaurant to Restaurant database.
+	 *
+	 * requires: restaurant's business id must not be in the database
 	 * 
 	 * @param restaurantJSON   Restaurant in JSON format
 	 */
 	private void addRestaurant( String restaurantJSON ){
-	    //add restaurant to RestaurantDB object
 	    rdb.addRestaurant( restaurantJSON );
 	}
 	
 	/**
 	 * Adds a user to Restaurant database
 	 * 
+	 * requires: user is not in database.
+	 * 
 	 * @param userJSON     User in JSON format
 	 */
 	private void addUser( String userJSON ){
-	    //add user to RestaurantDB object
 	    rdb.addUser( userJSON );
 	}
 	
 	/**
 	 * Adds a review to Restaurant database
 	 * 
+	 * requires: review is not in database
+	 * 
 	 * @param reviewJSON   Review in JSON format
 	 */
 	private void addReview( String reviewJSON ){
-	    //add review to RestaurantDB object
 	    rdb.addReview( reviewJSON );
 	}
 	
