@@ -156,6 +156,23 @@ public class RestaurantDB {
         }
     }
 
+    
+    /** 
+     * Getter methods for restaurant, review, user
+     * 
+     */
+    public Map<String, Restaurant> getAllRestaurants() {
+        return new HashMap<String, Restaurant>(all_restaurants);
+    }
+    
+    public Map<String, Review> getAllReviews() {
+        return new HashMap<String, Review>(all_reviews);
+    }
+    
+    public Map<String, User> getAllUsers() {
+        return new HashMap<String, User>(all_users);
+    }
+    
     /**
      * Helper method to help constructor generate a java map from the JSON file
      * 
@@ -259,15 +276,15 @@ public class RestaurantDB {
         private List<Restaurant> pricels; 
         private List<Restaurant> ratingls;
         private List<Restaurant> namels; 
-        private List<ArrayList<Restaurant>> ORList; 
-        private List<ArrayList<Restaurant>> ANDList = new ArrayList<ArrayList<Restaurant>>();; 
+        private List<ArrayList<Restaurant>> ORList = new ArrayList<ArrayList<Restaurant>>();
+        private List<ArrayList<Restaurant>> ANDList = new ArrayList<ArrayList<Restaurant>>();
 
         
         @Override
         public void enterAndExp (RestaurantDBParser.AndExpContext ctx) {
-            System.out.println("==============> entering && expression");
+            System.err.println("\n==============> entering && expression");
             System.err.println("Child count: " + ctx.getChildCount());
-            
+            int ANDCount = 0; 
             //TODO: check AND operator 
             //CHECK if child contains && token through TOKEN 
             for (ParseTree pt : ctx.children) {
@@ -275,18 +292,19 @@ public class RestaurantDB {
                     System.err.println("AND operator exists");
 //                    ANDList = new ArrayList<ArrayList<Restaurant>>();
                     ORANDExpression.push("AND");
-                    
-                    for (int i = 0; i < (ctx.getChildCount()/2+1); i++) {
-                        //one list per element OR'ed 
-                        ANDList.add(new ArrayList<Restaurant>());
-                    }
+                    ANDCount++; 
                 }
+            }
+            
+            for (int i = 0; i < ANDCount+1; i++) {
+                //one list per element OR'ed 
+                ANDList.add(new ArrayList<Restaurant>());
             }
         }
         
         @Override
         public void exitAndExp (RestaurantDBParser.AndExpContext ctx) {
-            System.out.println("<============== exiting && expression");
+            System.err.println("<============== exiting && expression\n");
             
           //CHECK if child contains && token through TOKEN 
             for (ParseTree pt : ctx.children) {
@@ -309,10 +327,10 @@ public class RestaurantDB {
                     ORANDExpression.pop(); 
                     //should reset ANDList, once returned 
                     int size = ANDList.size(); 
-                    for (int i = 0; i < (ctx.getChildCount()/2+1); i++) {
-                        //one list per element OR'ed 
-                        ANDList.remove(size-1-i);
-                    }
+//                    for (int i = 0; i < (ctx.getChildCount()/2+1); i++) {
+//                        //one list per element OR'ed 
+//                        ANDList.remove(size-1-i);
+//                    }
                     //if higher levels of add needs to AND this product
 //                    ANDList.add((ArrayList<Restaurant>) resSet);
                 }
@@ -322,7 +340,7 @@ public class RestaurantDB {
         
         @Override 
         public void enterIn (RestaurantDBParser.InContext ctx) {
-            System.out.println("entering IN expression");
+            System.err.println("\nentering IN expression");
             String subStringCtx; 
             
             List<String> testls = new ArrayList<String>(); 
@@ -363,12 +381,12 @@ public class RestaurantDB {
         
         @Override 
         public void exitIn (RestaurantDBParser.InContext ctx) {
-            System.out.println("exiting IN expression");
+            System.err.println("exiting IN expression\n");
         }
         
         @Override 
         public void enterPrice (RestaurantDBParser.PriceContext ctx) {
-            System.out.println("entering PRICE expression");
+            System.err.println("\nentering PRICE expression");
             
             List<String> testls = new ArrayList<String>();
             
@@ -410,46 +428,48 @@ public class RestaurantDB {
         
         @Override 
         public void exitPrice (RestaurantDBParser.PriceContext ctx) {
-            System.out.println("exiting PRICE expression");
+            System.err.println("exiting PRICE expression\n");
         }
         
         @Override 
         public void enterRoot (RestaurantDBParser.RootContext ctx) {
-            System.out.println("entering ROOT expression");
+            System.err.println("\nentering ROOT expression");
         }
         
         @Override 
         public void exitRoot (RestaurantDBParser.RootContext ctx) {
-            System.out.println("exiting ROOT expression");
+            System.err.println("exiting ROOT expression\n");
         }
         
         @Override 
         public void enterQuery (RestaurantDBParser.QueryContext ctx) {
-            System.out.println("----------> entering QUERY expression");
+            System.err.println("\n----------> entering QUERY expression");
             System.err.println("Child count : " + ctx.getChildCount());
+            int ORCount = 0; 
             
             //CHECK if child contains || token through TOKEN 
             for (ParseTree pt : ctx.children) {
                 if (pt.toString().equals("||")) {
                     System.err.println("OR operator exists");
-                    ORList = new ArrayList<ArrayList<Restaurant>>();
                     ORANDExpression.push("OR");
-                    
-                    for (int i = 0; i < (ctx.getChildCount()/2+1); i++) {
-                        //one list per element OR'ed 
-                         ORList.add(new ArrayList<Restaurant>());
-                    }
+                    ORCount++; 
                 }
+            }
+            
+            
+            for (int i = 0; i < ORCount+1; i++) {
+                //one list per element OR'ed 
+                 ORList.add(new ArrayList<Restaurant>());
             }
             
         }
         
         @Override 
         public void exitQuery (RestaurantDBParser.QueryContext ctx) {
-            System.out.println("<---------- exiting QUERY expression");
+            System.err.println("<---------- exiting QUERY expression\n");
             
             System.err.println(ctx.children);
-          //CHECK if child contains || token through TOKEN 
+            //CHECK if child contains || token through TOKEN 
             for (ParseTree pt : ctx.children) {
                 if (pt.toString().equals("||")) {
                     System.err.println("OR operator exists");
@@ -478,7 +498,7 @@ public class RestaurantDB {
         
         @Override 
         public void enterRating (RestaurantDBParser.RatingContext ctx) {
-            System.out.println("entering RATING expression");
+            System.err.println("\nentering RATING expression");
             
             List <String> testls = new ArrayList<String>();
             
@@ -520,12 +540,12 @@ public class RestaurantDB {
         
         @Override 
         public void exitRating (RestaurantDBParser.RatingContext ctx) {
-            System.out.println("exiting RATING expression");
+            System.err.println("exiting RATING expression\n");
         }
         
         @Override
         public void enterName (RestaurantDBParser.NameContext ctx) {
-            System.out.println("entering NAME expression");
+            System.err.println("\nentering NAME expression");
             
             String subStringCtx = ctx.getChild(2).toString().substring(1, ctx.getChild(2).toString().length()-1); 
             
@@ -564,23 +584,23 @@ public class RestaurantDB {
         
         @Override
         public void exitName (RestaurantDBParser.NameContext ctx) {
-            System.out.println("exiting NAME expression");
+            System.err.println("exiting NAME expression\n");
         }
         
         @Override
         public void enterAtom (RestaurantDBParser.AtomContext ctx) {
-            System.out.println("entering ATOM expression");
+            System.err.println("entering ATOM expression");
         }
         
         @Override 
         public void exitAtom (RestaurantDBParser.AtomContext ctx) {
-            System.out.println("exiting ATOM expression");
+            System.err.println("exiting ATOM expression");
         }
         
         @Override 
         public void enterCategory (RestaurantDBParser.CategoryContext ctx) {
             String subStringCtx; 
-            System.out.println("\n>>>> entering CATEGORY expression");
+            System.err.println("\nentering CATEGORY expression");
             System.err.println(ctx.depth()); //the whole token 
             System.err.println(ctx.getChild(2).toString().getClass()); //cuisine name
             
@@ -626,7 +646,7 @@ public class RestaurantDB {
         
         @Override
         public void exitCategory (RestaurantDBParser.CategoryContext ctx) {
-            System.out.println ("<<<< exiting CATEGORY expression\n");
+            System.err.println ("exiting CATEGORY expression\n");
             //Anything needed to be done? 
         }
     }
