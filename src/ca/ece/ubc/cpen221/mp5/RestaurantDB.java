@@ -5,7 +5,9 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -80,7 +82,6 @@ public class RestaurantDB {
         }
         System.out.println(json_reviews.size());
         
-        
         System.out.println("\n\n\n");
         List<Map> json_users = generateDictionary(usersJSONfilename);
         for (Map h: json_users) {
@@ -134,8 +135,7 @@ public class RestaurantDB {
         RestaurantDBListener listener = new RestaurantDBListener_Advanced();  //need to extend baseListener!
         walker.walk(listener, tree);
         
-//        return listener.getFormula();
-        return null; 
+        return new HashSet<Restaurant>(listener.getRestaurants()); 
     }
     
     /**
@@ -146,7 +146,6 @@ public class RestaurantDB {
      */
     private class RestaurantDBListener_Advanced extends RestaurantDBBaseListener {
         
-        private Stack<String> ORANDExpression = new Stack<String>(); 
         //**!!
         private Stack<ArrayList<Restaurant>> fullStack = new Stack<ArrayList<Restaurant>>(); 
         List<Restaurant> ANDR = new ArrayList<Restaurant>(); 
@@ -164,8 +163,7 @@ public class RestaurantDB {
         private List<Restaurant> ratingls;
         private List<Restaurant> namels; 
         
-        private List<ArrayList<Restaurant>> ORList = new ArrayList<ArrayList<Restaurant>>();
-        private List<ArrayList<Restaurant>> ANDList = new ArrayList<ArrayList<Restaurant>>();
+        private List<Restaurant> finalList = new ArrayList<Restaurant>();
 
         
         @Override
@@ -274,6 +272,7 @@ public class RestaurantDB {
         public void exitRoot (RestaurantDBParser.RootContext ctx) {
             System.err.println("exiting ROOT expression\n");
             //TODO: take the last element of the stack to return! final product
+//            finalList = fullStack.get(0);
         }
         
         @Override 
@@ -414,6 +413,10 @@ public class RestaurantDB {
         public void exitCategory (RestaurantDBParser.CategoryContext ctx) {
             System.err.println ("exiting CATEGORY expression\n");
             //Anything needed to be done? 
+        }
+        
+        public List<Restaurant> getRestaurants(){
+            return fullStack.get(0); 
         }
     }
     
@@ -699,7 +702,6 @@ public class RestaurantDB {
     }
     
     
-    
     //TO DELETE, testing only 
     public static void main (String [] args) {
         RestaurantDB res = new RestaurantDB ("restaurants.json", "reviews.json", "users.json");
@@ -710,7 +712,8 @@ public class RestaurantDB {
         String queryAND = "in(\"Telegraph Ave\") && price(1..2)";
         String queryString1 = "in(\"Telegraph Ave\") && (category(\"Chinese\") || category(\"Italian\")) && price(1..2)";
         String queryStringName = "name(\"Alborz\")"; 
-        res.query(queryString1);
+        Set<Restaurant> finalRes = res.query(queryString1);
+        System.out.println(finalRes);
     }
 
 }
