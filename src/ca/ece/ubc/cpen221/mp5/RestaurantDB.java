@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -16,6 +17,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Stack;
+import java.util.TreeSet;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -257,50 +259,140 @@ public class RestaurantDB {
         private List<Restaurant> pricels; 
         private List<Restaurant> ratingls;
         private List<Restaurant> namels; 
-        private  List<ArrayList<Restaurant>> ORList; 
+        private List<ArrayList<Restaurant>> ORList; 
+        private List<ArrayList<Restaurant>> ANDList = new ArrayList<ArrayList<Restaurant>>();; 
+
         
         @Override
         public void enterAndExp (RestaurantDBParser.AndExpContext ctx) {
-            System.err.println("entering && expression");
+            System.out.println("==============> entering && expression");
+            System.err.println("Child count: " + ctx.getChildCount());
             
             //TODO: check AND operator 
-            
+            //CHECK if child contains && token through TOKEN 
+            for (ParseTree pt : ctx.children) {
+                if (pt.toString().equals("&&")) {
+                    System.err.println("AND operator exists");
+//                    ANDList = new ArrayList<ArrayList<Restaurant>>();
+                    ORANDExpression.push("AND");
+                    
+                    for (int i = 0; i < (ctx.getChildCount()/2+1); i++) {
+                        //one list per element OR'ed 
+                        ANDList.add(new ArrayList<Restaurant>());
+                    }
+                }
+            }
         }
         
         @Override
         public void exitAndExp (RestaurantDBParser.AndExpContext ctx) {
-            System.err.println("exiting && expression");
+            System.out.println("<============== exiting && expression");
+            
+          //CHECK if child contains && token through TOKEN 
+            for (ParseTree pt : ctx.children) {
+                if (pt.toString().equals("&&")) {
+                    System.err.println("AND operator exists");
+                    
+                    List<Restaurant> resSet = new ArrayList<Restaurant>(ANDList.get(0)); 
+                    //iterate through each list and combine into SETs
+                    for (ArrayList<Restaurant> ls : ANDList) {
+                        System.err.println(ls);
+                        //INTERSECTION OF LISTS
+                        resSet.retainAll(ls);
+                    }
+                    
+                    //Check combined list
+                    System.err.println("FINAL PRODUCT: \n" + resSet);            
+                    
+                    //release the OPERATOR
+                    System.err.println(ORANDExpression.peek());
+                    ORANDExpression.pop(); 
+                    //should reset ANDList, once returned 
+                    int size = ANDList.size(); 
+                    for (int i = 0; i < (ctx.getChildCount()/2+1); i++) {
+                        //one list per element OR'ed 
+                        ANDList.remove(size-1-i);
+                    }
+                    //if higher levels of add needs to AND this product
+//                    ANDList.add((ArrayList<Restaurant>) resSet);
+                }
+            }
+            System.err.println("AND LIST finalized to be: \n" + ANDList);
         }
         
         @Override 
         public void enterIn (RestaurantDBParser.InContext ctx) {
-            System.err.println("entering IN expression");
+            System.out.println("entering IN expression");
             String subStringCtx; 
-            inls = new ArrayList<Restaurant>(); 
             
+            List<String> testls = new ArrayList<String>(); 
+            
+            //find a list to populate: 
+            if (ORANDExpression.peek().equals("OR")) {
+                for (ArrayList<Restaurant> ls : ORList) {
+                    if (ls.isEmpty()) {
+                        inls = ls; 
+                        break;
+                    }
+                }
+            } else if (ORANDExpression.peek().equals("AND")){ 
+                for (ArrayList<Restaurant> ls : ANDList) {
+                    if (ls.isEmpty()) {
+                        inls = ls; 
+                        break;
+                    }
+                }
+            } else {
+                System.err.println("WHAT HAPPENED?");
+            }
+                        
             for (Map.Entry<String, Restaurant> entry : all_restaurants.entrySet()) {
               //per restaurant 
               for (String s : entry.getValue().getNeighbours()) {
                   subStringCtx = ctx.getChild(2).toString().substring(1, ctx.getChild(2).toString().length()-1);
                   if (s.equals(subStringCtx)) {
                       inls.add(entry.getValue());
+                      testls.add(entry.getValue().name);
                       break;
                   }
               }
           }
           System.err.println(inls);
+          System.err.println(testls);
         }
         
         @Override 
         public void exitIn (RestaurantDBParser.InContext ctx) {
-            System.err.println("exiting IN expression");
+            System.out.println("exiting IN expression");
         }
         
         @Override 
         public void enterPrice (RestaurantDBParser.PriceContext ctx) {
-            System.err.println("entering PRICE expression");
+            System.out.println("entering PRICE expression");
             
-            pricels = new ArrayList<Restaurant>(); 
+            List<String> testls = new ArrayList<String>();
+            
+            //find a list to populate: 
+            if (ORANDExpression.peek().equals("OR")) {
+                System.err.println("OR LIST");
+                for (ArrayList<Restaurant> ls : ORList) {
+                    if (ls.isEmpty()) {
+                        pricels = ls; 
+                        break;
+                    }
+                }
+            } else if (ORANDExpression.peek().equals("AND")){ 
+                System.err.println("AND LIST");
+                for (ArrayList<Restaurant> ls : ANDList) {
+                    if (ls.isEmpty()) {
+                        pricels = ls; 
+                        break;
+                    }
+                }
+            } else {
+                System.err.println("*****WHAT HAPPENED?");
+            }
+            
             long longMin = Long.parseLong(ctx.getChild(2).toString()); 
             long longMax = Long.parseLong(ctx.getChild(4).toString()); 
             for (Map.Entry<String, Restaurant> entry : all_restaurants.entrySet()) {
@@ -308,34 +400,33 @@ public class RestaurantDB {
               
               if (longMin <= entry.getValue().getPrice() &&  entry.getValue().getPrice() <= longMax) {
                   pricels.add(entry.getValue());
+                  testls.add(entry.getValue().name);
               }
           }
           
           System.err.println(pricels);
+          System.err.println(testls);
         }
         
         @Override 
         public void exitPrice (RestaurantDBParser.PriceContext ctx) {
-            System.err.println("exiting PRICE expression");
+            System.out.println("exiting PRICE expression");
         }
         
         @Override 
         public void enterRoot (RestaurantDBParser.RootContext ctx) {
-            System.err.println("entering ROOT expression");
+            System.out.println("entering ROOT expression");
         }
         
         @Override 
         public void exitRoot (RestaurantDBParser.RootContext ctx) {
-            System.err.println("exiting ROOT expression");
+            System.out.println("exiting ROOT expression");
         }
         
         @Override 
         public void enterQuery (RestaurantDBParser.QueryContext ctx) {
-            System.err.println("----------> entering QUERY expression");
-            System.err.println(ctx.start);
-            System.err.println(ctx.children);
-            System.err.println(ctx.getChildCount());
-            System.err.println(RestaurantDBLexer.OR);
+            System.out.println("----------> entering QUERY expression");
+            System.err.println("Child count : " + ctx.getChildCount());
             
             //CHECK if child contains || token through TOKEN 
             for (ParseTree pt : ctx.children) {
@@ -355,7 +446,7 @@ public class RestaurantDB {
         
         @Override 
         public void exitQuery (RestaurantDBParser.QueryContext ctx) {
-            System.err.println("<---------- exiting QUERY expression");
+            System.out.println("<---------- exiting QUERY expression");
             
             System.err.println(ctx.children);
           //CHECK if child contains || token through TOKEN 
@@ -364,20 +455,21 @@ public class RestaurantDB {
                     System.err.println("OR operator exists");
                     
                     //should at least exist one list after returning from an OREXP
-                    Set<Restaurant> resSet = new LinkedHashSet<>(ORList.get(0));
+                    Set<Restaurant> resSet = new LinkedHashSet<Restaurant>();
                     
-                    //iterate through each list and combine into SETs
+                    //find UNION by combining lists into ONE set
                     for (ArrayList<Restaurant> ls : ORList) {
                         System.err.println(ls);
                         resSet.addAll(ls);
                     }
                     
-                    //Check combined list
+                    //FINAL PRODUCT: union of combined list --> set
                     System.err.println(resSet);            
                     
                     System.err.println(ORANDExpression.peek());
                     ORANDExpression.pop(); 
                     //should process ORList, once returned 
+                    ORList = null; 
                 }
             }
             
@@ -386,9 +478,28 @@ public class RestaurantDB {
         
         @Override 
         public void enterRating (RestaurantDBParser.RatingContext ctx) {
-            System.err.println("entering RATING expression");
+            System.out.println("entering RATING expression");
             
-            ratingls = new ArrayList<Restaurant>(); 
+            List <String> testls = new ArrayList<String>();
+            
+            if (ORANDExpression.peek().equals("OR")) {
+                for (ArrayList<Restaurant> ls : ORList) {
+                    if (ls.isEmpty()) {
+                        ratingls = ls; 
+                        break;
+                    }
+                }
+            } else if (ORANDExpression.peek().equals("AND")){ 
+                for (ArrayList<Restaurant> ls : ANDList) {
+                    if (ls.isEmpty()) {
+                        ratingls = ls; 
+                        break;
+                    }
+                }
+            } else {
+                System.err.println("WHAT HAPPENED?");
+            }
+            
             double doubleMin = Double.parseDouble(ctx.getChild(2).toString()); 
             double doubleMax = Double.parseDouble(ctx.getChild(4).toString()); 
             for (Map.Entry<String, Restaurant> entry : all_restaurants.entrySet()) {
@@ -397,25 +508,44 @@ public class RestaurantDB {
               
               if (doubleMin <= entry.getValue().getStars() &&  entry.getValue().getStars() <= doubleMax) {
                   ratingls.add(entry.getValue());
+                  testls.add(entry.getValue().name);
                   System.err.println("FOUND IT~~~~~");
               }
               System.err.println("NEXT RESTAURANT...\n");
           }
           
           System.err.println(ratingls);
+          System.err.println(testls); 
         }
         
         @Override 
         public void exitRating (RestaurantDBParser.RatingContext ctx) {
-            System.err.println("exiting RATING expression");
+            System.out.println("exiting RATING expression");
         }
         
         @Override
         public void enterName (RestaurantDBParser.NameContext ctx) {
-            System.err.println("entering NAME expression");
+            System.out.println("entering NAME expression");
             
             String subStringCtx = ctx.getChild(2).toString().substring(1, ctx.getChild(2).toString().length()-1); 
-            namels = new ArrayList<Restaurant>(); 
+            
+            if (ORANDExpression.peek().equals("OR")) {
+                for (ArrayList<Restaurant> ls : ORList) {
+                    if (ls.isEmpty()) {
+                        namels = ls; 
+                        break;
+                    }
+                }
+            } else if (ORANDExpression.peek().equals("AND")){ 
+                for (ArrayList<Restaurant> ls : ANDList) {
+                    if (ls.isEmpty()) {
+                        namels = ls; 
+                        break;
+                    }
+                }
+            } else {
+                System.err.println("WHAT HAPPENED?");
+            }
             
             for (Map.Entry<String, Restaurant> entry : all_restaurants.entrySet()) {
 //              System.err.println(entry.getKey() + "/" + entry.getValue().getCategories());
@@ -434,23 +564,23 @@ public class RestaurantDB {
         
         @Override
         public void exitName (RestaurantDBParser.NameContext ctx) {
-            System.err.println("exiting NAME expression");
+            System.out.println("exiting NAME expression");
         }
         
         @Override
         public void enterAtom (RestaurantDBParser.AtomContext ctx) {
-            System.err.println("entering ATOM expression");
+            System.out.println("entering ATOM expression");
         }
         
         @Override 
         public void exitAtom (RestaurantDBParser.AtomContext ctx) {
-            System.err.println("exiting ATOM expression");
+            System.out.println("exiting ATOM expression");
         }
         
         @Override 
         public void enterCategory (RestaurantDBParser.CategoryContext ctx) {
             String subStringCtx; 
-            System.err.println("\n>>>> entering CATEGORY expression");
+            System.out.println("\n>>>> entering CATEGORY expression");
             System.err.println(ctx.depth()); //the whole token 
             System.err.println(ctx.getChild(2).toString().getClass()); //cuisine name
             
@@ -463,7 +593,12 @@ public class RestaurantDB {
                     }
                 }
             } else if (ORANDExpression.peek().equals("AND")){ 
-                //TODO: ADD AND COUNTERPART
+                for (ArrayList<Restaurant> ls : ANDList) {
+                    if (ls.isEmpty()) {
+                        categoryls = ls; 
+                        break;
+                    }
+                }
             } else {
                 System.err.println("WHAT HAPPENED?");
             }
@@ -491,7 +626,7 @@ public class RestaurantDB {
         
         @Override
         public void exitCategory (RestaurantDBParser.CategoryContext ctx) {
-            System.err.println ("<<<< exiting CATEGORY expression\n");
+            System.out.println ("<<<< exiting CATEGORY expression\n");
             //Anything needed to be done? 
         }
     }
@@ -572,7 +707,7 @@ public class RestaurantDB {
         String queryAND = "in(\"Telegraph Ave\") && price(1..2)";
         String queryString1 = "in(\"Telegraph Ave\") && (category(\"Chinese\") || category(\"Italian\")) && price(1..2)";
         String queryStringName = "name(\"Alborz\")"; 
-        res.query(queryAND);
+        res.query(queryString1);
     }
 
 }
