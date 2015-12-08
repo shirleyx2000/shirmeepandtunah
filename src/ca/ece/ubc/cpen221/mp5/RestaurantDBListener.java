@@ -2,8 +2,6 @@
 
 package ca.ece.ubc.cpen221.mp5;
 
-import java.util.Collection;
-
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
