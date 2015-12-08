@@ -149,9 +149,5 @@ public class RestaurantDBBaseListener implements RestaurantDBListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void visitErrorNode(@NotNull ErrorNode node) { }
-    @Override
-    public Collection<? extends Restaurant> getRestaurants() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+
 }

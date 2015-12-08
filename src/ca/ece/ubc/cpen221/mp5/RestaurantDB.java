@@ -119,20 +119,21 @@ public class RestaurantDB {
         //TODO: throw QFException
         CharStream stream = new ANTLRInputStream(queryString);
         RestaurantDBLexer lexer = new RestaurantDBLexer(stream);
+
         TokenStream tokens = new CommonTokenStream(lexer);
         
         //Feed tokens into the parser
         RestaurantDBParser parser = new RestaurantDBParser(tokens);
-        
+
         //Generate the parse tree using starter rule 
         ParseTree tree = parser.root(); 
-        
         //Print tree 
         ((RuleContext)tree).inspect(parser);
         System.err.println(tree.toStringTree(parser));
         
         ParseTreeWalker walker = new ParseTreeWalker();
-        RestaurantDBListener listener = new RestaurantDBListener_Advanced();  //need to extend baseListener!
+
+        RestaurantDBListener_Advanced listener = new RestaurantDBListener_Advanced(all_restaurants);  //need to extend baseListener!
         walker.walk(listener, tree);
         
         return new HashSet<Restaurant>(listener.getRestaurants()); 
@@ -144,10 +145,10 @@ public class RestaurantDB {
      * @author Shirley
      *
      */
-    private class RestaurantDBListener_Advanced extends RestaurantDBBaseListener {
+    private static class RestaurantDBListener_Advanced extends RestaurantDBBaseListener {
         
         //**!!
-        private Stack<ArrayList<Restaurant>> fullStack = new Stack<ArrayList<Restaurant>>(); 
+        private  Stack<ArrayList<Restaurant>> fullStack = new Stack<ArrayList<Restaurant>>(); 
         List<Restaurant> ANDR = new ArrayList<Restaurant>(); 
         List<Restaurant> ANDL = new ArrayList<Restaurant>(); 
         List<Restaurant> ANDF = new ArrayList<Restaurant>(); 
@@ -164,8 +165,14 @@ public class RestaurantDB {
         private List<Restaurant> namels; 
         
         private List<Restaurant> finalList = new ArrayList<Restaurant>();
-
+        private Map<String, Restaurant> all_restaurants;
         
+        public RestaurantDBListener_Advanced(
+                Map<String, Restaurant> all_restaurants) {
+            // TODO Auto-generated constructor stub
+            this.all_restaurants = all_restaurants; 
+        }
+
         @Override
         public void enterAndExp (RestaurantDBParser.AndExpContext ctx) {
             System.err.println("\n==============> entering && expression");
@@ -272,7 +279,7 @@ public class RestaurantDB {
         public void exitRoot (RestaurantDBParser.RootContext ctx) {
             System.err.println("exiting ROOT expression\n");
             //TODO: take the last element of the stack to return! final product
-//            finalList = fullStack.get(0);
+            finalList = fullStack.get(0);
         }
         
         @Override 
@@ -712,6 +719,7 @@ public class RestaurantDB {
         String queryAND = "in(\"Telegraph Ave\") && price(1..2)";
         String queryString1 = "in(\"Telegraph Ave\") && (category(\"Chinese\") || category(\"Italian\")) && price(1..2)";
         String queryStringName = "name(\"Alborz\")"; 
+        String wrongQueryString = "blahblah";
         Set<Restaurant> finalRes = res.query(queryString1);
         System.out.println(finalRes);
     }

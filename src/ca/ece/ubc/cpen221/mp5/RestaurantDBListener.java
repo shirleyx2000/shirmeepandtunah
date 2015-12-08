@@ -102,5 +102,4 @@ public interface RestaurantDBListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitCategory(@NotNull RestaurantDBParser.CategoryContext ctx);
-    Collection<? extends Restaurant> getRestaurants();
 }
