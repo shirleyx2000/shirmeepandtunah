@@ -13,6 +13,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * This class represents a server that will instantiate a database and process queries from multiple clients concurrently. 
@@ -227,42 +229,42 @@ public class RestaurantDBServer {
 	 */
 	private void checkRequestFormat( String request ) throws RequestFormatException {
 	    
-//	    String strCloseParen = "\")";
-//	    String randomReviewRegex = "randomReview(\"";
-//	    String getRestaurantRegex = "getRestaurant(\"";
-//	    String addRestaurantRegex = "addRestaurant(\"";
-//	    String addUserRegex = "addUser(\"";
-//	    String addReviewRegex = "addReview(\"";
-//	    
-//	    //Check if request contains any of the strings:
-//	    if( (request.indexOf(randomReviewRegex) > -1) 
-//	        && (request.indexOf(strCloseParen) > request.indexOf(randomReviewRegex)) ){
-//	            return;
-//	    } else if( (request.indexOf(getRestaurantRegex) > -1) 
-//	            && (request.indexOf(strCloseParen) > request.indexOf(getRestaurantRegex)) ){
-//            return;
-	    
+        String pattern_get = "((addRestaurant|addUser|addReview|randomReview|getRestaurant)\\((.|\n)+\\))+";
+        Pattern r = Pattern.compile(pattern_get);
+        Matcher m = r.matcher(request);
+        if (!m.find()) {
+          System.err.println("NOT FOUND! THROW EXCEPTION");
+          throw new RequestFormatException();
+        } 
+//        else {
+//          System.out.println(m.group(0));
+//        }
 	}
 	
     //MAIN
     
 	public static void main( String[] args ) throws IOException{
 	    
-	    //Check number of arguments passed
-	    if( args.length != 4 ){
-	        System.err.println("Usage: java RestaurantDBServer /n"
-	                + "    <port number>/n"
-	                + "    <name of file containing restaurants>/n"
-	                + "    <name of file containing review>/n"
-	                + "    <name of file containing users>");
-	        System.exit(1);
-	    }
+//	    //Check number of arguments passed
+//	    if( args.length != 4 ){
+//	        System.err.println("Usage: java RestaurantDBServer /n"
+//	                + "    <port number>/n"
+//	                + "    <name of file containing restaurants>/n"
+//	                + "    <name of file containing review>/n"
+//	                + "    <name of file containing users>");
+//	        System.exit(1);
+//	    }
+//	    
+//	    //Get command line arguments
+//	    int port = Integer.parseInt(args[0]);
+//	    String restaurantDetailsFile = args[1];
+//        String reviewsDetailsFile = args[2];
+//        String usersDetailsFile = args[4];
 	    
-	    //Get command line arguments
-	    int port = Integer.parseInt(args[0]);
-	    String restaurantDetailsFile = args[1];
-        String reviewsDetailsFile = args[2];
-        String usersDetailsFile = args[4];
+	    int port = 4949;
+        String restaurantDetailsFile = "restaurants.json";
+        String reviewsDetailsFile = "reviews.json";
+        String usersDetailsFile = "users.json";
 	    
 	    //Create instance of RDBS, returns only if IOException
 	    try{

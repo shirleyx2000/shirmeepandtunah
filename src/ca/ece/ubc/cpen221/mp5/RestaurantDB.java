@@ -564,7 +564,8 @@ public class RestaurantDB {
         Map json = new HashMap(); 
         try {
             in = new BufferedReader(
-                    new FileReader("C:\\Users\\Shirley\\Documents\\Shirley2015\\CPEN221\\mp5-fall2015\\data\\" + file));
+                    //new FileReader("C:\\Users\\Shirley\\Documents\\Shirley2015\\CPEN221\\mp5-fall2015\\data\\" + file));
+                    new FileReader("C:\\Users\\guess_000\\workspace\\2015-L1D-shirleyx2000\\data\\" + file));
             String str; 
             
             try {
