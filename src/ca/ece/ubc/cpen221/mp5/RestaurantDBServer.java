@@ -112,16 +112,29 @@ public class RestaurantDBServer {
             //TODO: Modify this to account for other client requests! If request ill-formatted, throw RequestFormatException()
             //Each request is a single-line string
             for( String request = in.readLine(); request != null; request = in.readLine() ){
-                System.err.println("query : " + request);
                 //try {
                     //Get query reply from database
                     StringBuilder replyJson = new StringBuilder("");
-                    Set<Restaurant> restaurants = rdb.query( request );
-                    for( Restaurant r : restaurants ){
-                        //Separate each restaurant with a new line
-                        System.err.println(r.getJSONStr());
-                        replyJson.append(r.getJSONStr() + "; ");
+                    System.err.println("query : " + request);
+
+                    if (request.contains("randomReview")) {
+                        request = request.substring(14, request.length()-2);
+                        replyJson.append(randomReview(request));
+                    } else if (request.contains("getRestaurant")) {
+                        request = request.substring(15, request.length()-2);
+                        replyJson.append(getRestaurant(request));
                     }
+                    else {
+                        Set<Restaurant> restaurants = rdb.query( request );
+                        for( Restaurant r : restaurants ){
+                            //Separate each restaurant with a new line
+                            System.err.println(r.getJSONStr());
+                            replyJson.append(r.getJSONStr() + "; ");
+                        }
+                    }
+                    
+                    System.err.println("query after : " + request);
+                    
                     System.err.println("reply : " + replyJson); 
                     out.println(replyJson.toString());
 //                } catch (QueryFormatException qfe){
@@ -253,25 +266,31 @@ public class RestaurantDBServer {
     
 	public static void main( String[] args ) throws IOException{
 	    
-//	    //Check number of arguments passed
-//	    if( args.length != 4 ){
-//	        System.err.println("Usage: java RestaurantDBServer /n"
-//	                + "    <port number>/n"
-//	                + "    <name of file containing restaurants>/n"
-//	                + "    <name of file containing review>/n"
-//	                + "    <name of file containing users>");
-//	        System.exit(1);
-//	    }
-//	    
-//	    //Get command line arguments
-//	    int port = Integer.parseInt(args[0]);
-//	    String restaurantDetailsFile = args[1];
-//        String reviewsDetailsFile = args[2];
-//        String usersDetailsFile = args[4];
+	    //Check number of arguments passed
+	    System.out.println(args[0]);
+	    System.out.println(args[1]);
+	    System.out.println(args[2]);
+	    System.out.println(args[3]);
+	    
+	    if( args.length != 4 ){
+	        System.err.println("Usage: java RestaurantDBServer /n"
+	                + "    <port number>/n"
+	                + "    <name of file containing restaurants>/n"
+	                + "    <name of file containing review>/n"
+	                + "    <name of file containing users>");
+	        System.exit(1);
+	    }
+	    
+	    //Get command line arguments
+	    int port = Integer.parseInt(args[0]);
+	    String restaurantDetailsFile = args[1];
+        String reviewsDetailsFile = args[2];
+        String usersDetailsFile = args[3];
 	    
 	    //Create instance of RDBS, returns only if IOException
 	    try{
-	        RestaurantDBServer rdbs = new RestaurantDBServer( 4949, "restaurants.json", "reviews.json", "users.json" );
+//	        RestaurantDBServer rdbs = new RestaurantDBServer( 4949, "restaurants.json", "reviews.json", "users.json" );
+	        RestaurantDBServer rdbs = new RestaurantDBServer( port, restaurantDetailsFile, reviewsDetailsFile, usersDetailsFile );
 	        rdbs.serve();
 	    } catch ( IOException ioe ){
 	        ioe.printStackTrace();

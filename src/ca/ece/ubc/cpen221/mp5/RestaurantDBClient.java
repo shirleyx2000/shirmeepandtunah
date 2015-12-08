@@ -53,24 +53,29 @@ public class RestaurantDBClient {
         
         try{
             RestaurantDBClient rdbc = new RestaurantDBClient("localhost", somePort);
-            
+            RestaurantDBClient rdbc2 = new RestaurantDBClient("localhost", somePort);
             // send the requests and get the replies
             String[] testRequests = {
                     //Queries
                     "in(\"Telegraph Ave\")",
-                    "price(1..2)",
-                    "category(\"Chinese\") || category(\"Italian\")",
-                    "in(\"Telegraph Ave\") && price(1..2)",
-                    "in(\"Telegraph Ave\") && (category(\"Chinese\") || category(\"Italian\")) && price(1..2)",
+                    //"price(1..2)",
+                    //"category(\"Chinese\") || category(\"Italian\")",
+                    //"in(\"Telegraph Ave\") && price(1..2)",
+                    //"in(\"Telegraph Ave\") && (category(\"Chinese\") || category(\"Italian\")) && price(1..2)",
+                    //"randomReview(\"Happy Valley\")",
+                    "getRestaurant(\"ERRowW4pGO6pK9sVYyA1nQ\")" //Should return Happy Valley
             };
             
             for( String request : testRequests ){
                 System.out.println("request " + request);
                 rdbc.sendRequest(request);
+//                rdbc2.sendRequest(request);
                 System.out.println("reply " + rdbc.getReply());
+//                System.out.println("reply 2 " + rdbc2.getReply());
             }
             
             rdbc.close();
+            rdbc2.close();
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
