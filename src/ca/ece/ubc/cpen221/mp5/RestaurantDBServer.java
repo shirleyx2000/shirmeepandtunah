@@ -123,7 +123,16 @@ public class RestaurantDBServer {
                     } else if (request.contains("getRestaurant")) {
                         request = request.substring(15, request.length()-2);
                         replyJson.append(getRestaurant(request));
-                    }
+                    } else if (request.contains("addRestaurant")) {
+                        request = request.substring(14, request.length()-1);
+                        addRestaurant(request);
+                    } else if (request.contains("addReview")) {
+                        request = request.substring(10, request.length()-1);
+                        addReview(request);
+                    } else if (request.contains("addUser")) {
+                        request = request.substring(8, request.length()-1);
+                        addUser(request);
+                    } 
                     else {
                         Set<Restaurant> restaurants = rdb.query( request );
                         for( Restaurant r : restaurants ){
@@ -136,6 +145,8 @@ public class RestaurantDBServer {
                     System.err.println("query after : " + request);
                     
                     System.err.println("reply : " + replyJson); 
+                    System.err.println("Check addUser: " + getUser("1234567890abcdefghi"));
+
                     out.println(replyJson.toString());
 //                } catch (QueryFormatException qfe){
 //                    System.err.println("reply : err");
@@ -143,7 +154,7 @@ public class RestaurantDBServer {
 //                }
             }
         } finally {
-            System.err.println("closing server client");
+            System.err.println("closing client I/O");
             out.close();
             in.close();
         }
@@ -203,6 +214,38 @@ public class RestaurantDBServer {
 	    }
 	    return restaurantJSON;
 	}
+	
+    private String getReview( String reviewId ){
+        
+        String reviewJSON = "";
+        
+        //Get the collection of values (Restaurant objects) from all_restaurants map
+        Collection<Review> allReviews = rdb.getAllReviews().values();
+        //Iterate through restaurant objects 
+        for( Review r : allReviews ){
+            //Check if restuarant.businessId equals businessId
+            if( r.getReviewId().equals(reviewId) ){
+                return r.getJsonStr();
+            }
+        }
+        return reviewJSON;
+    }
+    
+    private String getUser( String userId ){
+        
+        String userJSON = "";
+        
+        //Get the collection of values (Restaurant objects) from all_restaurants map
+        Collection<User> allUsers = rdb.getAllUsers().values();
+        //Iterate through restaurant objects 
+        for( User r : allUsers ){
+            //Check if restuarant.businessId equals businessId
+            if( r.getUserId().equals(userId) ){
+                return r.getJsonStr();
+            }
+        }
+        return userJSON;
+    }
 	
 	/**
 	 * Adds a restaurant to Restaurant database.

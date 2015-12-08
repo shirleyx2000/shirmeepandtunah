@@ -13,6 +13,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Stack;
 
@@ -624,13 +625,16 @@ public class RestaurantDB {
      */
     
     private void generateRestaurants (Map JSONRestaurantMap) {
+        //no restaurant should contain the same business ID    
+        
+        //Check business ID of input json string
+            String busID = (String) JSONRestaurantMap.get("business_id");
+            for (Restaurant r : all_restaurants.values()) {
+                if (r.getBusID().equals(busID)) {
+                    return;
+                }
+            }
             
-            //Testing only...
-//            Iterator entries = e.entrySet().iterator();
-//            while (entries.hasNext()) {
-//                Entry thisEntry = (Entry) entries.next(); 
-//                System.out.println("KEY: " + thisEntry.getKey() + "    Value: " + thisEntry.getValue());
-//            }
             Restaurant new_res = new Restaurant((String) JSONRestaurantMap.get("name"));
             new_res.setOpen((Boolean) JSONRestaurantMap.get("open")); 
             new_res.setURL((String) JSONRestaurantMap.get("url")); 
@@ -661,13 +665,13 @@ public class RestaurantDB {
     
     private void generateReviews (Map f) {
             
-            //Testing only 
-//            Iterator entries = f.entrySet().iterator();
-//            while (entries.hasNext()) {
-//                Entry thisEntry = (Entry) entries.next(); 
-//                System.out.println("KEY: " + thisEntry.getKey() + "    Value: " + thisEntry.getValue());
-////                System.out.println(thisEntry.getValue().getClass());
-//            }
+      //Check business ID of input json string
+        String revID = (String) f.get("review_id");
+        for (Review r : all_reviews.values()) {
+            if (r.getReviewId().equals(revID)) {
+                return;
+            }
+        }
             
             Review new_rev = new Review(); 
             new_rev.setBusinessId((String) f.get("business_id"));
@@ -690,13 +694,13 @@ public class RestaurantDB {
      */
     private void generateUsers (Map g) {
             
-            //TESTING only....
-//            Iterator entries = g.entrySet().iterator();
-//            while (entries.hasNext()) {
-//                Entry thisEntry = (Entry) entries.next(); 
-//                System.out.println("KEY: " + thisEntry.getKey() + "    Value: " + thisEntry.getValue());
-//                System.out.println(thisEntry.getValue().getClass());
-//            }
+        //Check business ID of input json string
+        String userID = (String) g.get("user_id");
+        for (User r : all_users.values()) {
+            if (r.getUserId().equals(userID)) {
+                return;
+            }
+        }
             
             User new_user = new User((String) g.get("name"));
             new_user.setUserId((String) g.get("user_id"));

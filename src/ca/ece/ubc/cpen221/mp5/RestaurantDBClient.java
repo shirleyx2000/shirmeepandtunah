@@ -57,21 +57,28 @@ public class RestaurantDBClient {
             // send the requests and get the replies
             String[] testRequests = {
                     //Queries
-                    "in(\"Telegraph Ave\")",
-                    //"price(1..2)",
-                    //"category(\"Chinese\") || category(\"Italian\")",
-                    //"in(\"Telegraph Ave\") && price(1..2)",
-                    //"in(\"Telegraph Ave\") && (category(\"Chinese\") || category(\"Italian\")) && price(1..2)",
+//                    "in(\"Telegraph Ave\")",
+//                    "addUser({\"url\": \"http://www.yelp.com/user_details?userid=_NH7Cpq3qZkByP5xR4gXog\", "
+//                            + "\"votes\": {\"funny\": 35, \"useful\": 21, \"cool\": 14}, "
+//                            + "\"review_count\": 29, "
+//                            + "\"type\": \"user\", "
+//                            + "\"user_id\": \"1234567890abcdefghi\", "
+//                            + "\"name\": \"Chris Mickdeezus.\", "
+//                            + "\"average_stars\": 3.89655172413793})",
+//                    "price(1..2)",
+                    "category(\"Chinese\") || category(\"Italian\")",
+//                    "in(\"Telegraph Ave\") && price(1..2)",
+                    "in(\"Telegraph Ave\") && (category(\"Chinese\") || category(\"Italian\")) && price(1..2)",
                     //"randomReview(\"Happy Valley\")",
-                    "getRestaurant(\"ERRowW4pGO6pK9sVYyA1nQ\")" //Should return Happy Valley
+                    //"getRestaurant(\"1234abcdeEFGH\")" //Should return Happy Valley
             };
             
             for( String request : testRequests ){
                 System.out.println("request " + request);
                 rdbc.sendRequest(request);
-//                rdbc2.sendRequest(request);
+                rdbc2.sendRequest(request);
                 System.out.println("reply " + rdbc.getReply());
-//                System.out.println("reply 2 " + rdbc2.getReply());
+                System.out.println("reply 2 " + rdbc2.getReply());
             }
             
             rdbc.close();
