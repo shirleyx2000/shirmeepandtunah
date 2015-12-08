@@ -3,7 +3,12 @@ package ca.ece.ubc.cpen221.mp5;
 import java.util.HashMap;
 import java.util.Map;
 
-// TODO: Use this class to represent a Yelp user.
+/**
+ * This class represents a Yelp User object converted from a JSON file.
+ * 
+ * @author Shirley
+ *
+ */
 
 public class User {
     

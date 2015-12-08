@@ -4,16 +4,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-// TODO: Use this class to represent a restaurant.
-// State the rep invariant and abs
-
 /**
- * Abstract datatype: an object with relatively unique public fields 
- * rep invariant: every entry is modifiable according to new restuarant details
+ * This class represents a Yelp Restaurant object converted from a JSON file.
+ * rep invariant: every entry is modifiable according to new restaurant details
  * 
  * @author Shirley
  *
  */
+
 public class Restaurant {
     
     public String type = "business";
@@ -28,12 +26,12 @@ public class Restaurant {
     
     public double longitude; 
     public double latitude; 
-    public double stars; //TODO: Should this change to an Integer?
+    public double stars; 
     public long review_count; 
     public long price; //Number of dollar signs
     
     public boolean open; 
-    public List<String> categories; //TODO: Account for rep exposure for Lists
+    public List<String> categories; 
     public List<String> neighbours; 
     public List<String> schools;
     

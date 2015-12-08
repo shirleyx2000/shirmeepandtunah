@@ -70,15 +70,15 @@ public class RestaurantDBClient {
 //                    "in(\"Telegraph Ave\") && price(1..2)",
                     "in(\"Telegraph Ave\") && (category(\"Chinese\") || category(\"Italian\")) && price(1..2)",
                     //"randomReview(\"Happy Valley\")",
-                    //"getRestaurant(\"1234abcdeEFGH\")" //Should return Happy Valley
+                    //"getRestaurant(\"1234abcdeEFGH\")" //Should return Happy Valley,
             };
             
             for( String request : testRequests ){
                 System.out.println("request " + request);
                 rdbc.sendRequest(request);
-                rdbc2.sendRequest(request);
+//                rdbc2.sendRequest(request);
                 System.out.println("reply " + rdbc.getReply());
-                System.out.println("reply 2 " + rdbc2.getReply());
+//                System.out.println("reply 2 " + rdbc2.getReply());
             }
             
             rdbc.close();

@@ -31,9 +31,6 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 
-// TODO: This class represents the Restaurant Database.
-// Define the internal representation and 
-// state the rep invariant and the abstraction function.
 /**
  * Abstract datatype: List of maps per restaurant/review/users represented by their respective ADT
  * Rep invariant: dataset will always keep 3 data file information separate. 
@@ -77,14 +74,11 @@ public class RestaurantDB {
             generateRestaurants(f);
         }
         
-        System.out.println("\n\n\n");
         List<Map> json_reviews = generateDictionary(reviewsJSONfilename);
         for (Map g : json_reviews) {
             generateReviews(g);
         }
-        System.out.println(json_reviews.size());
         
-        System.out.println("\n\n\n");
         List<Map> json_users = generateDictionary(usersJSONfilename);
         for (Map h: json_users) {
             generateUsers(h);
@@ -94,17 +88,28 @@ public class RestaurantDB {
 
     
     /** 
-     * Getter methods for restaurant, review, user
+     * Getter methods for restaurant, to facilitate access from queries
      * 
+     * @return Map of all_restaurants
      */
     public Map<String, Restaurant> getAllRestaurants() {
         return new HashMap<String, Restaurant>(all_restaurants);
     }
     
+    /**
+     * Getter method for reviews
+     * 
+     * @return Map of all_reviews
+     */
     public Map<String, Review> getAllReviews() {
         return new HashMap<String, Review>(all_reviews);
     }
     
+    /**
+     * Getter method for users
+     * 
+     * @return Map of all_users
+     */
     public Map<String, User> getAllUsers() {
         return new HashMap<String, User>(all_users);
     }
@@ -114,12 +119,12 @@ public class RestaurantDB {
     /** 
      * Retrieves a set of restaurants given a query which consists of a combination of 
      * names, neighbourhoods, categories, rating, and price when client requests
+     * 
      * @param queryString
      * @return Set<Restaurant> 
      * @throws QueryFormatException
      */
     public Set<Restaurant> query(String queryString) throws QueryFormatException {
-        //TODO: throw QFException
         CharStream stream = new ANTLRInputStream(queryString);
         RestaurantDBLexer lexer = new RestaurantDBLexer(stream);
 
@@ -148,31 +153,30 @@ public class RestaurantDB {
     }
     
     /**
-     * Private class to walk through each parser of the ANTLR tree
+     * Private class to walk through each parse rule of the ANTLR tree
+     * Extends RestaurantDBBaseListener to include getRestaurant() method
      * 
      * @author Shirley
      *
      */
     private static class RestaurantDBListener_Advanced extends RestaurantDBBaseListener {
         
-        //**!!
+        //Operator nodes performs RPN operations
         private  Stack<ArrayList<Restaurant>> fullStack = new Stack<ArrayList<Restaurant>>(); 
         List<Restaurant> ANDR = new ArrayList<Restaurant>(); 
         List<Restaurant> ANDL = new ArrayList<Restaurant>(); 
         List<Restaurant> ANDF = new ArrayList<Restaurant>(); 
-
         List<Restaurant> ORR = new ArrayList<Restaurant>(); 
         List<Restaurant> ORL = new ArrayList<Restaurant>(); 
         List<Restaurant> ORF = new ArrayList<Restaurant>(); 
-
-        //**!!
+        
+        //Leaf node parsers generates a list and gets pushed into stack
         private List<Restaurant> categoryls;
         private ArrayList<Restaurant> inls; 
         private List<Restaurant> pricels; 
         private List<Restaurant> ratingls;
         private List<Restaurant> namels; 
         
-        private List<Restaurant> finalList = new ArrayList<Restaurant>();
         private Map<String, Restaurant> all_restaurants;
         
         public RestaurantDBListener_Advanced(
@@ -183,13 +187,12 @@ public class RestaurantDB {
 
         @Override
         public void enterAndExp (RestaurantDBParser.AndExpContext ctx) {
-            System.err.println("\n==============> entering && expression");
-//            System.err.println("Child count: " + ctx.getChildCount());
+            System.err.println("entering && expression");
         }
         
         @Override
         public void exitAndExp (RestaurantDBParser.AndExpContext ctx) {
-            System.err.println("<============== exiting && expression\n");
+            System.err.println("exiting && expression\n");
             int addCount = 0; 
             
             //Check if this AndExp contains && operator
@@ -202,7 +205,6 @@ public class RestaurantDB {
             
             //Confirms this expression contains && operator
             for (int i = 0; i<addCount; i++) {
-//                System.err.println("I am intersecting");
                 ANDL = fullStack.pop();
                 ANDR = fullStack.pop();
                 // ANDF = ANDL & ANDR; 
@@ -211,11 +213,6 @@ public class RestaurantDB {
                 fullStack.push((ArrayList<Restaurant>) ANDF);
             }
             addCount = 0; 
-            
-//            System.err.println("AND LIST finalized to be: \n" + fullStack.peek());
-            for (Restaurant r : fullStack.peek()) {
-//                System.err.println(r.name);
-            }
         }
         
         @Override 
@@ -240,8 +237,6 @@ public class RestaurantDB {
             
             //finalized string exiting In; 
             fullStack.push(inls);
-//            System.err.println(fullStack.peek());
-//            System.err.println(testls);
         }
         
         @Override 
@@ -256,12 +251,10 @@ public class RestaurantDB {
             pricels = new ArrayList<Restaurant>(); 
             List<String> testls = new ArrayList<String>();
             
-            
             long longMin = Long.parseLong(ctx.getChild(2).toString()); 
             long longMax = Long.parseLong(ctx.getChild(4).toString()); 
             for (Map.Entry<String, Restaurant> entry : all_restaurants.entrySet()) {
               //per restaurant 
-              
               if (longMin <= entry.getValue().getPrice() &&  entry.getValue().getPrice() <= longMax) {
                   pricels.add(entry.getValue());
                   testls.add(entry.getValue().name);
@@ -269,8 +262,6 @@ public class RestaurantDB {
             }
           
             fullStack.push((ArrayList<Restaurant>) pricels);
-//            System.err.println(fullStack.peek());
-//            System.err.println(testls);
         }
         
         @Override 
@@ -286,20 +277,18 @@ public class RestaurantDB {
         @Override 
         public void exitRoot (RestaurantDBParser.RootContext ctx) {
             System.err.println("exiting ROOT expression\n");
-            //TODO: take the last element of the stack to return! final product
-            finalList = fullStack.get(0);
         }
         
         @Override 
         public void enterQuery (RestaurantDBParser.QueryContext ctx) {
-            System.err.println("\n----------> entering QUERY expression");
+            System.err.println("entering QUERY expression");
 //            System.err.println("Child count : " + ctx.getChildCount());
             
         }
         
         @Override 
         public void exitQuery (RestaurantDBParser.QueryContext ctx) {
-            System.err.println("<---------- exiting QUERY expression\n");
+            System.err.println("exiting QUERY expression\n");
 //            System.err.println(ctx.children);
 
             int ORCount = 0; 
@@ -307,14 +296,12 @@ public class RestaurantDB {
             //Check if this AndExp contains && operator
             for (ParseTree pt : ctx.children) {
                 if (pt.toString().equals("||")) {
-//                    System.err.println("OR operator exists");
                     ORCount++; 
                 }
             }
             
             //Confirms this expression contains && operator
             for (int i = 0; i<ORCount; i++) {
-//                System.err.println("I am unioning");
                 ORL = fullStack.pop();
                 ORR = fullStack.pop();
                 // ORF = ORL + ORR; 
@@ -324,12 +311,6 @@ public class RestaurantDB {
             }
             
             ORCount = 0; 
-            
-            //Test
-//            System.err.println("OR LIST finalized to be: \n" + fullStack.peek());
-            for (Restaurant r : fullStack.peek()) {
-//                System.err.println(r.name);
-            }
         }
         
         @Override 
@@ -342,19 +323,13 @@ public class RestaurantDB {
             double doubleMin = Double.parseDouble(ctx.getChild(2).toString()); 
             double doubleMax = Double.parseDouble(ctx.getChild(4).toString()); 
             for (Map.Entry<String, Restaurant> entry : all_restaurants.entrySet()) {
-//              System.err.println(entry.getValue().getStars());
-//              System.err.println("Beginning: " + doubleMin + "  -- Ending: " + doubleMax);
-              
               if (doubleMin <= entry.getValue().getStars() &&  entry.getValue().getStars() <= doubleMax) {
                   ratingls.add(entry.getValue());
                   testls.add(entry.getValue().name);
-//                  System.err.println("FOUND IT~~~~~");
               }
             }
           
             fullStack.push((ArrayList<Restaurant>) ratingls);
-//            System.err.println(fullStack.peek());
-//            System.err.println(testls); 
         }
         
         @Override 
@@ -369,17 +344,12 @@ public class RestaurantDB {
             String subStringCtx = ctx.getChild(2).toString().substring(1, ctx.getChild(2).toString().length()-1); 
             
             for (Map.Entry<String, Restaurant> entry : all_restaurants.entrySet()) {
-//              System.err.println(entry.getValue().name);
-//              System.err.println(subStringCtx); 
-
                   if (entry.getValue().name.equals(subStringCtx)) {
                       namels.add(entry.getValue());
-//                      System.err.println("FOUND IT~~~~~");
                   }
           }
            
               fullStack.push((ArrayList<Restaurant>) namels);
-//              System.err.println(fullStack.peek());
         }
         
         @Override
@@ -401,11 +371,8 @@ public class RestaurantDB {
         public void enterCategory (RestaurantDBParser.CategoryContext ctx) {
             String subStringCtx; 
             System.err.println("\nentering CATEGORY expression");
-            System.err.println(ctx.depth()); //the whole token 
-            System.err.println(ctx.getChild(2).toString().getClass()); //cuisine name
             categoryls = new ArrayList<Restaurant>(); 
             
-            //TESTING: restaurant list in string, instead of restaurant objects
             List<String> stringls = new ArrayList<String>();
             
             for (Map.Entry<String, Restaurant> entry : all_restaurants.entrySet()) {
@@ -420,14 +387,11 @@ public class RestaurantDB {
             }
             
             fullStack.push((ArrayList<Restaurant>) categoryls);
-//            System.err.println(fullStack.peek());
-//            System.err.println(stringls);
         }
         
         @Override
         public void exitCategory (RestaurantDBParser.CategoryContext ctx) {
             System.err.println ("exiting CATEGORY expression\n");
-            //Anything needed to be done? 
         }
         
         public List<Restaurant> getRestaurants(){
@@ -436,7 +400,7 @@ public class RestaurantDB {
     }
     
     /**
-     * Precondition: input must be a single element JSON string
+     * Precondition: input must be a single element JSON string (one line)
      * 
      * @param restaurantJSON
      */
@@ -455,7 +419,6 @@ public class RestaurantDB {
 
           @Override
           public List creatArrayContainer() {
-              // TODO Auto-generated method stub
               return null;
           }
         };
@@ -557,22 +520,23 @@ public class RestaurantDB {
     }
     
     
-    
     /**
      * Helper method to help constructor generate a java map from the JSON file
      * 
      * @param file
-     * @return json 
+     * @return List of json Map<JSONKey, JSONValue>
      */
     private List<Map> generateDictionary(String file) {
         
         List<Map> allMaps = new ArrayList<Map>();  
         BufferedReader in;
         Map json = new HashMap(); 
+        
+        String jsonDir = System.getProperty("user.dir").concat("\\data\\");
+
         try {
             in = new BufferedReader(
-                    //new FileReader("C:\\Users\\Shirley\\Documents\\Shirley2015\\CPEN221\\mp5-fall2015\\data\\" + file));
-                    new FileReader("C:\\Users\\guess_000\\workspace\\2015-L1D-shirleyx2000\\data\\" + file));
+                    new FileReader(jsonDir + file));
             String str; 
             
             try {
@@ -625,7 +589,7 @@ public class RestaurantDB {
     }
     
     /**
-     * Helper method to convert JSON maps to Restaurant Object maps. 
+     * Helper method to convert single JSON map to Restaurant Object maps. 
      * 
      * @modifies: private all_restaurant object
      * 
@@ -664,7 +628,7 @@ public class RestaurantDB {
     }
     
     /**
-     * Helper method to convert JSON maps to Review Object maps. 
+     * Helper method to convert single JSON map to Review Object maps. 
      * 
      * @modifies: private all_review object
      * 
@@ -694,7 +658,7 @@ public class RestaurantDB {
     }
     
     /**
-     * Helper method to convert JSON maps to User object maps.
+     * Helper method to convert single JSON map to User object maps.
      * 
      * @modifies: private all_users object
      * 
@@ -720,20 +684,4 @@ public class RestaurantDB {
             all_users.putIfAbsent((String) g.get("name"), new_user);
     }
     
-    
-    //TO DELETE, testing only 
-    public static void main (String [] args) throws QueryFormatException {
-        RestaurantDB res = new RestaurantDB ("restaurants.json", "reviews.json", "users.json");
-        String queryIn = "in(\"Telegraph Ave\")"; 
-        String queryRating = "rating(2.1..2.9)";
-        String queryPrice = "price(1..2)";
-        String queryORCategory = "category(\"Chinese\") || category(\"Italian\")";
-        String queryAND = "in(\"Telegraph Ave\") && price(1..2)";
-        String queryString1 = "in(\"Telegraph Ave\") && (category(\"Chinese\") || category(\"Italian\")) && price(1..2)";
-        String queryStringName = "name(\"Alborz\")"; 
-        String wrongQueryString = "blahblah";
-        Set<Restaurant> finalRes = res.query(queryString1);
-        System.out.println(finalRes);
-    }
-
 }

@@ -46,7 +46,7 @@ public class RestaurantDBServer {
 	    
 	    rdb = new RestaurantDB( restaurantDetailsFile, reviewsDetailsFile, usersDetailsFile );
 	    try {
-	        System.out.println("Trying to initalized socket");
+	        System.out.println("server socket intialized: ready to run client");
 	        serverSocket = new ServerSocket( port );
 	    } catch (IOException ioex) {
 	        ioex.printStackTrace();
@@ -100,7 +100,7 @@ public class RestaurantDBServer {
 	 * @throws IOException if connection has error or terminates unexpectedly
 	 */
 	private void handle( Socket clientSocket ) throws IOException {
-	    System.err.println("client connected huzzah");
+	    System.err.println("client connected");
 	    
 	    //Get client socket's input stream. 
         BufferedReader in = new BufferedReader(new InputStreamReader(
@@ -120,18 +120,43 @@ public class RestaurantDBServer {
                     System.err.println("query : " + request);
 
                     if (request.contains("randomReview")) {
+                        try{
+                            checkRequestFormat( request );
+                        } catch( RequestFormatException e ){
+                            System.err.println("Error: Ill-formatted request");
+                        }
                         request = request.substring(14, request.length()-2);
                         replyJson.append(randomReview(request));
                     } else if (request.contains("getRestaurant")) {
+                        try{
+                            checkRequestFormat( request );
+                        } catch( RequestFormatException e ){
+                            System.err.println("Error: Ill-formatted request");
+                        }
                         request = request.substring(15, request.length()-2);
                         replyJson.append(getRestaurant(request));
                     } else if (request.contains("addRestaurant")) {
+                        try{
+                            checkRequestFormat( request );
+                        } catch( RequestFormatException e ){
+                            System.err.println("Error: Ill-formatted request");
+                        }
                         request = request.substring(14, request.length()-1);
                         addRestaurant(request);
                     } else if (request.contains("addReview")) {
+                        try{
+                            checkRequestFormat( request );
+                        } catch( RequestFormatException e ){
+                            System.err.println("Error: Ill-formatted request");
+                        }
                         request = request.substring(10, request.length()-1);
                         addReview(request);
                     } else if (request.contains("addUser")) {
+                        try{
+                            checkRequestFormat( request );
+                        } catch( RequestFormatException e ){
+                            System.err.println("Error: Ill-formatted request");
+                        }
                         request = request.substring(8, request.length()-1);
                         addUser(request);
                     } 
@@ -144,16 +169,10 @@ public class RestaurantDBServer {
                         }
                     }
                     
-                    System.err.println("query after : " + request);
-                    
                     System.err.println("reply : " + replyJson); 
-                    System.err.println("Check addUser: " + getUser("1234567890abcdefghi"));
 
                     out.println(replyJson.toString());
-//                } catch (QueryFormatException qfe){
-//                    System.err.println("reply : err");
-//                    out.println("err\n");
-//                }
+
             }
         } catch (QueryFormatException e) {
             System.err.println("Ill-formatted query");
@@ -297,12 +316,8 @@ public class RestaurantDBServer {
         Pattern r = Pattern.compile(pattern_get);
         Matcher m = r.matcher(request);
         if (!m.find()) {
-          System.err.println("NOT FOUND! THROW EXCEPTION");
           throw new RequestFormatException();
         } 
-//        else {
-//          System.out.println(m.group(0));
-//        }
 	}
 	
     //MAIN
@@ -333,7 +348,6 @@ public class RestaurantDBServer {
 	    
 	    //Create instance of RDBS, returns only if IOException
 	    try{
-//	        RestaurantDBServer rdbs = new RestaurantDBServer( 4949, "restaurants.json", "reviews.json", "users.json" );
 	        RestaurantDBServer rdbs = new RestaurantDBServer( port, restaurantDetailsFile, reviewsDetailsFile, usersDetailsFile );
 	        rdbs.serve();
 	    } catch ( IOException ioe ){
