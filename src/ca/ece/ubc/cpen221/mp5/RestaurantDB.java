@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EmptyStackException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -115,8 +116,9 @@ public class RestaurantDB {
      * names, neighbourhoods, categories, rating, and price when client requests
      * @param queryString
      * @return Set<Restaurant> 
+     * @throws QueryFormatException
      */
-    public Set<Restaurant> query(String queryString) {
+    public Set<Restaurant> query(String queryString) throws QueryFormatException {
         //TODO: throw QFException
         CharStream stream = new ANTLRInputStream(queryString);
         RestaurantDBLexer lexer = new RestaurantDBLexer(stream);
@@ -136,7 +138,11 @@ public class RestaurantDB {
 
         RestaurantDBListener_Advanced listener = new RestaurantDBListener_Advanced(all_restaurants);  //need to extend baseListener!
 
-        walker.walk(listener, tree);
+        try{
+            walker.walk(listener, tree);
+        } catch ( EmptyStackException ese ){
+            throw new QueryFormatException();
+        }
         
         return new HashSet<Restaurant>(listener.getRestaurants()); 
     }
@@ -715,7 +721,7 @@ public class RestaurantDB {
     
     
     //TO DELETE, testing only 
-    public static void main (String [] args) {
+    public static void main (String [] args) throws QueryFormatException {
         RestaurantDB res = new RestaurantDB ("restaurants.json", "reviews.json", "users.json");
         String queryIn = "in(\"Telegraph Ave\")"; 
         String queryRating = "rating(2.1..2.9)";

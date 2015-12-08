@@ -153,6 +153,9 @@ public class RestaurantDBServer {
 //                    out.println("err\n");
 //                }
             }
+        } catch (QueryFormatException e) {
+            System.err.println("Ill-formatted query");
+            e.printStackTrace();
         } finally {
             System.err.println("closing client I/O");
             out.close();
