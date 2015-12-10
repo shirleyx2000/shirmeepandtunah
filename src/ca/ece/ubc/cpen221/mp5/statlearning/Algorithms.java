@@ -5,6 +5,11 @@ import java.util.TreeMap;
 
 import org.json.simple.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -22,7 +27,7 @@ public class Algorithms {
 
 	/**
 	 * Use k-means clustering to compute k clusters for the restaurants in the
-	 * database.
+	 * database. This method calls a private method kmc to complete the task
 	 * 
 	 * @param db
 	 * @return
@@ -34,6 +39,7 @@ public class Algorithms {
 	public static String convertClustersToJSON(List<Set<Restaurant>> clusters) {
 	    StringBuilder ClusterToJSONStr = new StringBuilder(""); 
 	    Map ClusterJSON = new LinkedHashMap(); 
+	    int cluster_index = 0; 
 	    
 	    //{"x": 37.8702006, "y": -122.2659014, "name": "Cinnaholic", "cluster": 3, "weight": 5.0} <-- weight = stars or just 4
 	    
@@ -42,20 +48,62 @@ public class Algorithms {
 	            ClusterJSON.put("x", r.getLat());
 	            ClusterJSON.put("y", r.getLong());
 	            ClusterJSON.put("name", r.getName());
-	            ClusterJSON.put("cluster", rset.size());
+	            ClusterJSON.put("cluster", cluster_index);
 	            ClusterJSON.put("weight", r.getStars());
+	            
+	            ClusterToJSONStr.append(JSONObject.toJSONString(ClusterJSON) + ", ");
+
 	        }
 	        
-	        ClusterToJSONStr.append(JSONObject.toJSONString(ClusterJSON) + ", ");
+	        cluster_index++; 
 	    }
 	    
 	    ClusterToJSONStr.delete(ClusterToJSONStr.length()-2, ClusterToJSONStr.length()-1);
+	    
+        String jsonDir = System.getProperty("user.dir").concat("\\visualize\\");
+
+	    try (PrintStream out = new PrintStream(new FileOutputStream(jsonDir + "voronoi.json"))) {
+	        out.print(ClusterToJSONStr.toString());
+	    } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+	    
 		return ClusterToJSONStr.toString();
 	}
 
 	public static MP5Function getPredictor(User u, RestaurantDB db, MP5Function featureFunction) {
-		// TODO: Implement this method
-		return null;
+	    
+	    double S_xx = 0; 
+	    double mean_x = 0;
+	    double S_xy = 0; 
+	    double S_yy = 0; 
+	    double a = 0; 
+	    double b = 0; 
+	    
+	    //x = feature function 
+	    double total = 0;
+	    for (Restaurant r : db.getAllRestaurants().values()) {
+	        mean_x = featureFunction.f(r, db);
+	        total ++; 
+	    }
+	    mean_x = mean_x/total; 
+	    
+	    for (Restaurant r : db.getAllRestaurants().values()) {
+	        S_xx += Math.pow(featureFunction.f(r, db) - mean_x, 2);
+	      //y = RATING for 1 user
+	        for (Review rev : db.getAllReviews().values()) {
+	            if (u.getUserId().equals(rev.getUserId())) {
+	                S_yy += Math.pow(rev.getStars()-u.getAverageStars(), 2);
+	                S_xy += (featureFunction.f(r, db) - mean_x)*(rev.getStars()-u.getAverageStars());
+	            }
+	        }
+	    }
+	    
+	    b = S_xy/S_xx; 
+	    a = u.getAverageStars()-b*mean_x; 
+	    //a*featureFunction+b
+	    
+		return new MeanRating();
 	}
 
 	public static MP5Function getBestPredictor(User u, RestaurantDB db, List<MP5Function> featureFunctionList) {
@@ -194,8 +242,6 @@ public class Algorithms {
         r6.setLong(-2.0);
         testMap.put(r6.getName(), r6);
 
-//        returnedLs = kmc( 2, testMap );
-        
         RestaurantDB rdb = new RestaurantDB("restaurants.json", "reviews.json", "users.json");
         returnedLs = kMeansClustering(20, rdb);
         System.out.println(returnedLs);
